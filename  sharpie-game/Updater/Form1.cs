@@ -42,7 +42,7 @@ namespace Updater
             {
                 updte.CheckUpdate();
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 Application.Exit();
             }

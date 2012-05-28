@@ -23,40 +23,6 @@ namespace Updater
             try
             {
                 FileVersionInfo ver = FileVersionInfo.GetVersionInfo(@".\Sharpie.exe");
-            }
-            catch (Exception)
-            {
-                DialogResult result = MessageBox.Show(updateCheckVersionFile + "Po kliknięciu OK wybierz ścieżkę gry.", "Błąd", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
-                if (result == DialogResult.OK)
-                {
-                    OpenFileDialog dialog = new OpenFileDialog();
-                    dialog.Title = "Znajdź Sharpie.exe";
-                    dialog.Multiselect = false;
-                    dialog.Filter = "Plik Sharpie.exe|Sharpie.exe";
-                    result = dialog.ShowDialog();
-                    if (result == DialogResult.OK)
-                    {
-                        string filepath = dialog.FileName;
-                        FileVersionInfo ver = FileVersionInfo.GetVersionInfo(filepath);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        throw new Exception();
-                        Application.Exit();
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    throw new Exception();
-                    
-                }
-
-            }
-
-            try
-            {
                 WebRequest rq = WebRequest.Create("http://serwer.pl/aktualizacja/wersja.txt");
                 rq.Credentials = CredentialCache.DefaultCredentials;
                 HttpWebResponse rp = (HttpWebResponse)rq.GetResponse();
@@ -64,10 +30,23 @@ namespace Updater
                 StreamReader sr = new StreamReader(st);
                 string odpowiedz = sr.ReadToEnd();
             }
-            catch (Exception ex)
+            catch (FileNotFoundException)
             {
-                MessageBox.Show(updateInfoError + " " + ex.Message + "/nAplikacja zostanie zamknięta.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
+                DialogResult result = MessageBox.Show(updateCheckVersionFile + "Po kliknięciu OK znajdź i wybierz plik Sharpie.exe", "Błąd", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                if (result == DialogResult.OK)
+                {
+                    FindSharpie();
+                }
+                else
+                {
+                    MessageBox.Show("Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    throw new Exception();
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(updateInfoError + " " + ex.Message + "/nAktualizator zostanie zamknięty!.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new Exception();
             }
 
             if (this.ver.FileVersion != this.odpowiedz)
@@ -79,6 +58,26 @@ namespace Updater
                 return false;
             }
 
+        }
+
+        private void FindSharpie()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Title = "Znajdź Sharpie.exe";
+            dialog.Multiselect = false;
+            dialog.Filter = "Plik Sharpie.exe|Sharpie.exe";
+            DialogResult result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                string filepath = dialog.FileName;
+                FileVersionInfo ver = FileVersionInfo.GetVersionInfo(filepath);
+                MessageBox.Show(ver.ToString(), "Tytuł", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                MessageBox.Show("Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                throw new Exception();
+            }
         }
     }
 }

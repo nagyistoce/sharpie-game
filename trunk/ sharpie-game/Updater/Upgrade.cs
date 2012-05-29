@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Net;
 using System.IO;
+using System.Security.Permissions;
 
 namespace Updater
 {
@@ -17,18 +18,27 @@ namespace Updater
         public const string updateCheckVersionFile = "Nie można pobrać wersji gry z pliku! ";
         private FileVersionInfo ver;
         private string odpowiedz;
+        private string filepath = Path.GetFullPath("Sharpie.exe");
+        private string path = Path.GetDirectoryName("Sharpie.exe");
+        private string linia;
+        private string netlinia;
 
         public bool CheckUpdate()
         {
+        Retry:
             try
             {
-                FileVersionInfo ver = FileVersionInfo.GetVersionInfo(@".\Sharpie.exe");
-                WebRequest rq = WebRequest.Create("http://serwer.pl/aktualizacja/wersja.txt");
+                ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(filepath));
+                string[] linie = ver.ToString().Split('\n');
+                linia = linie[3];
+                WebRequest rq = WebRequest.Create("http://sharpie-game.googlecode.com/files/version.txt");
                 rq.Credentials = CredentialCache.DefaultCredentials;
                 HttpWebResponse rp = (HttpWebResponse)rq.GetResponse();
                 Stream st = rp.GetResponseStream();
                 StreamReader sr = new StreamReader(st);
-                string odpowiedz = sr.ReadToEnd();
+                odpowiedz = sr.ReadToEnd();
+                string[] linie2 = odpowiedz.Split('\n');
+                netlinia = linie2[0];
             }
             catch (FileNotFoundException)
             {
@@ -42,14 +52,15 @@ namespace Updater
                     MessageBox.Show("Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     throw new Exception();
                 }
+                goto Retry;
             }
             catch (ArgumentException ex)
             {
-                MessageBox.Show(updateInfoError + " " + ex.Message + "/nAktualizator zostanie zamknięty!.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(updateInfoError + " " + ex.Message + "\nAktualizator zostanie zamknięty!", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 throw new Exception();
             }
 
-            if (this.ver.FileVersion != this.odpowiedz)
+            if (linia != netlinia)
             {
                 return true;
             }
@@ -69,15 +80,39 @@ namespace Updater
             DialogResult result = dialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                string filepath = dialog.FileName;
-                FileVersionInfo ver = FileVersionInfo.GetVersionInfo(filepath);
-                MessageBox.Show(ver.ToString(), "Tytuł", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                filepath = dialog.FileName;
+                path = Path.GetDirectoryName(filepath);
+                ver = FileVersionInfo.GetVersionInfo(filepath);
             }
             else
             {
                 MessageBox.Show("Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 throw new Exception();
             }
+        }
+
+        public bool DoUpgrade()
+        {
+            WebClient klient = new WebClient();
+            Form1 form = new Form1();
+            do 
+            {
+                try
+                {
+                    File.Delete(filepath);
+                    klient.DownloadFile("http://sharpie-game.googlecode.com/files/Sharpie.exe", @".\Sharpie.exe");
+                    return true;
+                }
+                catch (IOException ex)
+                {
+                    DialogResult result = MessageBox.Show(ex + " Upewnij się, że gra jest wyłączona i kliknij Retry, aby ponowić próbę.", "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
+                    if (result == DialogResult.Cancel)
+                    {
+                        MessageBox.Show("Aktualizator zostanie zamknięty! Nie można zaktualizować gry.", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        throw new Exception();
+                    }
+                }
+            } while (true);
         }
     }
 }

@@ -16,9 +16,6 @@ namespace Updater
 {
     public partial class Form1 : Form
     {
-        public const string updateSuccess = "Sharpie został zaktualizowany.";
-        public const string updateCurrent = "Masz najnowszą wersję gry!";
-        public const string updateInfoError = "Błąd w uzyskiwaniu informacji o aktualizacji!";
         public FileVersionInfo ver;
         public Thread updt;
 
@@ -40,12 +37,29 @@ namespace Updater
             Upgrade updte = new Upgrade();
             try
             {
-                updte.CheckUpdate();
+                if (updte.CheckUpdate() == true)
+                {
+                    if (updte.DoUpgrade() == true)
+                    {
+                        MessageBox.Show("Gra została pomyślnie zaktualizowana!", "Aktualizator", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Nie udało się zaktualizować gry.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Posiadasz najnowszą wersję gry, nie ma potrzeby aktualizacji.", "Aktualizator", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+               
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                MessageBox.Show(ex.ToString());
                 Application.Exit();
             }
+            Application.Exit();
         }
     }
 }

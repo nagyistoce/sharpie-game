@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Windows.Forms;
 
 
 /*
@@ -107,7 +104,7 @@ namespace SnakeSharp
                 meatY = meat.Next(max_y);
             } while (board[meatX, meatY] != " ");
             board[meatX, meatY] = "#";
-            crs.WriteXY(meatX, meatY, "#");
+            Cursor.WriteXY(meatX, meatY, "#");
 
             ConsoleKeyInfo key = Console.ReadKey(true);
 
@@ -144,7 +141,7 @@ namespace SnakeSharp
                     Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
                 }
 
-                crs.Move(kierunek); //rusza kursorem w wybranym kierunku
+                Cursor.Move(kierunek); //rusza kursorem w wybranym kierunku
 
                     if (board[Console.CursorLeft, Console.CursorTop] != " " && board[Console.CursorLeft, Console.CursorTop] != "#")  //zderzenie
                     {
@@ -198,11 +195,13 @@ namespace SnakeSharp
 
         private void GameOver()
         {
-            Console.SetCursorPosition(Console.WindowWidth / 2 - Locale.over.Length / 2, Console.WindowHeight / 2 - 1);
-            Console.Write(Locale.over);
+            Cursor.WriteXY(Console.WindowWidth / 2 - Locale.over.Length / 2, Console.WindowHeight / 2 - 2, Locale.over);
             string wynik = Locale.score + scorepoint.ToString();
-            Console.SetCursorPosition(Console.WindowWidth / 2 - wynik.Length, Console.WindowHeight / 2 + 1);
-
+            for (int i = 0; i < wynik.Length; i= i + 2)
+            {
+                Interface.WritePanelLeft(" ");
+            }
+            Cursor.WriteXY(Console.WindowWidth / 2 - wynik.Length / 2, Console.WindowHeight / 2, wynik);
         }
 
         private void ReadMove()

@@ -22,6 +22,7 @@ namespace SnakeSharp
             {
                 a = Console.ReadKey(true);
             } while (a.Key != ConsoleKey.F2);
+            Interface.Menu();
             Game gra = new Game();
             Console.ReadKey(true);
         }

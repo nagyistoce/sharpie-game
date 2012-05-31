@@ -7,6 +7,12 @@ namespace SnakeSharp
 {
     class Interface
     {
+        public static void Menu()
+        {
+            string[] pozycje = { "Nowa gra", "Ustawienia", "Pomoc", "Wyjście"};
+            // do dokończenia
+        }
+
         public void Draw()
         {
             Console.ResetColor();

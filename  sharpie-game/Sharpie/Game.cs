@@ -14,7 +14,7 @@ using System.Threading;
 
 
 namespace SnakeSharp
-{
+{    
     class Game
     {
 
@@ -29,7 +29,6 @@ namespace SnakeSharp
         private int scorepoint = 0;
         private int meatX, meatY;
         string[] wall = { "╔", "╗", "═", "║", "╚", "╝" };
-        bool invert = false;
 
         private void DrawBoard()
         {
@@ -133,28 +132,20 @@ namespace SnakeSharp
             Console.SetCursorPosition(Console.WindowWidth / 2, Console.WindowHeight / 2);
             do
             {
-                if (invert == true)
-                {
-                    invert = false;
-                    snakeX = new LinkedList<int>(snakeX.Reverse());
-                    snakeY = new LinkedList<int>(snakeY.Reverse());
-                    Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
-                }
-
                 Cursor.Move(kierunek); //rusza kursorem w wybranym kierunku
 
-                    if (board[Console.CursorLeft, Console.CursorTop] != " " && board[Console.CursorLeft, Console.CursorTop] != "#")  //zderzenie
+                if ((board[Console.CursorLeft, Console.CursorTop] != " " && board[Console.CursorLeft, Console.CursorTop] != "#") || (snakeX.Find(Console.CursorLeft).Value == Console.CursorLeft && snakeY.Find(Console.CursorTop).Value == Console.CursorTop)) //zderzenie
+                {
+                    while (snakeX.Count > 0)
                     {
-                        while (snakeX.Count > 0)
-                        {
-                            Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
-                            Console.Write("*");
-                            snakeX.RemoveFirst();
-                            snakeY.RemoveFirst();
-                            Thread.Sleep(50);
-                        }
-                        break;
+                        Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
+                        Console.Write("*");
+                        snakeX.RemoveFirst();
+                        snakeY.RemoveFirst();
+                        Thread.Sleep(50);
                     }
+                    break;
+                }
 
                 snakeX.AddFirst(Console.CursorLeft);    // i dodawany czlon do listy
                 snakeY.AddFirst(Console.CursorTop);
@@ -166,6 +157,7 @@ namespace SnakeSharp
                     snakeX.RemoveLast();    //usuwa czlon z listy
                     snakeY.RemoveLast(); //czysci pole w tablicy
                     Console.Write(" "); // i usuwa na ekranie
+
                 }
 
                 Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
@@ -197,10 +189,7 @@ namespace SnakeSharp
         {
             Cursor.WriteXY(Console.WindowWidth / 2 - Locale.over.Length / 2, Console.WindowHeight / 2 - 2, Locale.over);
             string wynik = Locale.score + scorepoint.ToString();
-            for (int i = 0; i < wynik.Length; i= i + 2)
-            {
-                Interface.WritePanelLeft(" ");
-            }
+            Interface.WritePanelLeft("                                           ");
             Cursor.WriteXY(Console.WindowWidth / 2 - wynik.Length / 2, Console.WindowHeight / 2, wynik);
         }
 
@@ -214,21 +203,17 @@ namespace SnakeSharp
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        kierunek = 0;
+                        if (poprzkierunek != 2) kierunek = 0;
                         break;
                     case ConsoleKey.RightArrow:
-                        kierunek = 1;
+                        if (poprzkierunek != 3) kierunek = 1;
                         break;
                     case ConsoleKey.DownArrow:
-                        kierunek = 2;
+                        if (poprzkierunek != 0) kierunek = 2;
                         break;
                     case ConsoleKey.LeftArrow:
-                        kierunek = 3;
+                        if (poprzkierunek != 1) kierunek = 3;
                         break;
-                }
-                if ((poprzkierunek == 0 && kierunek == 2) || (poprzkierunek == 1 && kierunek == 3) || (poprzkierunek == 2 && kierunek == 0) || (poprzkierunek == 3 && kierunek == 1))
-                {
-                    invert = true;
                 }
             } while (true);
         }

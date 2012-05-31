@@ -15,18 +15,15 @@ namespace SnakeSharp
             Console.SetBufferSize(Console.WindowWidth + 1, Console.WindowHeight + 1);
             Console.BackgroundColor = ConsoleColor.Gray;
             Console.ForegroundColor = ConsoleColor.Black;
-            for (int i = 1; i <= Console.WindowWidth; i++)
-            {
-                Console.Write(" ");
-            }
-            Console.SetCursorPosition(Console.WindowWidth - 2 - Program.version.Length, 0);
-            Console.Write("v{0}", Program.version);    //Wersja programu
             Console.SetCursorPosition(0, Console.WindowHeight - 1);
             for (int i = 1; i <= Console.WindowWidth; i++)
             {
                 Console.Write(" ");
             }
+            Console.SetCursorPosition(Console.WindowWidth - 2 - Program.version.Length, Console.WindowHeight-1);
+            Console.Write("v{0}", Program.version);    //Wersja programu
             Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
+            Console.ResetColor();
         }
 
         public void Glowny() //ekran główny
@@ -39,14 +36,16 @@ namespace SnakeSharp
             Console.ForegroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(1, Console.WindowHeight - 1);
             Console.Write("F2 - Nowa gra");
+            Console.ResetColor();
         }
 
-        public void Score()
+        public void Score(int score)
         {
             Console.BackgroundColor = ConsoleColor.Gray;
             Console.ForegroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(1, Console.WindowHeight - 1);
-            Console.Write("Wynik: 0");
+            Console.Write("Wynik: {0}",score);
+            Console.ResetColor();
         }
     }
 }

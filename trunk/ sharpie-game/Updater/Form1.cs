@@ -41,22 +41,21 @@ namespace Updater
                 {
                     if (updte.DoUpgrade() == true)
                     {
-                        MessageBox.Show("Gra została pomyślnie zaktualizowana!", "Aktualizator", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(this.Parent, "Gra została pomyślnie zaktualizowana!", "Aktualizator", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        MessageBox.Show("Nie udało się zaktualizować gry.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(this.Parent, "Nie udało się zaktualizować gry.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Posiadasz najnowszą wersję gry, nie ma potrzeby aktualizacji.", "Aktualizator", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(this.Parent,"Posiadasz najnowszą wersję gry, nie ma potrzeby aktualizacji.", "Aktualizator", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                MessageBox.Show(ex.ToString());
                 Application.Exit();
             }
             Application.Exit();

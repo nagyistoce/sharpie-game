@@ -22,5 +22,14 @@ namespace SnakeSharp
             if (direction == 3) { Console.SetCursorPosition(Console.CursorLeft - 2, Console.CursorTop); }   // lewo
             if (direction == 1) { throw new Exception("Console.Write posuwa kursor w prawo :>"); }
         }
+
+        public void WriteXY(int x, int y, string text)
+        {
+            int left = Console.CursorLeft;
+            int top = Console.CursorTop;
+            Console.SetCursorPosition(x, y);
+            Console.Write(text);
+            Console.SetCursorPosition(left, top);
+        }
     }
 }

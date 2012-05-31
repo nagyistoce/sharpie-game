@@ -25,6 +25,7 @@ namespace Updater
 
         public bool CheckUpdate()
         {
+            Form1 form = new Form1();
         Retry:
             try
             {
@@ -42,21 +43,21 @@ namespace Updater
             }
             catch (FileNotFoundException)
             {
-                DialogResult result = MessageBox.Show(updateCheckVersionFile + "Po kliknięciu OK znajdź i wybierz plik Sharpie.exe", "Błąd", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                DialogResult result = MessageBox.Show(form.Parent, updateCheckVersionFile + "Po kliknięciu OK znajdź i wybierz plik Sharpie.exe", "Błąd", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
                 if (result == DialogResult.OK)
                 {
                     FindSharpie();
                 }
                 else
                 {
-                    MessageBox.Show("Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(form.Parent, "Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     throw new Exception();
                 }
                 goto Retry;
             }
             catch (ArgumentException ex)
             {
-                MessageBox.Show(updateInfoError + " " + ex.Message + "\nAktualizator zostanie zamknięty!", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(form.Parent, updateInfoError + " " + ex.Message + "\nAktualizator zostanie zamknięty!", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 throw new Exception();
             }
 
@@ -73,6 +74,7 @@ namespace Updater
 
         private void FindSharpie()
         {
+            Form1 form = new Form1();
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Title = "Znajdź Sharpie.exe";
             dialog.Multiselect = false;
@@ -86,7 +88,7 @@ namespace Updater
             }
             else
             {
-                MessageBox.Show("Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(form.Parent, "Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 throw new Exception();
             }
         }
@@ -105,10 +107,10 @@ namespace Updater
                 }
                 catch (IOException ex)
                 {
-                    DialogResult result = MessageBox.Show(ex + " Upewnij się, że gra jest wyłączona i kliknij Retry, aby ponowić próbę.", "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
+                    DialogResult result = MessageBox.Show(form.Parent, ex + " Upewnij się, że gra jest wyłączona i kliknij Retry, aby ponowić próbę.", "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
                     if (result == DialogResult.Cancel)
                     {
-                        MessageBox.Show("Aktualizator zostanie zamknięty! Nie można zaktualizować gry.", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(form.Parent, "Aktualizator zostanie zamknięty! Nie można zaktualizować gry.", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         throw new Exception();
                     }
                 }

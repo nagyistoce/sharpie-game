@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SnakeSharp
+namespace Sharpie
 {
     class Program
     {
@@ -15,14 +15,23 @@ namespace SnakeSharp
             Console.Title = name;
             Console.CursorVisible = false;
             Interface window = new Interface();
+            Menu menu = new Menu(new string[] {"Nowa gra", "Ustawienia", "Instrukcje", "O grze", "Wyjdź z gry"}, 12);
             window.Draw();
             window.Glowny();
-            ConsoleKeyInfo a;
-            do 
+            short value = menu.Show();
+            switch (value)
             {
-                a = Console.ReadKey(true);
-            } while (a.Key != ConsoleKey.F2);
-            Interface.Menu();
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+            }
             Game gra = new Game();
             Console.ReadKey(true);
         }

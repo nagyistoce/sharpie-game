@@ -23,6 +23,11 @@ namespace Updater
         private string linia;
         private string netlinia;
 
+        public string ReturnVer()
+        {
+            return netlinia;
+        }
+
         public bool CheckUpdate()
         {
             Form1 form = new Form1();
@@ -47,18 +52,18 @@ namespace Updater
                 if (result == DialogResult.OK)
                 {
                     FindSharpie();
+                    goto Retry;
                 }
                 else
                 {
                     MessageBox.Show(form.Parent, "Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    throw new Exception();
+                    Application.Exit();
                 }
-                goto Retry;
             }
             catch (ArgumentException ex)
             {
                 MessageBox.Show(form.Parent, updateInfoError + " " + ex.Message + "\nAktualizator zostanie zamknięty!", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                throw new Exception();
+                Application.Exit();
             }
 
             if (linia != netlinia)
@@ -89,32 +94,28 @@ namespace Updater
             else
             {
                 MessageBox.Show(form.Parent, "Aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                throw new Exception();
+                Application.Exit();
             }
         }
 
         public bool DoUpgrade()
         {
-            WebClient klient = new WebClient();
             Form1 form = new Form1();
-            do 
+            WebClient klient = new WebClient();
+            try
             {
-                try
+                File.Delete(filepath);
+                klient.DownloadFile(new Uri("http://sharpie-game.googlecode.com/files/Sharpie.exe"), @".\Sharpie.exe");
+            }
+            catch (IOException ex)
+            {
+                DialogResult result = MessageBox.Show(form.Parent, ex + " Upewnij się, że gra jest wyłączona i kliknij Retry, aby ponowić próbę.", "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
+                if (result == DialogResult.Cancel)
                 {
-                    File.Delete(filepath);
-                    klient.DownloadFile("http://sharpie-game.googlecode.com/files/Sharpie.exe", @".\Sharpie.exe");
-                    return true;
+                    return false;
                 }
-                catch (IOException ex)
-                {
-                    DialogResult result = MessageBox.Show(form.Parent, ex + " Upewnij się, że gra jest wyłączona i kliknij Retry, aby ponowić próbę.", "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
-                    if (result == DialogResult.Cancel)
-                    {
-                        MessageBox.Show(form.Parent, "Aktualizator zostanie zamknięty! Nie można zaktualizować gry.", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        throw new Exception();
-                    }
-                }
-            } while (true);
+            }
+            return true;
         }
     }
 }

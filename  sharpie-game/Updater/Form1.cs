@@ -25,40 +25,98 @@ namespace Updater
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        public void ChangePicture(Image img)
         {
-            updt = new Thread(UpdateProcess);
-            updt.SetApartmentState(ApartmentState.STA);
-            updt.Start();
+            pictureBox1.Image = img;
         }
 
         private void UpdateProcess()
         {
             Upgrade updte = new Upgrade();
-            try
+            if (updte.CheckUpdate() == true)
             {
-                if (updte.CheckUpdate() == true)
-                {
-                    if (updte.DoUpgrade() == true)
-                    {
-                        MessageBox.Show(this.Parent, "Gra została pomyślnie zaktualizowana!", "Aktualizator", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show(this.Parent, "Nie udało się zaktualizować gry.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show(this.Parent,"Posiadasz najnowszą wersję gry, nie ma potrzeby aktualizacji.", "Aktualizator", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-               
+                label1.Text = "Dostępna jest nowa wersja";
+                progressBar1.Value = 100;
+                pictureBox1.Image = Properties.Resources.Warning;
+                FormSizeOut();
             }
-            catch (System.Exception)
+            else
             {
-                Application.Exit();
+                label1.Text = "Masz najnowszą wersję gry!";
+                progressBar1.Value = 100;
+                pictureBox1.Image = Properties.Resources.OK;
             }
-            Application.Exit();
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            UpdateProcess();
+        }
+
+        private void FormSizeOut()
+        {
+            int speed = 30;
+            this.button1.Visible = true;
+            for (int i = 100; i <= 123; i++)
+            {
+                if (i <= 105)
+                {
+                    speed = speed - 4;
+                }
+                else if (i >= 118)
+                {
+                    speed = speed + 3;
+                }
+
+                this.Height = i;
+                Thread.Sleep(speed);
+                this.Update();
+            }
+        }
+
+        private void FormSizeIn()
+        {
+            int speed = 30;
+            this.button1.Visible = false;
+            for (int i = 123; i >= 100; i--)
+            {
+                if (i <= 105)
+                {
+                    speed = speed + 4;
+                }
+                else if (i >= 118)
+                {
+                    speed = speed - 3;
+                }
+
+                this.Height = i;
+                Thread.Sleep(speed);
+                this.Update();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            button1.Enabled = false;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            pictureBox1.Image = Properties.Resources.Download;
+            Upgrade updte = new Upgrade();
+            if (updte.DoUpgrade() == true)
+            {
+                label1.Text = "Gra została zaktualizowana!";
+                progressBar1.Style = ProgressBarStyle.Continuous;
+                progressBar1.Value = 100;
+                pictureBox1.Image = Properties.Resources.OK;
+                FormSizeIn();
+            }
+            else
+            {
+                label1.Text = "Gra nie została zaktualizowana!";
+                progressBar1.Style = ProgressBarStyle.Continuous;
+                progressBar1.Value = 100;
+                pictureBox1.Image = Properties.Resources.Error;
+                FormSizeIn();
+            }
         }
     }
 }

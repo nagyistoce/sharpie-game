@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SnakeSharp
+namespace Sharpie
 {
     class Interface
     {
-        public static void Menu()
-        {
-            string[] pozycje = { "Nowa gra", "Ustawienia", "Pomoc", "Wyjście"};
-            // do dokończenia
-        }
 
         public void Draw()
         {

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Windows.Forms;
+using System.Drawing;
 
 
 /*
@@ -13,7 +15,7 @@ using System.Threading;
  */
 
 
-namespace SnakeSharp
+namespace Sharpie
 {    
     class Game
     {
@@ -22,14 +24,18 @@ namespace SnakeSharp
         static int max_y = Console.WindowHeight - 1;
         string[,] board = new string[max_x, max_y];  // tablica do rozpoznywania obiektów na planszy, np. ścian.
 
-        public int speed = 250;  // prędkość węża (poziom trudności zarazem)
+        public int speed = 200;  // prędkość węża (poziom trudności zarazem)
         int kierunek = 0;           // kierunek na podst. liczby. Oznaczenie liczb odpowiadającym kierunkom na górze dokumentu :>
         int poprzkierunek;
         int dl_snake = 5;
         private int scorepoint = 0;
         private int meatX, meatY;
         string[] wall = { "╔", "╗", "═", "║", "╚", "╝" };
+        LinkedList<int> snakeX = new LinkedList<int>();
+        LinkedList<int> snakeY = new LinkedList<int>();
+        string body = "█";
 
+        
         private void DrawBoard()
         {
             Console.BackgroundColor = ConsoleColor.Black;
@@ -92,10 +98,6 @@ namespace SnakeSharp
             Console.SetCursorPosition(Console.WindowWidth / 2 - Locale.ready.Length / 2, Console.WindowHeight / 2 - 2);
             Console.Write(Locale.ready);
 
-            LinkedList<int> snakeX = new LinkedList<int>();
-            LinkedList<int> snakeY = new LinkedList<int>();
-            Cursor crs = new Cursor();
-
             Random meat = new Random();
             do
             {
@@ -134,9 +136,9 @@ namespace SnakeSharp
             {
                 Cursor.Move(kierunek); //rusza kursorem w wybranym kierunku
 
-                if ((board[Console.CursorLeft, Console.CursorTop] != " " && board[Console.CursorLeft, Console.CursorTop] != "#") || (snakeX.Find(Console.CursorLeft).Value == Console.CursorLeft && snakeY.Find(Console.CursorTop).Value == Console.CursorTop)) //zderzenie
+                if ((board[Console.CursorLeft, Console.CursorTop] != " " && board[Console.CursorLeft, Console.CursorTop] != "#") || (board[Console.CursorLeft,Console.CursorTop] == body)) //zderzenie
                 {
-                    while (snakeX.Count > 0)
+                    while (snakeX.Count > 0) // animacja znikania
                     {
                         Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
                         Console.Write("*");
@@ -147,15 +149,20 @@ namespace SnakeSharp
                     break;
                 }
 
-                snakeX.AddFirst(Console.CursorLeft);    // i dodawany czlon do listy
+                snakeX.AddFirst(Console.CursorLeft);    // dodawanie czlonu do listy
                 snakeY.AddFirst(Console.CursorTop);
-                Console.Write("O");
+                if (snakeX.Count > 1)
+                {
+                    board[snakeX.First.Next.Value, snakeY.First.Next.Value] = body;
+                }
+                Console.Write(body);
 
                 if (dl_snake == snakeX.Count-1)
                 {
                     Console.SetCursorPosition(snakeX.Last.Value, snakeY.Last.Value);    //potem idzie na koniec
                     snakeX.RemoveLast();    //usuwa czlon z listy
                     snakeY.RemoveLast(); //czysci pole w tablicy
+                    board[Console.CursorLeft, Console.CursorTop] = " ";
                     Console.Write(" "); // i usuwa na ekranie
 
                 }
@@ -166,7 +173,7 @@ namespace SnakeSharp
                 {
                     board[Console.CursorLeft, Console.CursorTop] = " ";
                     dl_snake++;
-                    speed++;
+                    speed--;
                     scorepoint = scorepoint + 10;
                     UpdateScore();
                     do
@@ -181,6 +188,7 @@ namespace SnakeSharp
                 }
 
                 Thread.Sleep(speed);
+
 
             } while (true);
         }

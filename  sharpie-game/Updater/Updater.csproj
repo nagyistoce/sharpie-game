@@ -54,7 +54,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <ApplicationIcon>Resources\Globe.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Network-Globe-Connected.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -123,12 +123,21 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <None Include="Resources\Globe.ico" />
+    <None Include="Resources\Alarm-Tick-icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\download-icon.png" />
+    <None Include="Resources\Network-Download-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Alarm-Error-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Network-Globe-Connected.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Alarm-Synchonize-icon.png" />
+    <None Include="Resources\Alarm-Warning-icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

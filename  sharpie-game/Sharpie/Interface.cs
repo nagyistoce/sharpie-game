@@ -7,7 +7,6 @@ namespace Sharpie
 {
     class Interface
     {
-
         public void Draw()
         {
             Console.ResetColor();
@@ -74,6 +73,30 @@ namespace Sharpie
             Cursor.WriteXY(Console.WindowWidth / 2 - c.Length / 2, 5, c);
             Cursor.WriteXY(Console.WindowWidth / 2 - d.Length / 2, 6, d);
             Cursor.WriteXY(Console.WindowWidth / 2 - e.Length / 2, 7, e);
+        }
+
+        public void DialogShow(int x1, int y1, int x2, int y2, string title)
+        {
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(x1, y1);
+            for (int x = x1; x <= x2; x++)
+            {
+                for (int y = y1; y <= y2; y++)
+                {
+                    Console.SetCursorPosition(x, y);
+                    if ((y == y1) && (x == x1)) { Console.Write("╔"); } // góra-lewo
+                    else if ((y == y1) && (x == x2)) { Console.Write("╗"); } // góra-prawo
+                    else if ((y == y2) && (x == x1)) { Console.Write("╚"); } // dół-lewo
+                    else if ((y == y2) && (x == x2)) { Console.Write("╝"); } // dół-prawo
+                    else if (((y != y1) || (y != y2)) && ((x == x1) || (x == x2))) { Console.Write("║"); } // bok lewo/prawo
+                    else if (((y == y1) || (y == y2)) && ((x != x1) || (x != x2))) { Console.Write("═"); } // bok góra/dół
+                    else { Console.Write(" "); }
+                }
+            }
+            Console.SetCursorPosition((x1+x2)/2 - title.Length / 2, y1);
+            Console.Write(" {0} ", title);
+            Console.ResetColor();
         }
     }
 }

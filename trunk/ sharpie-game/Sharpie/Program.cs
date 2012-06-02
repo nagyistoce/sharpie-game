@@ -15,10 +15,11 @@ namespace Sharpie
             Console.Title = name;
             Console.CursorVisible = false;
             Interface window = new Interface();
-            Menu menu = new Menu(new string[] {"Nowa gra", "Ustawienia", "Instrukcje", "O grze", "Wyjdź z gry"}, 12);
+            Menu menu = new Menu(new string[] {"Nowa gra", "Ustawienia", "Instrukcje", "O grze", "", "Aktualizuj"}, 13, ConsoleColor.White, ConsoleColor.Green);
             window.Draw();
             window.Glowny();
-            short value = menu.Show();
+            window.DialogShow(20,11,40,25,"Menu");
+            int value = menu.Show();
             switch (value)
             {
                 case 1:

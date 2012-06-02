@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpie", "Sharpie.csproj", "{0054AF06-A817-437F-82CE-5A7A1DCA3AA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "..\Updater\Updater.csproj", "{50626D15-6CCB-4B13-8799-3272A5775402}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0054AF06-A817-437F-82CE-5A7A1DCA3AA9}.Debug|x86.ActiveCfg = Debug|x86
+		{0054AF06-A817-437F-82CE-5A7A1DCA3AA9}.Debug|x86.Build.0 = Debug|x86
+		{0054AF06-A817-437F-82CE-5A7A1DCA3AA9}.Release|x86.ActiveCfg = Release|x86
+		{0054AF06-A817-437F-82CE-5A7A1DCA3AA9}.Release|x86.Build.0 = Release|x86
+		{50626D15-6CCB-4B13-8799-3272A5775402}.Debug|x86.ActiveCfg = Debug|x86
+		{50626D15-6CCB-4B13-8799-3272A5775402}.Debug|x86.Build.0 = Debug|x86
+		{50626D15-6CCB-4B13-8799-3272A5775402}.Release|x86.ActiveCfg = Release|x86
+		{50626D15-6CCB-4B13-8799-3272A5775402}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

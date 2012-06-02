@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cursor.cs" />
+    <Compile Include="Dialog.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="Menu.cs" />

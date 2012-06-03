@@ -105,7 +105,7 @@ namespace Updater
 			try
 			{
 				File.Delete(filepath);
-				klient.DownloadFile(new Uri("http://sharpie-game.googlecode.com/files/Sharpie.exe"), @".\Sharpie.exe");
+				klient.DownloadFile(new Uri("http://sharpie-game.googlecode.com/files/Sharpie.exe"), filepath);
 			}
 			catch (IOException ex)
 			{

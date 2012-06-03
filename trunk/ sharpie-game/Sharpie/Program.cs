@@ -11,10 +11,12 @@ namespace Sharpie
 		public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Remove(5);
 		static void Main(string[] args)
 		{
-			Console.SetWindowSize(70, 40);
+			Console.SetWindowSize(70, 41);
 			Console.Title = name;
 			Console.CursorVisible = false;
 			Interface window = new Interface();
+            Scores scr = new Scores();
+            scr.Initialize();
 			do
 			{
 				window.Draw();

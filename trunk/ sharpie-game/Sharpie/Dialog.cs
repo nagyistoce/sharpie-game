@@ -84,7 +84,7 @@ namespace Sharpie
 
 			if (text.Length <= length)
 			{
-				Cursor.WriteXY(x1 + 2, YPos, text);
+				Text.WriteXY(x1 + 2, YPos, text);
 			}
 			else
 			{
@@ -103,7 +103,7 @@ namespace Sharpie
 						linie.Add(text.Substring(0, text.Length));
 						text = text.Remove(0);
 					}
-					Cursor.WriteXY(x1 + 2, YPos + i, linie[i].ToString());
+					Text.WriteXY(x1 + 2, YPos + i, linie[i].ToString());
 					i++;
 				} while (text != "");
 			}

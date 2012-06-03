@@ -75,7 +75,7 @@ namespace Sharpie
 		{
 			Console.ForegroundColor = textcolor;
 			Console.BackgroundColor = backcolor;
-			if (entry[whichentry] != "") { Cursor.WriteXY(Console.WindowWidth / 2 - entry[whichentry].Length / 2, menuYPos + whichentry, " " + entry[whichentry] + " "); }
+			if (entry[whichentry] != "") { Text.WriteXY(Text.CenterX(entry[whichentry]), menuYPos + whichentry, " " + entry[whichentry] + " "); }
 		}
 	}
 }

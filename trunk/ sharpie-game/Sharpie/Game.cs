@@ -97,11 +97,10 @@ namespace Sharpie
 		private void Start()
 		{
 			Dialog dialog = new Dialog(ConsoleColor.White, ConsoleColor.DarkMagenta);
-			dialog.Show(Console.WindowWidth / 2 - Locale.ready.Length / 2 - 2, Console.WindowHeight / 2 - 4, Console.WindowWidth / 2 + Locale.ready.Length / 2 + 1, Console.WindowHeight / 2);
-			Console.SetCursorPosition(Console.WindowWidth / 2 - Locale.ready.Length / 2, Console.WindowHeight / 2 - 2);
-			Console.BackgroundColor = ConsoleColor.DarkMagenta;
-			Console.ForegroundColor = ConsoleColor.White;
-			Console.Write(Locale.ready);
+			dialog.Show(Text.CenterX(Locale.ready) - 2, Cursor.CenterY() - 4, Cursor.CenterX() + Locale.ready.Length / 2 + 1, Cursor.CenterY());
+            Console.BackgroundColor = ConsoleColor.DarkMagenta;
+            Console.ForegroundColor = ConsoleColor.White;
+			Text.WriteXY(Text.CenterX(Locale.ready), Cursor.CenterY() - 2, Locale.ready);
 			Console.ResetColor();
 			ConsoleKeyInfo key = Console.ReadKey(true);
 			dialog.Clear();
@@ -124,13 +123,13 @@ namespace Sharpie
 			readmove = new Thread(ReadMove); // startuje wątek odpowiedzialny za odczytywanie ruchów
 			readmove.Start();
 
-			Console.SetCursorPosition(Console.WindowWidth / 2 - Locale.ready.Length / 2, Console.WindowHeight / 2 - 2);
+			Console.SetCursorPosition(Text.CenterX(Locale.ready), Cursor.CenterY() - 2);
 			for (int i = 0; i < Locale.ready.Length; i++)
 			{
 				Console.Write(" ");
 			}
 			GenerateMunch();
-			Console.SetCursorPosition(Console.WindowWidth / 2, Console.WindowHeight / 2);
+			Console.SetCursorPosition(Cursor.CenterX(), Cursor.CenterY());
 			do
 			{
 				Cursor.Move(kierunek); //rusza kursorem w wybranym kierunku
@@ -196,9 +195,9 @@ namespace Sharpie
 		{
 			Dialog dialog = new Dialog(ConsoleColor.Gray, ConsoleColor.Black);
 			string wynik = Locale.score + scorepoint.ToString();
-			dialog.Show(Console.WindowWidth / 2 - wynik.Length / 2 - 5, Console.WindowHeight / 2 - 4, Console.WindowWidth / 2 + wynik.Length / 2 + 5, Console.WindowHeight / 2 + 2);
-			Cursor.WriteXY(Console.WindowWidth / 2 - Locale.over.Length / 2, Console.WindowHeight / 2 - 2, Locale.over);
-			Cursor.WriteXY(Console.WindowWidth / 2 - wynik.Length / 2, Console.WindowHeight / 2, wynik);
+            dialog.Show(Text.CenterX(wynik) - 5, Cursor.CenterY() - 4, Cursor.CenterX() + wynik.Length / 2 + 5, Cursor.CenterY() + 2);
+            Text.WriteXY(Text.CenterX(Locale.over), Cursor.CenterY() - 2, Locale.over);
+			Text.WriteXY(Text.CenterX(wynik), Cursor.CenterY(), wynik);
 			Interface.WritePanelLeft("Naciśnij dowolny klawisz, aby wrócić do menu ...");
 		}
 
@@ -253,7 +252,7 @@ namespace Sharpie
 			} while (board[meatX, meatY] != " ");
 			board[meatX, meatY] = "#";
 			Console.ForegroundColor = ConsoleColor.Cyan;
-			Cursor.WriteXY(meatX, meatY,"#");
+			Text.WriteXY(meatX, meatY,"#");
 			Console.SetCursorPosition(x, y);
 			Console.ResetColor();
 		}

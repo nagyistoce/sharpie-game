@@ -15,13 +15,14 @@ namespace Sharpie
 			if (direction == 1) { Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop); }   // prawo
 		}
 
-		public static void WriteXY(int x, int y, string text)
-		{
-			int left = Console.CursorLeft;
-			int top = Console.CursorTop;
-			Console.SetCursorPosition(x, y);
-			Console.Write(text);
-			Console.SetCursorPosition(left, top);
-		}
+        public static int CenterX()
+        {
+            return Console.WindowWidth / 2;
+        }
+
+        public static int CenterY()
+        {
+            return Console.WindowHeight / 2;
+        }
 	}
 }

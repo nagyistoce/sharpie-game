@@ -28,7 +28,7 @@ namespace Sharpie
 		{
 			Console.ResetColor();
 			Logo();
-			Cursor.WriteXY(Console.WindowWidth / 2 - Locale.desc.Length / 2, 9, Locale.desc);
+			Text.WriteXY(Text.CenterX(Locale.desc), 9, Locale.desc);
 			Console.BackgroundColor = ConsoleColor.Gray;
 			Console.ForegroundColor = ConsoleColor.Black;
 			Console.ResetColor();
@@ -87,7 +87,7 @@ namespace Sharpie
 		{
 			Console.BackgroundColor = ConsoleColor.Gray;
 			Console.ForegroundColor = ConsoleColor.Black;
-			Cursor.WriteXY(Console.WindowWidth - 1 - text.Length, Console.WindowHeight - 1, text);
+			Text.WriteXY(Console.WindowWidth - 1 - text.Length, Console.WindowHeight - 1, text);
 			Console.ResetColor();
 		}
 
@@ -99,11 +99,11 @@ namespace Sharpie
 			string d = "    █  █   █  █████  █   █  █      █  █    ";
 			string e = "█████  █   █  █   █  █   █  █      █  █████";
 
-			Cursor.WriteXY(Console.WindowWidth / 2 - a.Length / 2, 3, a);
-			Cursor.WriteXY(Console.WindowWidth / 2 - b.Length / 2, 4, b);
-			Cursor.WriteXY(Console.WindowWidth / 2 - c.Length / 2, 5, c);
-			Cursor.WriteXY(Console.WindowWidth / 2 - d.Length / 2, 6, d);
-			Cursor.WriteXY(Console.WindowWidth / 2 - e.Length / 2, 7, e);
+			Text.WriteXY(Cursor.CenterX() - a.Length / 2, 3, a);
+			Text.WriteXY(Cursor.CenterX() - b.Length / 2, 4, b);
+			Text.WriteXY(Cursor.CenterX() - c.Length / 2, 5, c);
+			Text.WriteXY(Cursor.CenterX() - d.Length / 2, 6, d);
+			Text.WriteXY(Cursor.CenterX() - e.Length / 2, 7, e);
 		}
 
 		private void Ogrze()
@@ -120,9 +120,9 @@ namespace Sharpie
 		private bool Exit()
 		{
 			WritePanelLeft("                ");
-			Menu exitmenu = new Menu(new string[] { "Tak, mama mnie wzywa", "Coś ty, żartowałem" }, Console.WindowHeight / 2, ConsoleColor.White, ConsoleColor.Red);
+			Menu exitmenu = new Menu(new string[] { "Tak, mama mnie wzywa", "Coś ty, żartowałem" }, Cursor.CenterY(), ConsoleColor.White, ConsoleColor.Red);
 			Dialog dialog = new Dialog(ConsoleColor.White, ConsoleColor.Red);
-			dialog.Show(Console.WindowWidth / 2 - Locale.exitquestion.Length / 2 - 3, Console.WindowHeight / 2 - 2, Console.WindowWidth / 2 + Locale.exitquestion.Length / 2 + 3, Console.WindowHeight / 2 + 4, "Wyjść z gry?");
+			dialog.Show(Text.CenterX(Locale.exitquestion) - 3, Cursor.CenterY() - 2, Cursor.CenterX() + Locale.exitquestion.Length / 2 + 3, Cursor.CenterY() + 4, "Wyjść z gry?");
 			int value = exitmenu.Show();
 			dialog.Clear();
 			if (value == 0) { return true; }

@@ -12,7 +12,7 @@ namespace Sharpie
 		public static string score = "Twój wynik: ";
 		public static string retry = "F3 - Ekran Główny";
 		public static string greeting = "Witaj w " + Program.name + "!";
-		public static string desc = "Gra typu snake napisana w C#";
+		public static string desc = "Gra typu snake ;)";
 		public static string exitquestion = "Już chcesz sobie pójść?";
 	}
 }

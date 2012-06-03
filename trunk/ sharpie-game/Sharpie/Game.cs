@@ -46,17 +46,17 @@ namespace Sharpie
 			{
 				if (i == 0)
 				{
-					board[i, 1] = "╔";
+					board[i, Console.CursorTop] = "╔";
 				}
-				else if (i == Console.WindowWidth - 1)
+				else if (i == max_x - 1)
 				{
-					board[i, 1] = "╗";
+					board[i, Console.CursorTop] = "╗";
 				}
 				else
 				{
-					board[i, 1] = "═";
+					board[i, Console.CursorTop] = "═";
 				}
-				Console.Write(board[i, 1]);
+				Console.Write(board[i, Console.CursorTop]);
 			}
 
 			for (int i = 2; i < Console.WindowHeight - 1; i++)  // Rysuje środek ramki
@@ -80,17 +80,17 @@ namespace Sharpie
 			{
 				if (i == 0)
 				{
-					board[i, 1] = "╚";
+					board[i, max_y - 1] = "╚";
 				}
 				else if (i == Console.WindowWidth - 1)
 				{
-					board[i, 1] = "╝";
+					board[i, max_y - 1] = "╝";
 				}
 				else
 				{
-					board[i, 1] = "═";
+					board[i, max_y - 1] = "═";
 				}
-				Console.Write(board[i, 1]);
+				Console.Write(board[i, max_y - 1]);
 			}
 		}
 
@@ -105,7 +105,7 @@ namespace Sharpie
 			Console.ResetColor();
 			ConsoleKeyInfo key = Console.ReadKey(true);
 			dialog.Clear();
-			switch (key.Key)
+			switch (key.Key) // pierwszy ruch
 			{
 				case ConsoleKey.UpArrow:
 					kierunek = 0;
@@ -121,7 +121,7 @@ namespace Sharpie
 					break;
 			}
 
-			readmove = new Thread(ReadMove);
+			readmove = new Thread(ReadMove); // startuje wątek odpowiedzialny za odczytywanie ruchów
 			readmove.Start();
 
 			Console.SetCursorPosition(Console.WindowWidth / 2 - Locale.ready.Length / 2, Console.WindowHeight / 2 - 2);
@@ -129,45 +129,43 @@ namespace Sharpie
 			{
 				Console.Write(" ");
 			}
-			Random meat = new Random();
-			do
-			{
-				meatX = meat.Next(max_x);
-				meatY = meat.Next(max_y);
-			} while (board[meatX, meatY] != " ");
-			board[meatX, meatY] = "#";
-			Console.ForegroundColor = ConsoleColor.Cyan;
-			Cursor.WriteXY(meatX, meatY, "#");
-			Console.ResetColor();
+			GenerateMunch();
 			Console.SetCursorPosition(Console.WindowWidth / 2, Console.WindowHeight / 2);
 			do
 			{
 				Cursor.Move(kierunek); //rusza kursorem w wybranym kierunku
 
-				if ((board[Console.CursorLeft, Console.CursorTop] != " " && board[Console.CursorLeft, Console.CursorTop] != "#") || (board[Console.CursorLeft, Console.CursorTop] == body)) //zderzenie
+				if (Console.CursorTop != 1)	// jebane obejście błędu na y = 1, bo się nie wiem czemu sypie kurwa
 				{
-					while (snakeX.Count > 0) // animacja znikania
+					if ((board[Console.CursorLeft, Console.CursorTop] != " " && board[Console.CursorLeft, Console.CursorTop] != "#") || (board[Console.CursorLeft, Console.CursorTop] == body)) //zderzenie
 					{
-						Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
-						Console.Write("*");
-						snakeX.RemoveFirst();
-						snakeY.RemoveFirst();
-						Thread.Sleep(50);
+						Console.ForegroundColor = ConsoleColor.Red;
+						while (snakeX.Count > 0) // animacja znikania
+						{
+							Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
+							Console.Write("*");
+							snakeX.RemoveFirst();
+							snakeY.RemoveFirst();
+							Thread.Sleep(50);
+						}
+						Console.ResetColor();
+						break; // wychodzi z pętli
 					}
-					break;
 				}
 
 				snakeX.AddFirst(Console.CursorLeft);    // dodawanie czlonu do listy
 				snakeY.AddFirst(Console.CursorTop);
 				if (snakeX.Count > 1)
 				{
-					board[snakeX.First.Next.Value, snakeY.First.Next.Value] = body;
+					board[snakeX.First.Next.Value, snakeY.First.Next.Value] = body; // głowa nie liczy się do planszy
 				}
+				Console.ForegroundColor = ConsoleColor.Green;
 				Console.Write(body);
+				Console.ResetColor();
 
 				if (dl_snake == snakeX.Count - 1)
 				{
-					Console.SetCursorPosition(snakeX.Last.Value, snakeY.Last.Value);    //potem idzie na koniec
+					Console.SetCursorPosition(snakeX.Last.Value, snakeY.Last.Value);    // idzie na koniec weza
 					snakeX.RemoveLast();    //usuwa czlon z listy
 					snakeY.RemoveLast(); //czysci pole w tablicy
 					board[Console.CursorLeft, Console.CursorTop] = " ";
@@ -184,26 +182,17 @@ namespace Sharpie
 					speed--;
 					scorepoint = scorepoint + 10;
 					UpdateScore();
-					do
-					{
-						meatX = meat.Next(0, max_x);
-						meatY = meat.Next(0, max_y);
-					} while (board[meatX, meatY] != " ");
-					board[meatX, meatY] = "#";
-					Console.SetCursorPosition(meatX, meatY);
-					Console.ForegroundColor = ConsoleColor.Cyan;
-					Console.Write("#");
-					Console.ResetColor();
+					GenerateMunch();
 					Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
 				}
 
-				Thread.Sleep(speed);
+				Thread.Sleep(speed); // prędkość węża ;>
 
 
 			} while (true);
 		}
 
-		private void GameOver()
+		private void GameOver() // ekran końca gry
 		{
 			Dialog dialog = new Dialog(ConsoleColor.Gray, ConsoleColor.Black);
 			string wynik = Locale.score + scorepoint.ToString();
@@ -213,7 +202,7 @@ namespace Sharpie
 			Interface.WritePanelLeft("Naciśnij dowolny klawisz, aby wrócić do menu ...");
 		}
 
-		private void ReadMove()
+		private void ReadMove() // czyta ruchy klawiszy w osobnym wątku
 		{
 			ConsoleKeyInfo key;
 			do
@@ -249,10 +238,10 @@ namespace Sharpie
 			readmove.Abort();
 			GameOver();
 			Console.ReadKey(true);
-			GC.Collect();
+			GC.Collect(); // zbiera śmieci, bo troche tego tu jest
 		}
 
-		private void GenerateMunch()
+		private void GenerateMunch() // losuje i ustawia żarcie
 		{
 			Random meat = new Random();
 			int x = Console.CursorLeft;
@@ -263,12 +252,13 @@ namespace Sharpie
 				meatY = meat.Next(0, max_y);
 			} while (board[meatX, meatY] != " ");
 			board[meatX, meatY] = "#";
-			Console.SetCursorPosition(meatX, meatY);
-			Console.Write("#");
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Cursor.WriteXY(meatX, meatY,"#");
 			Console.SetCursorPosition(x, y);
+			Console.ResetColor();
 		}
 
-		private void UpdateScore()
+		private void UpdateScore() // aktualizuje wynik na dole
 		{
 			Interface score = new Interface();
 			score.Score(scorepoint);

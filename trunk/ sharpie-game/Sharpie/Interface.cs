@@ -109,12 +109,10 @@ namespace Sharpie
 		private void Ogrze()
 		{
 			Dialog ogrze = new Dialog(ConsoleColor.White, ConsoleColor.DarkCyan);
-			ogrze.Show(10, 12, 60, 27, "O grze", "ESC - powrót ");
+			ogrze.Show(14, 12, 56, 27, "O grze", "ESC - powrót ");
 			Console.ForegroundColor = ConsoleColor.White;
 			Console.BackgroundColor = ConsoleColor.DarkCyan;
-			Cursor.WriteXY(12,14, "Sharpie, wersja "+ Program.version);
-			Cursor.WriteXY(12,16, "This program is free software:");
-			Cursor.WriteXY(12,17, "you can redistribute it and/or modify");
+			ogrze.WriteOn("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your opinion) any later version.", 14);
 			Console.ResetColor();
 
 		}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace Sharpie
 {
@@ -10,6 +11,8 @@ namespace Sharpie
         ConsoleColor tekst = ConsoleColor.Black;
         ConsoleColor tlo = ConsoleColor.Gray;
         int x1, x2, y1, y2;
+		ArrayList linie = new ArrayList();
+		private int index;
 
         public Dialog(ConsoleColor tekst, ConsoleColor tlo)
         {
@@ -75,10 +78,36 @@ namespace Sharpie
             }
         }
 
-		public void WriteOn(string tekst)
+		public void WriteOn(string text, int YPos)
 		{
-			Console.SetCursorPosition(x1 + 2, y1 + 2);
-			int dlugosc = x2 - x1 - 4;
+			int length = x2 - x1 - 4;
+
+			if (text.Length <= length)
+			{
+				Cursor.WriteXY(x1 + 2, YPos, text);
+			}
+			else
+			{
+				char[] delimiters = new char[] { '.', ',', ':', ';', ' ' };
+				int i = 0;
+				do
+				{
+					if (text.Length >= length)
+					{
+						index = text.LastIndexOfAny(delimiters, length - 1, length - (length - 8));
+						linie.Add(text.Substring(0, index));
+						text = text.Remove(0, index + 1);
+					}
+					else
+					{
+						linie.Add(text.Substring(0, text.Length));
+						text = text.Remove(0);
+					}
+					Cursor.WriteXY(x1 + 2, YPos + i, linie[i].ToString());
+					i++;
+				} while (text != "");
+			}
+
 		}
-    }
+	}
 }

@@ -8,19 +8,20 @@ namespace Sharpie
 	class Menu
 	{
 		List<string> entry;
-		int menuYPos;
+        int menuYPos, menuXPos;
 		int y;
 		ConsoleColor tekst, tlo;
 		ConsoleKeyInfo key;
 
-		public Menu(string[] pozycje, int wysokosc, ConsoleColor tekst, ConsoleColor tlo)
+		public Menu(string[] pozycje, int x, int y, ConsoleColor tekst, ConsoleColor tlo)
 		{
 			entry = new List<string>(pozycje);
 			for (int i = 1; i < entry.Count; i = i + 2)
 			{
 				entry.Insert(i, "");
 			}
-			this.menuYPos = wysokosc;
+			this.menuYPos = y;
+            this.menuXPos = x;
 			this.tekst = tekst;
 			this.tlo = tlo;
 		}
@@ -63,9 +64,9 @@ namespace Sharpie
 
 						continue;
 					case ConsoleKey.Enter:
-						return y;
+						return y/2;
 					case ConsoleKey.Escape:
-						return -2;
+						return -1;
 				}
 			} while (true);
 
@@ -75,7 +76,7 @@ namespace Sharpie
 		{
 			Console.ForegroundColor = textcolor;
 			Console.BackgroundColor = backcolor;
-			if (entry[whichentry] != "") { Text.WriteXY(Text.CenterX(entry[whichentry]), menuYPos + whichentry, " " + entry[whichentry] + " "); }
+			if (entry[whichentry] != "") { Text.WriteXY(menuXPos, menuYPos + whichentry, " " + entry[whichentry] + " "); }
 		}
 	}
 }

@@ -17,6 +17,19 @@ using System.Drawing;
 
 namespace Sharpie
 {
+
+    struct Point
+    {
+        public int x;
+        public int y;
+
+        public Point(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
 	class Game
 	{
 
@@ -31,10 +44,35 @@ namespace Sharpie
 		private int scorepoint = 0;
 		private int meatX, meatY;
 		string[] wall = { "╔", "╗", "═", "║", "╚", "╝" };
-		LinkedList<int> snakeX = new LinkedList<int>();
-		LinkedList<int> snakeY = new LinkedList<int>();
+        LinkedList<Point> snake = new LinkedList<Point>();
 		string body = "O";
 		Thread readmove;
+
+
+        public Game(int difficulty) // konstruktor
+        {
+            switch (difficulty)
+            {
+                case 0:
+                    speed = 250;
+                    break;
+                case 1:
+                    speed = 150;
+                    break;
+                case 2:
+                    speed = 95;
+                    break;
+            }
+            Interface gra = new Interface();
+            gra.Draw();
+            gra.Score(scorepoint);
+            DrawBoard();
+            Start();
+            readmove.Abort();
+            GameOver();
+            Console.ReadKey(true);
+            GC.Collect(); // zbiera śmieci, bo troche tego tu jest
+        }
 
 
 		private void DrawBoard()
@@ -139,12 +177,11 @@ namespace Sharpie
 					if ((board[Console.CursorLeft, Console.CursorTop] != " " && board[Console.CursorLeft, Console.CursorTop] != "#") || (board[Console.CursorLeft, Console.CursorTop] == body)) //zderzenie
 					{
 						Console.ForegroundColor = ConsoleColor.Red;
-						while (snakeX.Count > 0) // animacja znikania
+						while (snake.Count > 0) // animacja znikania
 						{
-							Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
+							Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
 							Console.Write("*");
-							snakeX.RemoveFirst();
-							snakeY.RemoveFirst();
+							snake.RemoveFirst();
 							Thread.Sleep(50);
 						}
 						Console.ResetColor();
@@ -152,27 +189,25 @@ namespace Sharpie
 					}
 				}
 
-				snakeX.AddFirst(Console.CursorLeft);    // dodawanie czlonu do listy
-				snakeY.AddFirst(Console.CursorTop);
-				if (snakeX.Count > 1)
+                snake.AddFirst(new Point(Console.CursorLeft, Console.CursorTop));    // dodawanie czlonu do listy
+				if (snake.Count > 1)
 				{
-					board[snakeX.First.Next.Value, snakeY.First.Next.Value] = body; // głowa nie liczy się do planszy
+                    board[snake.First.Next.Value.x, snake.First.Next.Value.y] = body; // głowa nie liczy się do planszy
 				}
 				Console.ForegroundColor = ConsoleColor.Green;
 				Console.Write(body);
 				Console.ResetColor();
 
-				if (dl_snake == snakeX.Count - 1)
+				if (dl_snake == snake.Count - 1)
 				{
-					Console.SetCursorPosition(snakeX.Last.Value, snakeY.Last.Value);    // idzie na koniec weza
-					snakeX.RemoveLast();    //usuwa czlon z listy
-					snakeY.RemoveLast(); //czysci pole w tablicy
+                    Console.SetCursorPosition(snake.Last.Value.x, snake.Last.Value.y);    // idzie na koniec weza
+					snake.RemoveLast();    //usuwa czlon z listy
 					board[Console.CursorLeft, Console.CursorTop] = " ";
 					Console.Write(" "); // i usuwa na ekranie
 
 				}
 
-				Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
+                Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
 
 				if (board[Console.CursorLeft, Console.CursorTop] == "#")    //event do jedzenia
 				{
@@ -182,7 +217,7 @@ namespace Sharpie
 					scorepoint = scorepoint + 10;
 					UpdateScore();
 					GenerateMunch();
-					Console.SetCursorPosition(snakeX.First.Value, snakeY.First.Value);
+                    Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
 				}
 
 				Thread.Sleep(speed); // prędkość węża ;>
@@ -224,20 +259,6 @@ namespace Sharpie
 						break;
 				}
 			} while (true);
-		}
-
-
-		public Game()
-		{
-			Interface gra = new Interface();
-			gra.Draw();
-			gra.Score(scorepoint);
-			DrawBoard();
-			Start();
-			readmove.Abort();
-			GameOver();
-			Console.ReadKey(true);
-			GC.Collect(); // zbiera śmieci, bo troche tego tu jest
 		}
 
 		private void GenerateMunch() // losuje i ustawia żarcie

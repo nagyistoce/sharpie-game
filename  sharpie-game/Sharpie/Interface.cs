@@ -33,26 +33,26 @@ namespace Sharpie
 			Console.ForegroundColor = ConsoleColor.Black;
 			Console.ResetColor();
 			Dialog menudialog = new Dialog(ConsoleColor.White, ConsoleColor.DarkBlue);
-			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "O grze", "", "Aktualizuj" }, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
-			menudialog.Show(20, 13, 50, 27, "Menu", "ESC - wyjście");
+			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "O grze", "", "Aktualizuj" }, 29 ,15, ConsoleColor.White, ConsoleColor.DarkBlue);
+			menudialog.Show(27, 13, 43, 27, "Menu", "ESC - wyjście");
 			int value = menu.Show();
 			switch (value)
 			{
-				case -2:
+				case -1: // wyjście z gry
 					bool exit = Exit();
 					if (exit == true)
 					{
 						Environment.Exit(1);
 					}
 					break;
-				case 0:
-					Game gra = new Game();
+				case 0: // nowa gra
+                    NewGame();
 					break;
-				case 2:
+				case 1: // ustawienia ( nie mam na nie pomysłu na razie)
 					break;
-				case 4:
+				case 2: // wyniki (zrobi się)
 					break;
-				case 6:
+				case 3: // o grze informacja
 					Ogrze();
 					ConsoleKeyInfo key;
 					do
@@ -61,7 +61,7 @@ namespace Sharpie
 						key = Console.ReadKey(true);
 					} while (key.Key != ConsoleKey.Escape);
 					break;
-				case 8:
+				case 4:
 					break;
 			}
 		}
@@ -106,23 +106,51 @@ namespace Sharpie
 			Text.WriteXY(Cursor.CenterX() - e.Length / 2, 7, e);
 		}
 
+        private void NewGame()
+        {
+            Menu newgame = new Menu(new string[] { "Bułka z masłem", "Średni", "Hardcore" },43, 20, ConsoleColor.White, ConsoleColor.DarkCyan);
+            Dialog ngdial = new Dialog(ConsoleColor.White, ConsoleColor.DarkCyan);
+            ngdial.Show(41, 15, 60, 26, "Nowa gra", "ESC - powrót ");
+            Console.BackgroundColor = ConsoleColor.DarkCyan;
+            Console.ForegroundColor = ConsoleColor.White;
+            ngdial.WriteOn("Wybierz poziom trudności:", 17);
+            int value = newgame.Show();
+            switch (value)
+            {
+                case 0: // łatwy
+                    Game graeasy = new Game(0);
+                    break;
+                case 1: // średni
+                    Game gramed = new Game(1);
+                    break;
+                case 2: // trudny
+                    Game grahard = new Game(2);
+                    break;
+            }
+        }
+
 		private void Ogrze()
 		{
 			Dialog ogrze = new Dialog(ConsoleColor.White, ConsoleColor.DarkCyan);
-			ogrze.Show(14, 12, 56, 27, "O grze", "ESC - powrót ");
+			ogrze.Show(14, 11, 56, 32, "O grze", "ESC - powrót ");
 			Console.ForegroundColor = ConsoleColor.White;
 			Console.BackgroundColor = ConsoleColor.DarkCyan;
-			ogrze.WriteOn("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your opinion) any later version.", 14);
+            ogrze.WriteOn("Sharpie", 12);
+            ogrze.WriteOn("Wersja " + Program.version, 13);
+            ogrze.WriteOn("Licencja:", 15);
+			ogrze.WriteOn("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your opinion) any later version.", 16);
+            ogrze.WriteOn("O autorze:", 24);
+            ogrze.WriteOn("Wszelkie propozycje, prośby, zapytania proszę przesyłać na adres: adirucio96@gmail.com. Błędy zgłaszać na stronie projektu.", 25);
+            ogrze.WriteOn("Dla A. :* (niech się dziewczyna cieszy :D)", 30);
 			Console.ResetColor();
 
 		}
 
 		private bool Exit()
 		{
-			WritePanelLeft("                ");
-			Menu exitmenu = new Menu(new string[] { "Tak, mama mnie wzywa", "Coś ty, żartowałem" }, Cursor.CenterY(), ConsoleColor.White, ConsoleColor.Red);
+			Menu exitmenu = new Menu(new string[] { "Tak, mama mnie wzywa", "Coś ty, żartowałem/am" }, Text.CenterX(Locale.exitquestion), Cursor.CenterY(), ConsoleColor.White, ConsoleColor.Red);
 			Dialog dialog = new Dialog(ConsoleColor.White, ConsoleColor.Red);
-			dialog.Show(Text.CenterX(Locale.exitquestion) - 3, Cursor.CenterY() - 2, Cursor.CenterX() + Locale.exitquestion.Length / 2 + 3, Cursor.CenterY() + 4, "Wyjść z gry?");
+            dialog.Show(Text.CenterX(Locale.exitquestion) - 2, Cursor.CenterY() - 2, Cursor.CenterX() + Locale.exitquestion.Length / 2 + 3, Cursor.CenterY() + 4, "Wyjść z gry?", "ESC - powrót ");
 			int value = exitmenu.Show();
 			dialog.Clear();
 			if (value == 0) { return true; }

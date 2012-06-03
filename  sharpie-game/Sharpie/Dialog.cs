@@ -11,8 +11,6 @@ namespace Sharpie
         ConsoleColor tekst = ConsoleColor.Black;
         ConsoleColor tlo = ConsoleColor.Gray;
         int x1, x2, y1, y2;
-		ArrayList linie = new ArrayList();
-		private int index;
 
         public Dialog(ConsoleColor tekst, ConsoleColor tlo)
         {
@@ -81,6 +79,8 @@ namespace Sharpie
 		public void WriteOn(string text, int YPos)
 		{
 			int length = x2 - x1 - 4;
+            ArrayList linie = new ArrayList();
+            int index;
 
 			if (text.Length <= length)
 			{
@@ -94,7 +94,7 @@ namespace Sharpie
 				{
 					if (text.Length >= length)
 					{
-						index = text.LastIndexOfAny(delimiters, length - 1, length - (length - 8));
+						index = text.LastIndexOfAny(delimiters, length);
 						linie.Add(text.Substring(0, index));
 						text = text.Remove(0, index + 1);
 					}

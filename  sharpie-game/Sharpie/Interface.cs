@@ -33,13 +33,13 @@ namespace Sharpie
 			Console.ForegroundColor = ConsoleColor.Black;
 			Console.ResetColor();
 			Dialog menudialog = new Dialog(ConsoleColor.White, ConsoleColor.DarkBlue);
-			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Instrukcje", "O grze", "", "Aktualizuj" }, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
+			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "O grze", "", "Aktualizuj" }, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
 			menudialog.Show(20, 13, 50, 27, "Menu", "ESC - wyjście");
 			int value = menu.Show();
 			switch (value)
 			{
 				case -2:
-					bool exit = Interface.Exit();
+					bool exit = Exit();
 					if (exit == true)
 					{
 						Environment.Exit(1);
@@ -53,6 +53,13 @@ namespace Sharpie
 				case 4:
 					break;
 				case 6:
+					Ogrze();
+					ConsoleKeyInfo key;
+					do
+					{
+						key = new ConsoleKeyInfo();
+						key = Console.ReadKey(true);
+					} while (key.Key != ConsoleKey.Escape);
 					break;
 				case 8:
 					break;
@@ -99,8 +106,22 @@ namespace Sharpie
 			Cursor.WriteXY(Console.WindowWidth / 2 - e.Length / 2, 7, e);
 		}
 
-		public static bool Exit()
+		private void Ogrze()
 		{
+			Dialog ogrze = new Dialog(ConsoleColor.White, ConsoleColor.DarkCyan);
+			ogrze.Show(10, 12, 60, 27, "O grze", "ESC - powrót ");
+			Console.ForegroundColor = ConsoleColor.White;
+			Console.BackgroundColor = ConsoleColor.DarkCyan;
+			Cursor.WriteXY(12,14, "Sharpie, wersja "+ Program.version);
+			Cursor.WriteXY(12,16, "This program is free software:");
+			Cursor.WriteXY(12,17, "you can redistribute it and/or modify");
+			Console.ResetColor();
+
+		}
+
+		private bool Exit()
+		{
+			WritePanelLeft("                ");
 			Menu exitmenu = new Menu(new string[] { "Tak, mama mnie wzywa", "Coś ty, żartowałem" }, Console.WindowHeight / 2, ConsoleColor.White, ConsoleColor.Red);
 			Dialog dialog = new Dialog(ConsoleColor.White, ConsoleColor.Red);
 			dialog.Show(Console.WindowWidth / 2 - Locale.exitquestion.Length / 2 - 3, Console.WindowHeight / 2 - 2, Console.WindowWidth / 2 + Locale.exitquestion.Length / 2 + 3, Console.WindowHeight / 2 + 4, "Wyjść z gry?");
@@ -109,6 +130,8 @@ namespace Sharpie
 			if (value == 0) { return true; }
 			else { return false; }
 		}
+
+		
 
 	}
 }

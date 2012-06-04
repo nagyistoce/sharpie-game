@@ -47,9 +47,10 @@ namespace Sharpie
         LinkedList<Point> snake = new LinkedList<Point>();
 		string body = "O";
 		Thread readmove;
+        int difficulty;
+        string nick;
 
-
-        public Game(int difficulty) // konstruktor
+        public Game(int difficulty, string nick) // konstruktor
         {
             switch (difficulty)
             {
@@ -63,12 +64,18 @@ namespace Sharpie
                     speed = 95;
                     break;
             }
+
+            this.difficulty = difficulty;
+            this.nick = nick;
+
             Interface gra = new Interface();
             gra.Draw();
             gra.Score(scorepoint);
             DrawBoard();
             Start();
             readmove.Abort();
+            Scores score = new Scores();
+            score.AddScore(difficulty, scorepoint.ToString(), nick);
             GameOver();
             Console.ReadKey(true);
             GC.Collect(); // zbiera śmieci, bo troche tego tu jest

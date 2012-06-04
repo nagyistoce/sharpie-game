@@ -8,17 +8,23 @@ namespace Sharpie
 {
 
     // nick|1273217418
-    class Scores
+    public class Scores
     {
         string path = @".\scores.dat";
-        public List<Highscore>[] wyniki;
+        List<Highscore>[] wyniki;
         List<string> file;
         int[] start;
         int[] end;
 
-        public void Initialize()
+        public Scores()
         {
             file = new List<string>();
+            wyniki = new List<Highscore>[3];
+            for (int i = 0; i < wyniki.Length; i++)
+            {
+                wyniki[i] = new List<Highscore>();
+            }
+
             if (File.Exists(path))
             {
                 using (StreamReader sr = File.OpenText(path))
@@ -48,50 +54,26 @@ namespace Sharpie
                 file.Add("");
             }
 
-            
+
         }
 
-        private void LoadScores()
-        {
-            ReadIndexOf();
-            wyniki = new List<Highscore>[2];
-            for (int i = 0; i < file.Count; i++)
-            {
-                for (int j = start[i] + 1; j < end[i]; i++)
-                {
-                    string[] readfile = new string[2];
-                    readfile = file[j].Split('|');
-                    wyniki[i].Add(new Highscore { Difficulty = Convert.ToInt32(readfile[0]), Nick = readfile[1], Score = readfile[2] });
-                }
-            }
-            for (int i = 0; i < wyniki.Length; i++)
-            {
-                wyniki[i].Sort();
-            }
-        }
-
-        public void AddScore(int difficulty, int score, string nick)
-        {
-            wyniki[difficulty].Add(new Highscore { Difficulty = difficulty, Score = score.ToString(), Nick = nick });
-        }
-
-        public void SaveScores()
+        ~Scores()
         {
             if (wyniki.Length > 0)
             {
                 ReadIndexOf();
-            for (int i = 0; i < file.Count; i++)
-            {
-                int x = 0;
-                for (int j = start[i] + 1; j < end[i]; i++)
+                for (int i = 0; i < wyniki.Length; i++)
                 {
-                    if (!file.Contains(wyniki[i][x].Nick + "|" + wyniki[i][x].Score))
+                    int x = 0;
+                    for (int j = start[i] + 1; j < end[i]; j++)
                     {
-                        file.Insert(j, wyniki[i][x].Nick + "|" + wyniki[i][x].Score);
+                        if (!file.Contains(wyniki[i][x].Nick + "|" + wyniki[i][x].Score))
+                        {
+                            file.Insert(j, wyniki[i][x].Nick + "|" + wyniki[i][x].Score);
+                        }
+                        x++;
                     }
-                    x++;
                 }
-            }
             }
 
 
@@ -105,6 +87,29 @@ namespace Sharpie
             }
         }
 
+        private void LoadScores()
+        {
+            ReadIndexOf();
+            for (int i = 0; i < wyniki.Length; i++)
+            {
+                for (int j = start[i] + 1; j < end[i]; j++)
+                {
+
+                    string[] readfile = { file[j].Substring(0, file[j].IndexOf('|')), file[j].Substring(file[j].IndexOf('|') + 1, file[j].Length - file[j].IndexOf('|') - 1)};
+                    wyniki[i].Add(new Highscore { Nick = readfile[0], Score = readfile[1] });
+                }
+            }
+            for (int i = 0; i < wyniki.Length; i++)
+            {
+                wyniki[i].Sort();
+            }
+        }
+
+        public void AddScore(int difficulty, string score, string nick)
+        {
+            wyniki[difficulty].Add(new Highscore { Score = score, Nick = nick });
+        }
+
         private void ReadIndexOf()
         {
             start = new int[] { file.IndexOf("Easy:"), file.IndexOf("Medium:"), file.IndexOf("Hard:") };
@@ -114,7 +119,6 @@ namespace Sharpie
 
     class Highscore
     {
-        public int Difficulty { get; set; }
         public string Score { get; set; }
         public string Nick { get; set; }
     }

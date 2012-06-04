@@ -35,6 +35,7 @@ namespace Sharpie
 			Dialog menudialog = new Dialog(ConsoleColor.White, ConsoleColor.DarkBlue);
 			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "O grze", "", "Aktualizuj" }, 29 ,15, ConsoleColor.White, ConsoleColor.DarkBlue);
 			menudialog.Show(27, 13, 43, 27, "Menu", "ESC - wyjście");
+
 			int value = menu.Show();
 			switch (value)
 			{
@@ -49,6 +50,7 @@ namespace Sharpie
                     NewGame();
 					break;
 				case 1: // ustawienia ( nie mam na nie pomysłu na razie)
+                    Ustawienia();
 					break;
 				case 2: // wyniki (zrobi się)
 					break;
@@ -118,15 +120,22 @@ namespace Sharpie
             switch (value)
             {
                 case 0: // łatwy
-                    Game graeasy = new Game(0);
+                    Game graeasy = new Game(0, Properties.Settings.Default.Nick);
                     break;
                 case 1: // średni
-                    Game gramed = new Game(1);
+                    Game gramed = new Game(1, Properties.Settings.Default.Nick);
                     break;
                 case 2: // trudny
-                    Game grahard = new Game(2);
+                    Game grahard = new Game(2, Properties.Settings.Default.Nick);
                     break;
             }
+        }
+
+        private void Ustawienia()
+        {
+            Dialog settings = new Dialog(ConsoleColor.White, ConsoleColor.DarkYellow);
+            settings.Show(10, 12, 60, 23, "Ustawienia", "ESC - powrót");
+            settings.WriteOn("Nick: ", 14);
         }
 
 		private void Ogrze()

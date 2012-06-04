@@ -15,8 +15,6 @@ namespace Sharpie
 			Console.Title = name;
 			Console.CursorVisible = false;
 			Interface window = new Interface();
-            Scores scr = new Scores();
-            scr.Initialize();
 			do
 			{
 				window.Draw();

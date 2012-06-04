@@ -25,13 +25,25 @@ namespace Sharpie.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Setting {
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool FirstRun {
             get {
-                return ((string)(this["Setting"]));
+                return ((bool)(this["FirstRun"]));
             }
             set {
-                this["Setting"] = value;
+                this["FirstRun"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Gracz")]
+        public string Nick {
+            get {
+                return ((string)(this["Nick"]));
+            }
+            set {
+                this["Nick"] = value;
             }
         }
     }

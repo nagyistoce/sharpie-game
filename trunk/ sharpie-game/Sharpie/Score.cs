@@ -23,6 +23,7 @@ namespace Sharpie
 
         public void LoadScores()
         {
+            File.Decrypt(path);
             using (StreamReader sr = File.OpenText(path))
             {
                 foreach (string x in File.ReadLines(path))
@@ -65,6 +66,8 @@ namespace Sharpie
                 }
                 sw.Flush();
             }
+
+            File.Encrypt(path);
         }
 
         class Highscore

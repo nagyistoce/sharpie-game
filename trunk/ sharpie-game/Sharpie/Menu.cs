@@ -26,18 +26,18 @@ namespace Sharpie
 			this.tlo = tlo;
 		}
 
-		public int Show()
+		public int ShowHorizontal()
 		{
 			for (y = 0; y < entry.Count; y++)
 			{
-				DrawEntry(y, tekst, tlo);
+				DrawEntryH(y, tekst, tlo);
 			}
 			y = 0;
 			do
 			{
-				DrawEntry(y, tlo, tekst);
+				DrawEntryH(y, tlo, tekst);
 				key = Console.ReadKey(true);
-				DrawEntry(y, tekst, tlo);
+				DrawEntryH(y, tekst, tlo);
 				switch (key.Key)
 				{
 					case ConsoleKey.UpArrow:
@@ -72,11 +72,62 @@ namespace Sharpie
 
 		}
 
-		public void DrawEntry(int whichentry, ConsoleColor textcolor, ConsoleColor backcolor)
+        public int ShowVertical()
+        {
+            for (y = 0; y < entry.Count; y++)
+            {
+                DrawEntryH(y, tekst, tlo);
+            }
+            y = 0;
+            do
+            {
+                DrawEntryH(y, tlo, tekst);
+                key = Console.ReadKey(true);
+                DrawEntryH(y, tekst, tlo);
+                switch (key.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        y--;
+                        if (y < 0)
+                        {
+                            y = entry.Count - 1;
+                        }
+                        while (entry[y] == "")
+                        {
+                            y--;
+                        }
+                        continue;
+                    case ConsoleKey.DownArrow:
+                        y++;
+                        if (y >= entry.Count)
+                        {
+                            y = 0;
+                        }
+                        while (entry[y] == "")
+                        {
+                            y++;
+                        }
+
+                        continue;
+                    case ConsoleKey.Enter:
+                        return y / 2;
+                }
+            } while (true);
+
+        }
+
+		public void DrawEntryH(int whichentry, ConsoleColor textcolor, ConsoleColor backcolor)
 		{
 			Console.ForegroundColor = textcolor;
 			Console.BackgroundColor = backcolor;
 			if (entry[whichentry] != "") { Text.WriteXY(menuXPos, menuYPos + whichentry, " " + entry[whichentry] + " "); }
 		}
+
+        private void DrawEntryV(int whichentry, ConsoleColor textcolor, ConsoleColor backcolor)
+        {
+            Console.ForegroundColor = textcolor;
+            Console.BackgroundColor = backcolor;
+            if (entry[whichentry] != "") { Text.WriteXY(menuXPos, menuYPos + whichentry, " " + entry[whichentry] + " "); }
+        }
 	}
 }

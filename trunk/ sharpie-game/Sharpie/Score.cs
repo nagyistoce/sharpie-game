@@ -9,7 +9,7 @@ namespace Sharpie
 {
     class Score
     {
-        static string path = "scores.dat";
+        static string path = "Sharpie.scores";
         LinkedList<Highscore> wynik = new LinkedList<Highscore>();
 
         public Score() { }
@@ -23,7 +23,6 @@ namespace Sharpie
 
         public void LoadScores()
         {
-            File.Decrypt(path);
             using (StreamReader sr = File.OpenText(path))
             {
                 foreach (string x in File.ReadLines(path))
@@ -54,7 +53,7 @@ namespace Sharpie
 
         public void SaveScores()
         {
-            if (!File.Exists(path)) { File.Delete(path); }
+            if (File.Exists(path)) { File.Delete(path); }
             wynik.OrderBy(x => x.difficulty).ThenByDescending(y => y.score);
             using (StreamWriter sw = File.CreateText(path))
             {
@@ -66,7 +65,6 @@ namespace Sharpie
                 }
                 sw.Flush();
             }
-
             File.Encrypt(path);
         }
 

@@ -36,7 +36,7 @@ namespace Sharpie
 			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "O grze", "", "Aktualizuj" }, 29 ,15, ConsoleColor.White, ConsoleColor.DarkBlue);
 			menudialog.Show(27, 13, 43, 27, "Menu", "ESC - wyjście");
 
-			int value = menu.Show();
+			int value = menu.ShowHorizontal();
 			switch (value)
 			{
 				case -1: // wyjście z gry
@@ -116,7 +116,7 @@ namespace Sharpie
             Console.BackgroundColor = ConsoleColor.DarkCyan;
             Console.ForegroundColor = ConsoleColor.White;
             ngdial.WriteOn("Wybierz poziom trudności:", 17);
-            int value = newgame.Show();
+            int value = newgame.ShowHorizontal();
             switch (value)
             {
                 case 0: // łatwy
@@ -160,7 +160,7 @@ namespace Sharpie
 			Menu exitmenu = new Menu(new string[] { "Tak, mama mnie wzywa", "Coś ty, żartowałem/am" }, Text.CenterX(Locale.exitquestion), Cursor.CenterY(), ConsoleColor.White, ConsoleColor.Red);
 			Dialog dialog = new Dialog(ConsoleColor.White, ConsoleColor.Red);
             dialog.Show(Text.CenterX(Locale.exitquestion) - 2, Cursor.CenterY() - 2, Cursor.CenterX() + Locale.exitquestion.Length / 2 + 3, Cursor.CenterY() + 4, "Wyjść z gry?", "ESC - powrót ");
-			int value = exitmenu.Show();
+			int value = exitmenu.ShowHorizontal();
 			dialog.Clear();
 			if (value == 0) { return true; }
 			else { return false; }

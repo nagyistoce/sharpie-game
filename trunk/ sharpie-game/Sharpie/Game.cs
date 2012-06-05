@@ -73,8 +73,6 @@ namespace Sharpie
             gra.Score(scorepoint);
             DrawBoard();
             Start();
-            readmove.Abort();
-            readmove.Join();
             GameOver();
             Console.ReadKey(true);
             Score scr = new Score(difficulty, scorepoint, nick);
@@ -234,11 +232,13 @@ namespace Sharpie
 
 		private void GameOver() // ekran końca gry
 		{
-			Dialog dialog = new Dialog(ConsoleColor.Gray, ConsoleColor.Black);
+			Dialog dialog = new Dialog(ConsoleColor.White, ConsoleColor.DarkYellow);
 			string wynik = Locale.score + scorepoint.ToString();
             dialog.Show(Text.CenterX(wynik) - 5, Cursor.CenterY() - 4, Cursor.CenterX() + wynik.Length / 2 + 5, Cursor.CenterY() + 2);
             Text.WriteXY(Text.CenterX(Locale.over), Cursor.CenterY() - 2, Locale.over);
 			Text.WriteXY(Text.CenterX(wynik), Cursor.CenterY(), wynik);
+            Interface.WritePanelLeft("Czekaj chwilkę ...");
+            readmove.Abort();
 			Interface.WritePanelLeft("Naciśnij dowolny klawisz, aby wrócić do menu ...");
 		}
 

@@ -74,10 +74,10 @@ namespace Sharpie
             DrawBoard();
             Start();
             readmove.Abort();
+            readmove.Join();
             GameOver();
             Console.ReadKey(true);
-            Scores scr = new Scores();
-            scr.AddScore(difficulty, scorepoint.ToString(), nick);
+            Score scr = new Score(difficulty, scorepoint, nick);
         }
 
 

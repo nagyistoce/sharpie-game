@@ -150,7 +150,7 @@ namespace Sharpie
 			ogrze.WriteOn("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your opinion) any later version.", 16);
             ogrze.WriteOn("O autorze:", 24);
             ogrze.WriteOn("Wszelkie propozycje, prośby, zapytania proszę przesyłać na adres: adirucio96@gmail.com. Błędy zgłaszać na stronie projektu.", 25);
-            ogrze.WriteOn("Dla A. :* (niech się dziewczyna cieszy :D)", 30);
+            ogrze.WriteOn("Dla A. :* (niech się moja dziewczyna cieszy :D)", 30);
 			Console.ResetColor();
 
 		}

@@ -82,6 +82,8 @@ namespace Sharpie
             ArrayList linie = new ArrayList();
             int index;
 
+            Console.ForegroundColor = tekst;
+            Console.BackgroundColor = tlo;
 			if (text.Length <= length)
 			{
 				Text.WriteXY(x1 + 2, YPos, text);
@@ -108,6 +110,7 @@ namespace Sharpie
 				} while (text != "");
 			}
 
+            Console.ResetColor();
 		}
 	}
 }

@@ -10,15 +10,29 @@ namespace Sharpie
     class Score
     {
         static string path = "Sharpie.scores";
-        LinkedList<Highscore> wynik = new LinkedList<Highscore>();
+        public LinkedList<Highscore> wynik = new LinkedList<Highscore>();
 
-        public Score() { }
+        public Score()
+        {
+            if (File.Exists(path)) { LoadScores(); }
+        }
 
         public Score(int difficulty, int score, string nick)
         {
             if (File.Exists(path)) { LoadScores(); }
             wynik.AddLast(new Highscore { difficulty = difficulty, score = score, nick = nick });
             SaveScores();
+        }
+
+        public int GetCount(int difficulty)
+        {
+            return wynik.Count(x => x.difficulty == difficulty);
+        }
+
+        public Highscore GetScore(int difficulty, int index)
+        {
+            List<Highscore> lista = new List<Highscore>(wynik.Where(x => x.difficulty == difficulty));
+            return lista[index];
         }
 
         public void LoadScores()
@@ -36,7 +50,7 @@ namespace Sharpie
                         }
                         catch (Exception)
                         {
-                            Dialog error = new Dialog(ConsoleColor.White, ConsoleColor.Red);
+                            Dialog error = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
                             string wiad = "Niepoprawny wynik w 'scores.dat'. Zostanie on usunięty.";
                             error.Show(Cursor.CenterX() - wiad.Length / 2 - 2, Cursor.CenterY() - 2, Cursor.CenterX() + wiad.Length / 2 + 2, Cursor.CenterY() + 2, "Błąd", "ENTER - zatwierdź                                    ");
                             error.WriteOn(wiad, Cursor.CenterY());
@@ -54,7 +68,16 @@ namespace Sharpie
         public void SaveScores()
         {
             if (File.Exists(path)) { File.Delete(path); }
-            wynik.OrderBy(x => x.difficulty).ThenByDescending(y => y.score);
+            IEnumerable<Highscore> sortowanie = wynik.OrderByDescending(y => y.score);
+            wynik = new LinkedList<Highscore>(sortowanie.ToList());
+            for (int i = 0; i <= 2; i++)
+            {
+                while (wynik.Count(predicate => predicate.difficulty == i) > 10)
+                {
+                    wynik.Remove(wynik.Last(predicate => predicate.difficulty == i));
+                }
+            }
+
             using (StreamWriter sw = File.CreateText(path))
             {
                 sw.WriteLine("Sharpie -- Highscores");
@@ -68,7 +91,7 @@ namespace Sharpie
             File.Encrypt(path);
         }
 
-        class Highscore
+        public class Highscore
         {
             public int difficulty { get; set; }
             public int score { get; set; }

@@ -55,7 +55,8 @@ namespace Sharpie
                         y++;
                         if (y >= entry.Count)
                         {
-                            y = 0;
+                            if (CanFocus) { return -2; }
+                            else { y = 0; }
                         }
                         while (entry[y] == "")
                         {
@@ -136,6 +137,8 @@ namespace Sharpie
                     switch (key.Key)
                     {
                         case ConsoleKey.Tab:
+                            return -2;
+                        case ConsoleKey.UpArrow:
                             return -2;
                     }
                 }

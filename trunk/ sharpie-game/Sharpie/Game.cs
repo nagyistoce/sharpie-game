@@ -72,7 +72,17 @@ namespace Sharpie
             Interface gra = new Interface();
             gra.Draw();
             gra.Score(scorepoint);
-            DrawBoard();
+            //DrawBoard();
+
+            for (int i = 0; i < max_y; i++)
+            {
+                for (int j = 0; j < max_x; j++)
+                {
+                    board[j, i] = " ";
+                    Console.Write(board[j, i]);
+                }
+            }
+
             Start();
             GameOver();
             Console.ReadKey(true);
@@ -213,7 +223,7 @@ namespace Sharpie
                         break; // wychodzi z pętli
                     }
                 }
-
+            
                 snake.AddFirst(new Point(Console.CursorLeft, Console.CursorTop));    // dodawanie czlonu do listy
                 if (snake.Count > 1)
                 {

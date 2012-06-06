@@ -5,15 +5,35 @@ using System.Text;
 
 namespace Sharpie
 {
-	class Cursor
-	{
-		public static void Move(int direction)
-		{
-			if (direction == 0) { Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1); }   // góra
-			if (direction == 2) { Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1); }   // dół
-			if (direction == 3) { Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop); }   // lewo
-			if (direction == 1) { Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop); }   // prawo
-		}
+    class Cursor
+    {
+        public static void Move(int direction)
+        {
+            if (direction == 0) // góra
+            {
+                if (Console.CursorTop == 0) { Console.SetCursorPosition(Console.CursorLeft, Console.WindowHeight - 2); }
+                else { Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1); }
+            }
+
+            if (direction == 1) // prawo
+            {
+                if (Console.CursorLeft == Console.WindowWidth - 1) { Console.SetCursorPosition(0, Console.CursorTop); }
+                else { Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop); }
+            }
+
+            if (direction == 2) // dół
+            {
+                if (Console.CursorTop == Console.WindowHeight - 2) { Console.SetCursorPosition(Console.CursorLeft, 0); }
+                else { Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1); }
+            }
+
+            if (direction == 3) // lewo
+            {
+                if (Console.CursorLeft == 0) { Console.SetCursorPosition(Console.WindowWidth - 1, Console.CursorTop); }
+                else { Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop); }
+            }
+
+        }
 
         public static int CenterX()
         {
@@ -24,5 +44,5 @@ namespace Sharpie
         {
             return Console.WindowHeight / 2;
         }
-	}
+    }
 }

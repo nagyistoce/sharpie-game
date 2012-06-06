@@ -109,8 +109,6 @@ namespace Sharpie
 					i++;
 				} while (text != "");
 			}
-
-            Console.ResetColor();
 		}
 	}
 }

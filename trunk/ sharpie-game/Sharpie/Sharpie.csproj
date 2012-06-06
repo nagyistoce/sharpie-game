@@ -110,6 +110,7 @@
     <Compile Include="Score.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Text.cs" />
+    <Compile Include="Textbox.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

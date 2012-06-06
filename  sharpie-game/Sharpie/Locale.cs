@@ -14,5 +14,6 @@ namespace Sharpie
 		public static string greeting = "Witaj w " + Program.name + "!";
 		public static string desc = "Gra typu snake ;)";
 		public static string exitquestion = "Już chcesz sobie pójść?";
+        public static string pause = " - PAUZA - ";
 	}
 }

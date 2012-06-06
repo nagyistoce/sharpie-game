@@ -19,7 +19,7 @@ namespace Sharpie
 
         public void PrintTextbox()
         {
-            Dialog ramka = new Dialog(Console.ForegroundColor, Console.BackgroundColor);
+            Dialog ramka = new Dialog(0, Console.ForegroundColor, Console.BackgroundColor);
             ramka.Show(x - 1, y - 1, x + length + 1, y + 1);
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Gray;

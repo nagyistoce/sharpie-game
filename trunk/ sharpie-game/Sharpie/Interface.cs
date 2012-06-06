@@ -72,7 +72,7 @@ namespace Sharpie
             Console.BackgroundColor = ConsoleColor.Gray;
             Console.ForegroundColor = ConsoleColor.Black;
             Console.ResetColor();
-            Dialog menudialog = new Dialog(ConsoleColor.White, ConsoleColor.DarkBlue);
+            Dialog menudialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkBlue);
             Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "O grze", "", "Aktualizuj" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
             menudialog.Show(27, 13, 43, 27, "Menu", "ESC - wyjście");
 
@@ -93,6 +93,7 @@ namespace Sharpie
                     Ustawienia();
                     break;
                 case 2: // wyniki (zrobi się)
+                    Wyniki();
                     break;
                 case 3: // o grze informacja
                     Ogrze();
@@ -105,7 +106,7 @@ namespace Sharpie
         private void NewGame()
         {
             Menu newgame = new Menu(new string[] { "Bułka z masłem", "Średni", "Hardcore" }, 43, 20, ConsoleColor.White, ConsoleColor.DarkCyan);
-            Dialog ngdial = new Dialog(ConsoleColor.White, ConsoleColor.DarkCyan);
+            Dialog ngdial = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkCyan);
             ngdial.Show(41, 15, 60, 26, "Nowa gra", "ESC - powrót ");
             Console.BackgroundColor = ConsoleColor.DarkCyan;
             Console.ForegroundColor = ConsoleColor.White;
@@ -129,12 +130,12 @@ namespace Sharpie
 
         private void Ustawienia()
         {
-            string nickname = "Gracz";
-            Dialog settings = new Dialog(ConsoleColor.White, ConsoleColor.DarkYellow);
+            string nickname = Properties.Settings.Default.Nick;
+            Dialog settings = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkYellow);
             Menu menuv = new Menu(new string[] { "OK", "Anuluj", "Zastosuj" }, 22, 22, ConsoleColor.White, ConsoleColor.DarkYellow);
-            Menu menuh = new Menu(new string[] { "Nick" }, Cursor.CenterX() - 2, 17, ConsoleColor.White, ConsoleColor.DarkYellow);
-            Reload:
-            settings.Show(19, 14, 51, 24, "Ustawienia", "Enter - zatwierdź  Tab - zmień menu");
+            string[] poz = { "Nick (" + nickname + ")"};
+            Menu menuh = new Menu(poz, Cursor.CenterX() - 1 - poz[0].Length / 2, 17, ConsoleColor.White, ConsoleColor.DarkYellow);
+            settings.Show(19, 14, 51, 24, "Ustawienia", "Enter - zatwierdź  Tab - zmień menu                    ");
             bool exit = false;
             bool exit2 = false;
             do
@@ -146,9 +147,13 @@ namespace Sharpie
                     switch (v)
                     {
                         case 0:
-                            nickname = Nick();
-                            if (nickname == "") { nickname = "Gracz"; }
-                            goto Reload;
+                            string nickname2 = Nick();
+                            if (nickname2 != "") { nickname = nickname2; }
+                            settings.Redraw();
+                            poz[0] = "Nick (" + nickname + ")";
+                            menuh = new Menu(poz, Cursor.CenterX() - 1 - poz[0].Length / 2, 17, ConsoleColor.White, ConsoleColor.DarkYellow);
+                            menuv.PrintMenuV(3);
+                            break;
                         case -2:
                             exit = true;
                             break;
@@ -195,42 +200,76 @@ namespace Sharpie
 
         private string Nick()
         {
-            Dialog nick = new Dialog(ConsoleColor.White, ConsoleColor.DarkGreen);
-            Menu nickbt = new Menu(new string[] { "OK", "Anuluj" }, Cursor.CenterX() - 6, Cursor.CenterY() + 1, ConsoleColor.White, ConsoleColor.DarkGreen);
-            Textbox nicktb = new Textbox(Cursor.CenterX() - 7, Cursor.CenterY() - 2, 15);
-            nick.Show(Cursor.CenterX() - 15, Cursor.CenterY() - 5, Cursor.CenterX() + 15, Cursor.CenterY() + 3, "Nick");
-            bool exitnick = false;
-            bool save = false;
+            Dialog nick = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkGreen);
+            Textbox nicktb = new Textbox(Cursor.CenterX() - 7, Cursor.CenterY() - 1, 14);
+            nick.Show(Cursor.CenterX() - 11, Cursor.CenterY() - 4, Cursor.CenterX() + 11, Cursor.CenterY() + 2, "Nick", "Enter - zatwierdź  Puste pole anuluje zmiany");
             string nickname;
+            nickname = nicktb.Show();
+            return nickname;
+        }
 
+        private void Wyniki()
+        {
+            Dialog listawynikow = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkGray);
+            listawynikow.Show(Cursor.CenterX() - 15, Cursor.CenterY() - 7, Cursor.CenterX() + 14, Cursor.CenterY() + 7, "Wyniki", "ESC - powrót  Lewo, prawo - zmiana listy");
+            string[] poziomy = { "Bułka z masłem ►", "◄ Średni ►", "◄ Hardcore" };
+            int y;
+            Score score = new Score();
+            ConsoleKeyInfo key;
+            y = 0;
+            bool exit = false;
             do
             {
-                WritePanelLeft("Enter - zatwierdź                  ");
-                nickbt.PrintMenuV(2);
-                nickname = nicktb.Show();
-                WritePanelLeft("Enter - wybór  Tab - przełącz pole");
-                int value = nickbt.ShowVertical(2, false, true);
-                switch (value)
+                Console.BackgroundColor = ConsoleColor.DarkGray;
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Text.WriteXY(Cursor.CenterX() - poziomy[y].Length / 2 - 3, Cursor.CenterY() - 5, "   " + poziomy[y] + "   ");
+                Console.ForegroundColor = ConsoleColor.White;
+                if (score.GetCount(y) > 0)
                 {
-                    case 0:
-                            save = true;
-                            exitnick = true;
-                            continue;
-                        case 1:
-                            exitnick = true;
-                            continue;
-                        case -2:
-                            continue;
-                    }
-            } while (!exitnick);
 
-            if (save) { return nickname; }
-            else { return ""; }
+                    for (int i = 0; i < score.GetCount(y); i++)
+                    {
+                        int pos = i + 1;
+                        Text.WriteXY(Cursor.CenterX() - 13, Cursor.CenterY() - 3 + i, pos.ToString() + ". " + score.GetScore(y, i).nick + " ...");
+                        Text.WriteXY(Cursor.CenterX() + 13 - score.GetScore(y, i).score.ToString().Length - 4, Cursor.CenterY() - 3 + i, "... " + score.GetScore(y, i).score.ToString());
+                    }
+                }
+                else
+                {
+                    string info = "Nie masz żadnych wyników";
+                    string info2 = "na tym poziomie trudności!";
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Text.WriteXY(Cursor.CenterX() - info.Length / 2, Cursor.CenterY() - 1, info);
+                    Text.WriteXY(Cursor.CenterX() - info2.Length / 2, Cursor.CenterY(), info2);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                key = Console.ReadKey(true);
+                switch (key.Key)
+                {
+                    case ConsoleKey.LeftArrow:
+                        if (y != 0)
+                        {
+                            y--;
+                            listawynikow.Redraw();
+                        }
+                        continue;
+                    case ConsoleKey.RightArrow:
+                        if (y != 2)
+                        {
+                            y++;
+                            listawynikow.Redraw();
+                        }
+                        continue;
+                    case ConsoleKey.Escape:
+                        exit = true;
+                        break;
+                }
+            } while (!exit);
         }
 
         private void Ogrze()
         {
-            Dialog ogrze = new Dialog(ConsoleColor.White, ConsoleColor.DarkCyan);
+            Dialog ogrze = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkCyan);
             Menu menu = new Menu(new string[] { "OK" }, Cursor.CenterX() - 2, 33, ConsoleColor.White, ConsoleColor.DarkCyan);
             ogrze.Show(14, 11, 56, 35, "O grze", "Enter - wybierz ");
             Console.ForegroundColor = ConsoleColor.White;
@@ -250,7 +289,7 @@ namespace Sharpie
         private bool Exit()
         {
             Menu exitmenu = new Menu(new string[] { "Tak, mama mnie wzywa", "Coś ty, żartowałem/am" }, Text.CenterX(Locale.exitquestion), Cursor.CenterY(), ConsoleColor.White, ConsoleColor.Red);
-            Dialog dialog = new Dialog(ConsoleColor.White, ConsoleColor.Red);
+            Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
             dialog.Show(Text.CenterX(Locale.exitquestion) - 2, Cursor.CenterY() - 2, Cursor.CenterX() + Locale.exitquestion.Length / 2 + 3, Cursor.CenterY() + 4, "Wyjść z gry?", "ESC - powrót ");
             int value = exitmenu.ShowHorizontal(true, false);
             dialog.Clear();

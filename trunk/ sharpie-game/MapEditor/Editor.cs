@@ -42,6 +42,14 @@ namespace MapEditor
 
         private void Start()
         {
+            for (int x = 0; x < Console.WindowWidth; x++)
+            {
+                for (int y = 0; y < Console.WindowHeight - 1; y++)
+                {
+                    board[x, y] = " ";
+                }
+            }
+
             Console.CursorVisible = true;
             Console.SetCursorPosition(Cursor.CenterX(), Cursor.CenterY());
             bool exit = false;
@@ -93,6 +101,19 @@ namespace MapEditor
             } while (!exit);
         }
 
+        private void RegenBoard(int x1, int y1, int x2, int y2)
+        {
+            Console.SetCursorPosition(x1, y1);
+            Console.ResetColor();
+            for (int x = x1; x <= x2; x++)
+            {
+                for (int y = y1; y <= y2; y++)
+                {
+                    Text.WriteXY(x, y, board[x, y]);
+                }
+            }
+        }
+
         private bool PauseMenu()
         {
             Console.CursorVisible = false;
@@ -101,8 +122,8 @@ namespace MapEditor
             bool exit = false;
             do
             {
-                Menu menu = new Menu(new string[] { "Zapisz mapę", "", "Powrót do menu" }, Console.WindowWidth - 19, Console.WindowHeight - 8, ConsoleColor.White, ConsoleColor.DarkMagenta);
-                pause.Show(Console.WindowWidth - 21, Console.WindowHeight - 10, Console.WindowWidth - 2, Console.WindowHeight - 3, "Menu", "ESC - powrót");
+                Menu menu = new Menu(new string[] { "Zapisz mapę", "Instrukcja", "", "Powrót do menu" }, Console.WindowWidth - 19, Console.WindowHeight - 10, ConsoleColor.White, ConsoleColor.DarkMagenta);
+                pause.Show(Console.WindowWidth - 21, Console.WindowHeight - 12, Console.WindowWidth - 2, Console.WindowHeight - 3, "Menu", "ESC - powrót");
                 int value = menu.ShowHorizontal(true, false);
                 switch (value)
                 {
@@ -111,14 +132,17 @@ namespace MapEditor
                         break;
                     case 0:
                         break;
-                    case 2:
+                    case 1:
+                        Interface.Instrukcja();
+                        break;
+                    case 3:
                         Menu exitmenu = new Menu(new string[] { "Tak", "Nie" }, Cursor.CenterX() - 6, Cursor.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);
                         Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
                         dialog.Show(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4, "Wyjście", "ESC - powrót ");
                         dialog.WriteOn("Wyjść do menu?", Cursor.CenterY());
                         int v = exitmenu.ShowVertical(2, true, false);
                         Console.ResetColor();
-                        dialog.Clear();
+                        RegenBoard(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4);
                         switch (v)
                         {
                             case 0:
@@ -131,6 +155,7 @@ namespace MapEditor
                 }
             } while (!exit);
 
+            RegenBoard(Console.WindowWidth - 21, Console.WindowHeight - 12, Console.WindowWidth - 2, Console.WindowHeight - 3);
             Console.SetCursorPosition(curpos.x, curpos.y);
             Console.CursorVisible = true;
             return false;

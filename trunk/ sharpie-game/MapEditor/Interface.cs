@@ -66,8 +66,8 @@ namespace MapEditor
             Console.ForegroundColor = ConsoleColor.Black;
             Console.ResetColor();
             Dialog menudialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkBlue);
-            Menu menu = new Menu(new string[] { "Nowa mapa", "Ładuj mapę", "O programie", "", "Aktualizuj" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
-            menudialog.Show(27, 13, 43, 25, "Menu", "ESC - wyjście");
+            Menu menu = new Menu(new string[] { "Nowa mapa", "Ładuj mapę","Instrukcja", "O programie", "", "Aktualizuj" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
+            menudialog.Show(27, 13, 43, 27, "Menu", "ESC - wyjście");
 
             int value = menu.ShowHorizontal(true, false);
             switch (value)
@@ -83,6 +83,7 @@ namespace MapEditor
                     Editor edit = new Editor();
                     break;
                 case 1: // ładuj mapę
+                    Instrukcja();
                     break;
                 case 2: // O programie
                     Oprogramie();
@@ -90,6 +91,12 @@ namespace MapEditor
                 case 4:
                     break;
             }
+        }
+
+        public static void Instrukcja()
+        {
+            Dialog inst = new Dialog(1, ConsoleColor.Black, ConsoleColor.Gray);
+
         }
 
         private void Oprogramie()

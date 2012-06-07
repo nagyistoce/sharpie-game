@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace Sharpie
 {
-    class Dialog
+    public class Dialog
     {
         ConsoleColor tekst = ConsoleColor.Black;
         ConsoleColor tlo = ConsoleColor.Gray;

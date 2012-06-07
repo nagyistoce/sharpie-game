@@ -30,6 +30,8 @@ namespace Sharpie
         }
     }
 
+
+
     class Game
     {
 
@@ -43,9 +45,9 @@ namespace Sharpie
         int dl_snake = 5;
         private int scorepoint = 0;
         private int meatX, meatY;
-        string[] wall = { "╔", "╗", "═", "║", "╚", "╝" };
         LinkedList<Point> snake = new LinkedList<Point>();
         string body = "O";
+        List<string> wall = new List<string> { "╔", "╗", "═", "║", "╚", "╝" };
         Thread readmove;
         int difficulty;
         string nick;
@@ -72,17 +74,7 @@ namespace Sharpie
             Interface gra = new Interface();
             gra.Draw();
             gra.Score(scorepoint);
-            //DrawBoard();
-
-            for (int i = 0; i < max_y; i++)
-            {
-                for (int j = 0; j < max_x; j++)
-                {
-                    board[j, i] = " ";
-                    Console.Write(board[j, i]);
-                }
-            }
-
+            DrawBoard();
             Start();
             GameOver();
             Console.ReadKey(true);
@@ -112,13 +104,19 @@ namespace Sharpie
                 Console.Write(board[i, Console.CursorTop]);
             }
 
-            for (int i = 2; i < Console.WindowHeight - 1; i++)  // Rysuje środek ramki
+            for (int i = 1; i < Console.WindowHeight - 1; i++)  // Rysuje środek ramki
             {
                 for (int j = 0; j < Console.WindowWidth; j++)
                 {
                     if (j == 0 | j == Console.WindowWidth - 1)
                     {
-                        board[j, i] = "║";
+                        if ((j == 0) && (i == Cursor.CenterY() - 2)) { board[j, i] = "╝"; }
+                        else if ((j == 0) && (i == Cursor.CenterY() + 2)) { board[j, i] = "╗"; }
+                        else if ((j == Console.WindowWidth - 1) && (i == Cursor.CenterY() + 2)) { board[j, i] = "╔"; }
+                        else if ((j == Console.WindowWidth - 1) && (i == Cursor.CenterY() - 2)) { board[j, i] = "╚"; }
+                        else if ((i == Cursor.CenterY() - 1) || (i == Cursor.CenterY()) || (i == Cursor.CenterY() + 1)) { board[j, i] = " "; }
+                        else if (board[j, i] == null) { board[j, i] = "║"; }
+                        else { board[j, i] = " "; }
                     }
                     else
                     {
@@ -207,23 +205,20 @@ namespace Sharpie
                 }
                 Cursor.Move(kierunek); //rusza kursorem w wybranym kierunku
 
-                if (Console.CursorTop != 1)	// jebane obejście błędu na y = 1, bo się nie wiem czemu sypie kurwa
+                if ((wall.Contains(board[Console.CursorLeft, Console.CursorTop])) || (board[Console.CursorLeft, Console.CursorTop] == body)) //zderzenie
                 {
-                    if ((board[Console.CursorLeft, Console.CursorTop] != " " && board[Console.CursorLeft, Console.CursorTop] != "#") || (board[Console.CursorLeft, Console.CursorTop] == body)) //zderzenie
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    while (snake.Count > 0) // animacja znikania
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        while (snake.Count > 0) // animacja znikania
-                        {
-                            Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
-                            Console.Write("*");
-                            snake.RemoveFirst();
-                            Thread.Sleep(50);
-                        }
-                        Console.ResetColor();
-                        break; // wychodzi z pętli
+                        Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
+                        Console.Write("*");
+                        snake.RemoveFirst();
+                        Thread.Sleep(50);
                     }
+                    Console.ResetColor();
+                    break; // wychodzi z pętli
                 }
-            
+
                 snake.AddFirst(new Point(Console.CursorLeft, Console.CursorTop));    // dodawanie czlonu do listy
                 if (snake.Count > 1)
                 {

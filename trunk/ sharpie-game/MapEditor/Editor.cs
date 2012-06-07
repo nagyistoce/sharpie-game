@@ -134,6 +134,7 @@ namespace MapEditor
                         break;
                     case 1:
                         Interface.Instrukcja();
+                        RegenBoard(Cursor.CenterX() - 22, Cursor.CenterY() - 8, Cursor.CenterX() + 22, Cursor.CenterY() + 8);
                         break;
                     case 3:
                         Menu exitmenu = new Menu(new string[] { "Tak", "Nie" }, Cursor.CenterX() - 6, Cursor.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);

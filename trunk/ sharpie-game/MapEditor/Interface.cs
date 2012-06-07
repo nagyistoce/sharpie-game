@@ -82,13 +82,13 @@ namespace MapEditor
                 case 0: // nowa mapa
                     Editor edit = new Editor();
                     break;
-                case 1: // ładuj mapę
+                case 2: // ładuj mapę
                     Instrukcja();
                     break;
-                case 2: // O programie
+                case 3: // O programie
                     Oprogramie();
                     break;
-                case 4:
+                case 5:
                     break;
             }
         }
@@ -96,7 +96,16 @@ namespace MapEditor
         public static void Instrukcja()
         {
             Dialog inst = new Dialog(1, ConsoleColor.Black, ConsoleColor.Gray);
-
+            Menu menu = new Menu(new string[] { "OK" }, Cursor.CenterX() - 2, Cursor.CenterY() + 6, ConsoleColor.Black, ConsoleColor.Gray);
+            inst.Show(Cursor.CenterX() - 22, Cursor.CenterY() - 8, Cursor.CenterX() + 22, Cursor.CenterY() + 8, "Instrukcja", "Enter - wybór");
+            inst.WriteOn("Sterowanie:", Cursor.CenterY() - 7);
+            inst.WriteOn("Kl. kierunkowe - poruszanie kursorem", Cursor.CenterY() - 6);
+            inst.WriteOn("Kl. 1-6 - stawia ściankę", Cursor.CenterY() - 5);
+            inst.WriteOn("Spacja - stawia powietrze", Cursor.CenterY() - 4);
+            inst.WriteOn("Backspace lub Delete - stawia próżnię", Cursor.CenterY() - 3);
+            inst.WriteOn("ESC - menu", Cursor.CenterY() - 2);
+            inst.WriteOn("W próżni nie jest generowane jedzenie, najlepiej ją stawiać w polach otoczonych ścianą. Na starcie wszędzie jest powietrze.", Cursor.CenterY());
+            menu.ShowVertical(0, true, false);
         }
 
         private void Oprogramie()
@@ -113,7 +122,7 @@ namespace MapEditor
             oprog.WriteOn("O autorze:", 24);
             oprog.WriteOn("Wszelkie propozycje, prośby, zapytania proszę przesyłać na adres: adirucio96@gmail.com. Błędy zgłaszać na stronie projektu.", 25);
             oprog.WriteOn("Dla A. :* (niech się moja dziewczyna cieszy :D)", 30);
-            menu.ShowVertical(0, false, false);
+            menu.ShowVertical(0, true, false);
             Console.ResetColor();
 
         }

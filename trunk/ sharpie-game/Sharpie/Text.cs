@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Sharpie
 {
-	class Text
+	public class Text
 	{
 		// metody pozycjonowania tekstu
         public static int CenterX(string tekst)

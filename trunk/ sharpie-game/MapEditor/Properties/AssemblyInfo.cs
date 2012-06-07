@@ -6,12 +6,12 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Sharpie")]
+[assembly: AssemblyTitle("Sharpie Map Editor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Sharpie")]
-[assembly: AssemblyCopyright("Copyright © Adam Rutkowski 2012")]
+[assembly: AssemblyProduct("Sharpie Map Editor")]
+[assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,7 +21,7 @@ using System.Resources;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ab74e0b7-0d2e-494c-9bb2-e9c58887bfee")]
+[assembly: Guid("eee7c850-71b5-4050-8221-f675d52fd908")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,6 +33,6 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.2.2")]
-[assembly: AssemblyFileVersion("0.2.2")]
+[assembly: AssemblyVersion("0.1")]
+[assembly: AssemblyFileVersion("0.1")]
 [assembly: NeutralResourcesLanguageAttribute("pl")]

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Sharpie
 {
-    class Menu
+    public class Menu
     {
         List<string> entry;
         int menuYPos, menuXPos, y;

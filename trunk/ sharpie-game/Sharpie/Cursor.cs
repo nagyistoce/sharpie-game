@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Sharpie
 {
-    class Cursor
+    public class Cursor
     {
         public static void Move(int direction)
         {

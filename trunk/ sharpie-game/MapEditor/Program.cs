@@ -13,6 +13,7 @@ namespace MapEditor
         {
             Console.SetWindowSize(70, 41);
             Console.Title = name;
+            Console.CursorSize = 100;
             Console.CursorVisible = false;
             Interface window = new Interface();
             do

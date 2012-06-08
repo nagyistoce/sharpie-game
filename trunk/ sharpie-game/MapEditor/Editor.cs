@@ -15,7 +15,7 @@ namespace MapEditor
         List<string> wall = new List<string> { "║", "═", "╔", "╗", "╚", "╝" };
         ConsoleKeyInfo key;
 
-        public Editor()
+        public Editor(bool load)
         {
             Interface editor = new Interface();
             editor.Draw();
@@ -60,15 +60,19 @@ namespace MapEditor
                 {
                     case ConsoleKey.UpArrow:
                         Cursor.Move(0);
+                        CursorCordPanel();
                         break;
                     case ConsoleKey.RightArrow:
                         Cursor.Move(1);
+                        CursorCordPanel();
                         break;
                     case ConsoleKey.DownArrow:
                         Cursor.Move(2);
+                        CursorCordPanel();
                         break;
                     case ConsoleKey.LeftArrow:
                         Cursor.Move(3);
+                        CursorCordPanel();
                         break;
                     case ConsoleKey.Spacebar:
                         SetAir();
@@ -123,7 +127,7 @@ namespace MapEditor
             do
             {
                 Menu menu = new Menu(new string[] { "Zapisz mapę", "Instrukcja", "", "Powrót do menu" }, Console.WindowWidth - 19, Console.WindowHeight - 10, ConsoleColor.White, ConsoleColor.DarkMagenta);
-                pause.Show(Console.WindowWidth - 21, Console.WindowHeight - 12, Console.WindowWidth - 2, Console.WindowHeight - 3, "Menu", "ESC - powrót");
+                pause.Show(Console.WindowWidth - 21, Console.WindowHeight - 12, Console.WindowWidth - 2, Console.WindowHeight - 3, "Menu", "ESC - powrót    ");
                 int value = menu.ShowHorizontal(true, false);
                 switch (value)
                 {
@@ -139,7 +143,7 @@ namespace MapEditor
                     case 3:
                         Menu exitmenu = new Menu(new string[] { "Tak", "Nie" }, Cursor.CenterX() - 6, Cursor.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);
                         Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
-                        dialog.Show(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4, "Wyjście", "ESC - powrót ");
+                        dialog.Show(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4, "Wyjście", "ESC - powrót     ");
                         dialog.WriteOn("Wyjść do menu?", Cursor.CenterY());
                         int v = exitmenu.ShowVertical(2, true, false);
                         Console.ResetColor();
@@ -160,6 +164,13 @@ namespace MapEditor
             Console.SetCursorPosition(curpos.x, curpos.y);
             Console.CursorVisible = true;
             return false;
+        }
+
+        private void CursorCordPanel()
+        {
+            Point curpos = new Point(Console.CursorLeft, Console.CursorTop);
+            Interface.WritePanelLeft("X: " + Console.CursorLeft + " Y: " + Console.CursorTop + "   ");
+            Console.SetCursorPosition(curpos.x, curpos.y);
         }
     }
 

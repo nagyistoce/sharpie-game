@@ -80,7 +80,7 @@ namespace MapEditor
                     }
                     break;
                 case 0: // nowa mapa
-                    Editor edit = new Editor();
+                    Editor edit = new Editor(false);
                     break;
                 case 2: // ładuj mapę
                     Instrukcja();

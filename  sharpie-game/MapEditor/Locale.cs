@@ -10,6 +10,7 @@ namespace MapEditor
 		public static string greeting = "Witaj w " + Program.name + "!";
 		public static string desc = "Sharpie Map Editor";
 		public static string exitquestion = "Wyjść z edytora?";
-        public static string pause = " - PAUZA - ";
+        public static string fileexist = "Plik " + Map.path + " już istnieje. Zastąpić?";
+
 	}
 }

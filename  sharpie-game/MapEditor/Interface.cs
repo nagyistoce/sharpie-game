@@ -68,7 +68,7 @@ namespace MapEditor
             Dialog menudialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkBlue);
             Menu menu = new Menu(new string[] { "Nowa mapa", "Ładuj mapę","Instrukcja", "O programie", "", "Aktualizuj" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
             menudialog.Show(27, 13, 43, 27, "Menu", "ESC - wyjście");
-
+			Editor edit;
             int value = menu.ShowHorizontal(true, false);
             switch (value)
             {
@@ -80,8 +80,11 @@ namespace MapEditor
                     }
                     break;
                 case 0: // nowa mapa
-                    Editor edit = new Editor(false);
+                    edit = new Editor(false);
                     break;
+				case 1:
+					edit = new Editor(true);
+					break;
                 case 2: // ładuj mapę
                     Instrukcja();
                     break;
@@ -104,7 +107,7 @@ namespace MapEditor
             inst.WriteOn("Spacja - stawia powietrze", Cursor.CenterY() - 4);
             inst.WriteOn("Backspace lub Delete - stawia próżnię", Cursor.CenterY() - 3);
             inst.WriteOn("ESC - menu", Cursor.CenterY() - 2);
-            inst.WriteOn("W próżni nie jest generowane jedzenie, najlepiej ją stawiać w polach otoczonych ścianą. Na starcie wszędzie jest powietrze.", Cursor.CenterY());
+            inst.WriteOn("W próżni nie jest generowane jedzenie, najlepiej ją stawiać w polach otoczonych ścianą. Na nowej mapie wszędzie jest powietrze.", Cursor.CenterY());
             menu.ShowVertical(0, true, false);
         }
 

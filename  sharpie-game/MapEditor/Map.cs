@@ -4,47 +4,94 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Sharpie;
+using System.Windows.Forms;
 
 namespace MapEditor
 {
     class Map
     {
-        public static string path = "";
         static string name = "";
+		public static string path = @"Maps\";
         string[] lines = new string[Console.WindowHeight - 1];
 
-        public Map(string mapname)
-        {
-            path = mapname + ".smp";
-            name = mapname;
-            
-        }
+		public bool LoadMap(out string[] map)
+		{
+			OpenFileDialog open = new OpenFileDialog();
+			open.Title = "Otwórz mapę ...";
+			open.Filter = "Sharpie Map Format (*.smf)|*.smf";
+			open.DefaultExt = "smf";
+			open.AutoUpgradeEnabled = true;
+			open.AddExtension = true;
+
+			if (!Directory.Exists(path))
+			{
+				Directory.CreateDirectory(path);
+			}
+
+			open.InitialDirectory = Path.GetFullPath(path);
+
+			DialogResult result = open.ShowDialog();
+			switch (result)
+			{
+				case DialogResult.Abort:
+					map = lines;
+					return false;
+			}
+
+			using (StreamReader sr = File.OpenText(open.FileName))
+			{
+				name = sr.ReadLine();
+				sr.ReadLine();
+				for (int i = 0; i < Console.WindowHeight - 1; i++)
+				{
+					lines[i] = sr.ReadLine();
+				}
+			}
+			map = lines;
+			return true;
+		}
 
         public bool SaveMap(string[,] maptable)
         {
-            if (File.Exists(path))
-            {
-                if (FileExistsDialog())
-                {
-                    File.Delete(path);
-                }
-                else
-                {
-                    return false;
-                }
-            }
+			SaveFileDialog save = new SaveFileDialog();
+			save.Title = "Zapisz mapę ...";
+			save.Filter = "Sharpie Map Format (*.smf)|*.smf";
+			save.DefaultExt = "smf";
+			save.OverwritePrompt = true;
+			save.AutoUpgradeEnabled = true;
+			save.AddExtension = true;
 
-            for (int y = 0; y < Console.WindowHeight; y++)
+			if (!Directory.Exists(path))
+			{
+				Directory.CreateDirectory(path);
+			}
+			save.InitialDirectory = Path.GetFullPath(path);
+
+			DialogResult result = save.ShowDialog();
+			switch (result)
+			{
+				case DialogResult.Cancel:
+					return false;
+			}
+
+            for (int y = 0; y < Console.WindowHeight - 1; y++)
             {
                 for (int x = 0; x < Console.WindowWidth; x++)
                 {
-                    lines[y] = lines[y] + maptable[x, y] + ",";
+					if (maptable[x, y] == null)
+					{
+						lines[y] += "!" + ",";
+					}
+					else
+					{
+						lines[y] += maptable[x, y] + ",";
+					}
                 }
             }
 
-            using (StreamWriter sw = File.CreateText(path))
+            using (StreamWriter sw = File.CreateText(save.FileName))
             {
-                sw.WriteLine(name);
+                sw.WriteLine(Path.GetFileName(save.FileName));
                 sw.WriteLine();
                 foreach (string x in lines)
                 {
@@ -52,19 +99,8 @@ namespace MapEditor
                 }
                 sw.Flush();
             }
-            return true;
-        }
 
-        private bool FileExistsDialog()
-        {
-            Menu exitmenu = new Menu(new string[] { "Tak", "Nie" }, Cursor.CenterX() - 6, Cursor.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);
-            Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
-            dialog.Show(Cursor.CenterX() - Locale.fileexist.Length / 2 - 2, Cursor.CenterY() - 2, Cursor.CenterY() + Locale.fileexist.Length / 2 + 2, Cursor.CenterY() + 4, "Wyjście", "ESC - powrót ");
-            dialog.WriteOn(Locale.fileexist, Cursor.CenterY());
-            int value = exitmenu.ShowVertical(2, false, false);
-            dialog.Clear();
-            if (value == 0) { return true; }
-            else { return false; }
+            return true;
         }
 
     }

@@ -9,6 +9,8 @@ namespace MapEditor
     {
 		public static string name = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
 		public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Remove(5);
+
+		[STAThread]
         static void Main(string[] args)
         {
             Console.SetWindowSize(70, 41);

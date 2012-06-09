@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
 
 
 /*
@@ -30,8 +31,6 @@ namespace Sharpie
         }
     }
 
-
-
     class Game
     {
 
@@ -52,8 +51,9 @@ namespace Sharpie
         int difficulty;
         string nick;
         bool pause = false;
+		string mapName;
 
-        public Game(int difficulty, string nick) // konstruktor
+        public Game(int difficulty, string nick, string mapname) // konstruktor
         {
             switch (difficulty)
             {
@@ -71,16 +71,62 @@ namespace Sharpie
             this.difficulty = difficulty;
             this.nick = nick;
 
-            Interface gra = new Interface();
-            gra.Draw();
-            gra.Score(scorepoint);
-            DrawBoard();
+			Interface.Draw();
+            Interface.Score(scorepoint);
+			LoadMap(mapname);
             Start();
             GameOver();
             Console.ReadKey(true);
             Score scr = new Score(difficulty, scorepoint, nick);
         }
 
+
+		private void LoadMap(string map)
+		{
+			switch (map)
+			{
+				case "Default1":
+					DrawBoard();
+					break;
+				case "Default2":
+					DrawBoard();
+					break;
+				case "Default3":
+					DrawBoard();
+					break;
+				case "Default4":
+					DrawBoard();
+					break;
+				default:
+					string[] lines = new string[max_y];
+					using (StreamReader sr = File.OpenText(map))
+					{
+						mapName = sr.ReadLine();
+						sr.ReadLine();
+						for (int i = 0; i < max_y; i++)
+						{
+							lines[i] = sr.ReadLine();
+						}
+					}
+
+					for (int y = 0; y < max_y; y++)
+					{
+						lines[y] = lines[y].Replace(",", "");
+						for (int x = 0; x < max_x; x++)
+						{
+							Console.SetCursorPosition(x, y);
+							board[x, y] = lines[y].ElementAt(x).ToString();
+							if (board[x, y] == "!")
+							{
+								board[x, y] = null;
+								Console.Write(" ");
+							}
+							else { Console.Write(board[x, y]); }
+						}
+					}
+					break;
+			}
+		}
 
         private void DrawBoard()
         {
@@ -245,7 +291,7 @@ namespace Sharpie
                     dl_snake++;
                     speed--;
                     scorepoint = scorepoint + 10;
-                    UpdateScore();
+                    Interface.Score(scorepoint);;
                     GenerateMunch();
                     Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
                 }
@@ -313,12 +359,6 @@ namespace Sharpie
             Text.WriteXY(meatX, meatY, "#");
             Console.SetCursorPosition(x, y);
             Console.ResetColor();
-        }
-
-        private void UpdateScore() // aktualizuje wynik na dole
-        {
-            Interface score = new Interface();
-            score.Score(scorepoint);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace MapEditor
 		static int max_y = Console.WindowHeight - 1;
 		string[,] board = new string[max_x, max_y];
 		string[] lines = new string[max_y];
+		Point startpoint = new Point(Cursor.CenterX(), Cursor.CenterY());
 		List<string> wall = new List<string> { "║", "═", "╔", "╗", "╚", "╝" };
 		ConsoleKeyInfo key;
 
@@ -72,10 +73,18 @@ namespace MapEditor
 			Konsola.PutObject(board[Console.CursorLeft, Console.CursorTop]);
 		}
 
+		private void ChangeStartPoint()
+		{
+			startpoint = new Point(Console.CursorLeft, Console.CursorTop);
+			board[startpoint.x, startpoint.y] = "S";
+			Konsola.PutObject("S");
+		}
+
 		private void Start()
 		{
 			Console.CursorVisible = true;
 			Console.SetCursorPosition(Cursor.CenterX(), Cursor.CenterY());
+			ChangeStartPoint();
 			bool exit = false;
 			do
 			{
@@ -125,8 +134,19 @@ namespace MapEditor
 					case ConsoleKey.Backspace:
 						SetVoid();
 						break;
+					case ConsoleKey.S:
+						ChangeStartPoint();
+						break;
 				}
-
+				if (board[startpoint.x, startpoint.y] != "S")
+				{
+					Random rand = new Random();
+					while (board[Console.CursorLeft, Console.CursorTop] != " ")
+					{
+						Console.SetCursorPosition(rand.Next(max_x), rand.Next(max_y));
+					}
+					ChangeStartPoint();
+				}
 			} while (!exit);
 		}
 

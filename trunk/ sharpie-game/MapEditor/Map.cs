@@ -29,7 +29,6 @@ namespace MapEditor
 			}
 
 			open.InitialDirectory = Path.GetFullPath(path);
-
 			DialogResult result = open.ShowDialog();
 			switch (result)
 			{

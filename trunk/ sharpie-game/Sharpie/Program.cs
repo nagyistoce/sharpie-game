@@ -14,11 +14,10 @@ namespace Sharpie
 			Console.SetWindowSize(70, 41);
 			Console.Title = name;
 			Console.CursorVisible = false;
-			Interface window = new Interface();
 			do
 			{
-				window.Draw();
-				window.Glowny();
+				Interface.Draw();
+				Interface.Glowny();
 			} while (true);
 		}
 	}

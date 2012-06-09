@@ -88,8 +88,12 @@ namespace Sharpie
                 }
                 sw.Flush();
             }
-            File.Encrypt(path);
-            File.SetAttributes(path, FileAttributes.Hidden);
+			try
+			{
+				File.Encrypt(path);
+				File.SetAttributes(path, FileAttributes.Hidden);
+			}
+			catch { }
         }
 
         public class Highscore

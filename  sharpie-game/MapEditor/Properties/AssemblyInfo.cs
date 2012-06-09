@@ -6,8 +6,8 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Sharpie Map Editor")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("SME")]
+[assembly: AssemblyDescription("Sharpie Map Editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Sharpie Map Editor")]

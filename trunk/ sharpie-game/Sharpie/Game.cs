@@ -46,6 +46,7 @@ namespace Sharpie
         private int meatX, meatY;
         LinkedList<Point> snake = new LinkedList<Point>();
         string body = "O";
+		Point startpoint = new Point(Cursor.CenterX(), Cursor.CenterY());
         List<string> wall = new List<string> { "╔", "╗", "═", "║", "╚", "╝" };
         Thread readmove;
         int difficulty;
@@ -102,6 +103,8 @@ namespace Sharpie
 					using (StreamReader sr = File.OpenText(map))
 					{
 						mapName = sr.ReadLine();
+						string[] point = sr.ReadLine().Split(',');
+						startpoint = new Point(Convert.ToInt32(point[0]), Convert.ToInt32(point[1]));
 						sr.ReadLine();
 						for (int i = 0; i < max_y; i++)
 						{
@@ -201,7 +204,7 @@ namespace Sharpie
             Text.WriteXY(Text.CenterX(Locale.ready), Cursor.CenterY() - 2, Locale.ready);
             Console.ResetColor();
             ConsoleKeyInfo key = Console.ReadKey(true);
-            dialog.Clear();
+			RegenBoard(Text.CenterX(Locale.ready) - 2, Cursor.CenterY() - 4, Cursor.CenterX() + Locale.ready.Length / 2 + 1, Cursor.CenterY());
             switch (key.Key) // pierwszy ruch
             {
                 case ConsoleKey.UpArrow:
@@ -221,13 +224,8 @@ namespace Sharpie
             readmove = new Thread(ReadMove); // startuje wątek odpowiedzialny za odczytywanie ruchów
             readmove.Start();
 
-            Console.SetCursorPosition(Text.CenterX(Locale.ready), Cursor.CenterY() - 2);
-            for (int i = 0; i < Locale.ready.Length; i++)
-            {
-                Console.Write(" ");
-            }
             GenerateMunch();
-            Console.SetCursorPosition(Cursor.CenterX(), Cursor.CenterY());
+            Console.SetCursorPosition(startpoint.x, startpoint.y);
             do
             {
                 if (pause)
@@ -242,10 +240,7 @@ namespace Sharpie
                     while (pause) ;
                     Console.SetCursorPosition(0, 0);
                     Console.ResetColor();
-                    for (int i = 0; i < max_x; i++)
-                    {
-                        Console.Write(board[Console.CursorLeft, Console.CursorTop]);
-                    }
+					RegenBoard(0, 0, max_x - 1, 0);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
                 }
@@ -360,5 +355,20 @@ namespace Sharpie
             Console.SetCursorPosition(x, y);
             Console.ResetColor();
         }
+
+		private void RegenBoard(int x1, int y1, int x2, int y2)
+		{
+			Console.SetCursorPosition(x1, y1);
+			Console.ResetColor();
+			for (int x = x1; x <= x2; x++)
+			{
+				for (int y = y1; y <= y2; y++)
+				{
+					Console.SetCursorPosition(x, y);
+					if (board[x, y] == null) { Console.Write(" "); }
+					else { Console.Write(board[x, y]); }
+				}
+			}
+		}
     }
 }

@@ -14,7 +14,7 @@ namespace MapEditor
 		public static string path = @"Maps\";
         string[] lines = new string[Console.WindowHeight - 1];
 
-		public bool LoadMap(out string[] map)
+		public bool LoadMap(out string[] map, out Point startpoint)
 		{
 			OpenFileDialog open = new OpenFileDialog();
 			open.Title = "Otwórz mapę ...";
@@ -32,14 +32,16 @@ namespace MapEditor
 			DialogResult result = open.ShowDialog();
 			switch (result)
 			{
-				case DialogResult.Abort:
+				case DialogResult.Cancel:
 					map = lines;
+					startpoint = new Point(0, 0);
 					return false;
 			}
-
+			string[] spos = new string[2];
 			using (StreamReader sr = File.OpenText(open.FileName))
 			{
 				name = sr.ReadLine();
+				spos = sr.ReadLine().Split(',');
 				sr.ReadLine();
 				for (int i = 0; i < Console.WindowHeight - 1; i++)
 				{
@@ -47,10 +49,11 @@ namespace MapEditor
 				}
 			}
 			map = lines;
+			startpoint = new Point(Convert.ToInt32(spos[0]), Convert.ToInt32(spos[1]));
 			return true;
 		}
 
-        public bool SaveMap(string[,] maptable)
+        public bool SaveMap(string[,] maptable, Point startpoint)
         {
 			SaveFileDialog save = new SaveFileDialog();
 			save.Title = "Zapisz mapę ...";
@@ -91,7 +94,8 @@ namespace MapEditor
             using (StreamWriter sw = File.CreateText(save.FileName))
             {
                 sw.WriteLine(Path.GetFileName(save.FileName));
-                sw.WriteLine();
+                sw.WriteLine(startpoint.x.ToString()+","+startpoint.y.ToString());
+				sw.WriteLine();
                 foreach (string x in lines)
                 {
                     sw.WriteLine(x);

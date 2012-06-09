@@ -24,8 +24,9 @@ namespace MapEditor
 			if (load)
 			{
 				Map map = new Map();
-				map.LoadMap(out lines);
-				PrepareMap();
+				bool IsLoaded = map.LoadMap(out lines, out startpoint);
+				if (IsLoaded) { PrepareMap(); }
+				else { return; }
 			}
 			else
 			{
@@ -50,7 +51,7 @@ namespace MapEditor
 					Console.SetCursorPosition(x, y);
 					board[x, y] = lines[y].ElementAt(x).ToString();
 					if (board[x, y] == "!") { board[x, y] = null; }
-					Konsola.PutObject(board[x, y]);
+					Block.PutObject(board[x, y]);
 				}
 			}
 		}
@@ -58,33 +59,41 @@ namespace MapEditor
 		private void SetWall(int nrsciany)
 		{
 			board[Console.CursorLeft, Console.CursorTop] = wall[nrsciany];
-			Konsola.PutObject(board[Console.CursorLeft, Console.CursorTop]);
+			Block.PutObject(board[Console.CursorLeft, Console.CursorTop]);
 		}
 
 		private void SetAir()
 		{
 			board[Console.CursorLeft, Console.CursorTop] = " ";
-			Konsola.PutObject(board[Console.CursorLeft, Console.CursorTop]);
+			Block.PutObject(board[Console.CursorLeft, Console.CursorTop]);
 		}
 
 		private void SetVoid()
 		{
 			board[Console.CursorLeft, Console.CursorTop] = null;
-			Konsola.PutObject(board[Console.CursorLeft, Console.CursorTop]);
+			Block.PutObject(board[Console.CursorLeft, Console.CursorTop]);
+		}
+
+		private void SetStartPoint(Point point)
+		{
+			startpoint = point;
+			Text.WriteXY(startpoint.x, startpoint.y, "S");
 		}
 
 		private void ChangeStartPoint()
 		{
-			startpoint = new Point(Console.CursorLeft, Console.CursorTop);
-			board[startpoint.x, startpoint.y] = "S";
-			Konsola.PutObject("S");
+			Point curpos = new Point(Console.CursorLeft, Console.CursorTop);
+			Text.WriteXY(startpoint.x, startpoint.y, " ");
+			startpoint = new Point(curpos.x, curpos.y);
+			Console.SetCursorPosition(curpos.x, curpos.y);
+			Block.PutObject("S");
 		}
 
 		private void Start()
 		{
 			Console.CursorVisible = true;
+			SetStartPoint(startpoint);
 			Console.SetCursorPosition(Cursor.CenterX(), Cursor.CenterY());
-			ChangeStartPoint();
 			bool exit = false;
 			do
 			{
@@ -138,14 +147,17 @@ namespace MapEditor
 						ChangeStartPoint();
 						break;
 				}
-				if (board[startpoint.x, startpoint.y] != "S")
+
+				if (board[startpoint.x, startpoint.y] != " ")
 				{
+					Point curpos = new Point(Console.CursorLeft, Console.CursorTop);
 					Random rand = new Random();
 					while (board[Console.CursorLeft, Console.CursorTop] != " ")
 					{
 						Console.SetCursorPosition(rand.Next(max_x), rand.Next(max_y));
 					}
-					ChangeStartPoint();
+					SetStartPoint(new Point(Console.CursorLeft, Console.CursorTop));
+					Console.SetCursorPosition(curpos.x, curpos.y);
 				}
 			} while (!exit);
 		}
@@ -159,7 +171,11 @@ namespace MapEditor
 				for (int y = y1; y <= y2; y++)
 				{
 					Console.SetCursorPosition(x, y);
-					Konsola.PutObject(board[x,y]);
+					Block.PutObject(board[x, y]);
+					if (startpoint.x == x & startpoint.y == y)
+					{
+						Block.PutObject("S");
+					}
 				}
 			}
 		}
@@ -182,11 +198,11 @@ namespace MapEditor
 						break;
 					case 0:
 						Map map = new Map();
-						map.SaveMap(board);
+						map.SaveMap(board, startpoint);
 						break;
 					case 1:
 						Interface.Instrukcja();
-						RegenBoard(Cursor.CenterX() - 22, Cursor.CenterY() - 8, Cursor.CenterX() + 22, Cursor.CenterY() + 8);
+						RegenBoard(Cursor.CenterX() - 22, Cursor.CenterY() - 8, Cursor.CenterX() + 22, Cursor.CenterY() + 9);
 						break;
 					case 3:
 						Menu exitmenu = new Menu(new string[] { "Tak", "Nie" }, Cursor.CenterX() - 6, Cursor.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);
@@ -234,12 +250,14 @@ namespace MapEditor
 		}
 	}
 
-	class Konsola
+	class Block
 	{
 		public static void PutObject(string text)
 		{
 			if (text == null) { text = "▒"; }
+			Point curpos = new Point(Console.CursorLeft, Console.CursorTop);
 			Text.WriteXY(Console.CursorLeft, Console.CursorTop, text);
+			Console.SetCursorPosition(curpos.x, curpos.y);
 		}
 	}
 }

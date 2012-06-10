@@ -84,10 +84,14 @@ namespace MapEditor
 					{
 						lines[y] += "!" + ",";
 					}
-					else
-					{
-						lines[y] += maptable[x, y] + ",";
-					}
+                    else if (maptable[x, y] == "S")
+                    {
+                        lines[y] += " " + ",";
+                    }
+                    else
+                    {
+                        lines[y] += maptable[x, y] + ",";
+                    }
                 }
             }
 

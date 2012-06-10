@@ -99,16 +99,17 @@ namespace MapEditor
 		public static void Instrukcja()
 		{
 			Dialog inst = new Dialog(1, ConsoleColor.Black, ConsoleColor.Gray);
-			Menu menu = new Menu(new string[] { "OK" }, Cursor.CenterX() - 2, Cursor.CenterY() + 7, ConsoleColor.Black, ConsoleColor.Gray);
-			inst.Show(Cursor.CenterX() - 22, Cursor.CenterY() - 8, Cursor.CenterX() + 22, Cursor.CenterY() + 9, "Instrukcja", "Enter - wybór");
+			Menu menu = new Menu(new string[] { "OK" }, Cursor.CenterX() - 2, Cursor.CenterY() + 8, ConsoleColor.Black, ConsoleColor.Gray);
+			inst.Show(Cursor.CenterX() - 22, Cursor.CenterY() - 8, Cursor.CenterX() + 22, Cursor.CenterY() + 10, "Instrukcja", "Enter - wybór");
 			inst.WriteOn("Sterowanie:", Cursor.CenterY() - 7);
 			inst.WriteOn("Kl. kierunkowe - poruszanie kursorem", Cursor.CenterY() - 6);
 			inst.WriteOn("Kl. 1-6 - stawia ściankę", Cursor.CenterY() - 5);
 			inst.WriteOn("Spacja - stawia powietrze", Cursor.CenterY() - 4);
 			inst.WriteOn("Backspace lub Delete - stawia próżnię", Cursor.CenterY() - 3);
 			inst.WriteOn("S - punkt startowy węża", Cursor.CenterY() - 2);
-			inst.WriteOn("ESC - menu", Cursor.CenterY() - 1);
-			inst.WriteOn("W próżni nie jest generowane jedzenie, najlepiej ją stawiać w polach otoczonych ścianą. Na nowej mapie wszędzie jest powietrze.", Cursor.CenterY() + 1);
+            inst.WriteOn("CapsLock - blokuje element", Cursor.CenterY() - 1);
+			inst.WriteOn("ESC - menu", Cursor.CenterY());
+			inst.WriteOn("W próżni nie jest generowane jedzenie, najlepiej ją stawiać w polach otoczonych ścianą. Na nowej mapie wszędzie jest powietrze.", Cursor.CenterY() + 2);
 			menu.ShowVertical(0, true, false);
 		}
 

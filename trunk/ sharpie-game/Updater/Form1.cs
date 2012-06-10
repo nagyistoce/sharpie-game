@@ -29,23 +29,38 @@ namespace Updater
 		{
 			pictureBox1.Image = img;
 		}
-
+        bool sharpieup, editorup;
 		private void UpdateProcess()
 		{
 			Upgrade updte = new Upgrade();
-			if (updte.CheckUpdate() == true)
+            updte.CheckUpdate(out sharpieup, out editorup);
+            if (editorup && sharpieup)
+            {
+                label1.Text = "Dostępna jest nowa wersja gry oraz\nedytora map";
+                progressBar1.Value = 100;
+                pictureBox1.Image = Properties.Resources.Warning;
+                FormSizeOut();
+            }
+			else if (sharpieup)
 			{
-				label1.Text = "Dostępna jest nowa wersja";
+				label1.Text = "Dostępna jest nowa wersja gry";
 				progressBar1.Value = 100;
 				pictureBox1.Image = Properties.Resources.Warning;
 				FormSizeOut();
 			}
-			else
-			{
-				label1.Text = "Masz najnowszą wersję gry!";
-				progressBar1.Value = 100;
-				pictureBox1.Image = Properties.Resources.OK;
-			}
+            else if (editorup)
+            {
+                label1.Text = "Dostępna jest nowa wersja edytora map";
+                progressBar1.Value = 100;
+                pictureBox1.Image = Properties.Resources.Warning;
+                FormSizeOut();
+            }
+            else
+            {
+                label1.Text = "Aktualne!";
+                progressBar1.Value = 100;
+                pictureBox1.Image = Properties.Resources.OK;
+            }
 		}
 
 		private void Form1_Shown(object sender, EventArgs e)
@@ -101,9 +116,9 @@ namespace Updater
 			progressBar1.Style = ProgressBarStyle.Marquee;
 			pictureBox1.Image = Properties.Resources.Download;
 			Upgrade updte = new Upgrade();
-			if (updte.DoUpgrade() == true)
+			if (updte.DoUpgrade(sharpieup, editorup) == true)
 			{
-				label1.Text = "Gra została zaktualizowana!";
+				label1.Text = "Zaktualizowano!";
 				progressBar1.Style = ProgressBarStyle.Continuous;
 				progressBar1.Value = 100;
 				pictureBox1.Image = Properties.Resources.OK;
@@ -111,7 +126,7 @@ namespace Updater
 			}
 			else
 			{
-				label1.Text = "Gra nie została zaktualizowana!";
+				label1.Text = "Aktualizacja nie powiodła się!";
 				progressBar1.Style = ProgressBarStyle.Continuous;
 				progressBar1.Value = 100;
 				pictureBox1.Image = Properties.Resources.Error;

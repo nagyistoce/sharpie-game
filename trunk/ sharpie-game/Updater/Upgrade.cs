@@ -38,6 +38,7 @@ namespace Updater
         Retry:
             try
             {
+                updtSharpie = true;
                 ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(sharpiefilepath));
                 string[] linie = ver.ToString().Split('\n');
                 wersja[0] = linie[3];
@@ -48,13 +49,17 @@ namespace Updater
                 if (result == DialogResult.OK)
                 {
                     FindSharpie();
-                    updtSharpie = true;
                     goto Retry;
+                }
+                else
+                {
+                    updtSharpie = false;
                 }
             }
         Retry2:
             try
             {
+                updtEditor = true;
                 ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(editorfilepath));
                 string[] linie = ver.ToString().Split('\n');
                 wersja[1] = linie[3];
@@ -67,6 +72,10 @@ namespace Updater
                     FindSME();
                     updtEditor = true;
                     goto Retry2;
+                }
+                else
+                {
+                    updtEditor = false;
                 }
             }
 

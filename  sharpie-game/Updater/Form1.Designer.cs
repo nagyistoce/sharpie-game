@@ -41,7 +41,7 @@
             this.label1.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.label1.Location = new System.Drawing.Point(76, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(256, 25);
+            this.label1.Size = new System.Drawing.Size(286, 25);
             this.label1.TabIndex = 0;
             this.label1.Text = "Poszukuję nowej wersji ...";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -51,13 +51,13 @@
             this.progressBar1.Location = new System.Drawing.Point(76, 37);
             this.progressBar1.MarqueeAnimationSpeed = 20;
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(256, 23);
+            this.progressBar1.Size = new System.Drawing.Size(286, 23);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar1.TabIndex = 1;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(257, 66);
+            this.button1.Location = new System.Drawing.Point(287, 66);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 3;
@@ -82,7 +82,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            this.ClientSize = new System.Drawing.Size(344, 72);
+            this.ClientSize = new System.Drawing.Size(374, 72);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.progressBar1);

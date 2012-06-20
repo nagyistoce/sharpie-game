@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 
 
 /*
@@ -46,13 +47,13 @@ namespace Sharpie
         private int meatX, meatY;
         LinkedList<Point> snake = new LinkedList<Point>();
         string body = "O";
-		Point startpoint = new Point(Cursor.CenterX(), Cursor.CenterY());
+        Point startpoint = new Point(Cursor.CenterX(), Cursor.CenterY());
         List<string> wall = new List<string> { "╔", "╗", "═", "║", "╚", "╝" };
         Thread readmove;
         int difficulty;
         string nick;
         bool pause = false;
-		string mapName;
+        string mapName;
 
         public Game(int difficulty, string nick, string mapname) // konstruktor
         {
@@ -72,64 +73,61 @@ namespace Sharpie
             this.difficulty = difficulty;
             this.nick = nick;
 
-			Interface.Draw();
+            Interface.Draw();
             Interface.Score(scorepoint);
-			LoadMap(mapname);
+            LoadMap(mapname);
             Start();
             GameOver();
             Console.ReadKey(true);
-            Score scr = new Score(difficulty, scorepoint, nick);
+            if (mapname == "1" || mapname == "2" || mapname == "3" || mapname == "4")
+            {
+                mapname = "Mapa " + mapname;
+            }
+            else
+            {
+                mapname = Path.GetFileNameWithoutExtension(mapname);
+            }
+            Score scr = new Score(difficulty, scorepoint, nick, mapname);
         }
 
 
-		private void LoadMap(string map)
-		{
-			switch (map)
-			{
-				case "Default1":
-					DrawBoard();
-					break;
-				case "Default2":
-					DrawBoard();
-					break;
-				case "Default3":
-					DrawBoard();
-					break;
-				case "Default4":
-					DrawBoard();
-					break;
-				default:
-					string[] lines = new string[max_y];
-					using (StreamReader sr = File.OpenText(map))
-					{
-						mapName = sr.ReadLine();
-						string[] point = sr.ReadLine().Split(',');
-						startpoint = new Point(Convert.ToInt32(point[0]), Convert.ToInt32(point[1]));
-						sr.ReadLine();
-						for (int i = 0; i < max_y; i++)
-						{
-							lines[i] = sr.ReadLine();
-						}
-					}
+        private void LoadMap(string map)
+        {
+            StreamReader sr;
+            if (map == "1" || map == "2" || map == "3" || map == "4")
+            {
+                sr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("Sharpie.Maps.Default" + map + ".smf"));
+            }
+            else
+            {
+                sr = File.OpenText(map);
+            }
+            string[] lines = new string[max_y];
+            mapName = sr.ReadLine();
+            string[] point = sr.ReadLine().Split(',');
+            startpoint = new Point(Convert.ToInt32(point[0]), Convert.ToInt32(point[1]));
+            sr.ReadLine();
+            for (int i = 0; i < max_y; i++)
+            {
+                lines[i] = sr.ReadLine();
+            }
 
-					for (int y = 0; y < max_y; y++)
-					{
-						lines[y] = lines[y].Replace(",", "");
-						for (int x = 0; x < max_x; x++)
-						{
-							Console.SetCursorPosition(x, y);
-							board[x, y] = lines[y].ElementAt(x).ToString();
-							if (board[x, y] == "!")
-							{
-								board[x, y] = null;
-								Console.Write(" ");
-							}
-							else { Console.Write(board[x, y]); }
-						}
-					}
-					break;
-			}
-		}
+            for (int y = 0; y < max_y; y++)
+            {
+                lines[y] = lines[y].Replace(",", "");
+                for (int x = 0; x < max_x; x++)
+                {
+                    Console.SetCursorPosition(x, y);
+                    board[x, y] = lines[y].ElementAt(x).ToString();
+                    if (board[x, y] == "!")
+                    {
+                        board[x, y] = null;
+                        Console.Write(" ");
+                    }
+                    else { Console.Write(board[x, y]); }
+                }
+            }
+        }
 
         private void DrawBoard()
         {
@@ -204,7 +202,7 @@ namespace Sharpie
             Text.WriteXY(Text.CenterX(Locale.ready), Cursor.CenterY() - 2, Locale.ready);
             Console.ResetColor();
             ConsoleKeyInfo key = Console.ReadKey(true);
-			RegenBoard(Text.CenterX(Locale.ready) - 2, Cursor.CenterY() - 4, Cursor.CenterX() + Locale.ready.Length / 2 + 1, Cursor.CenterY());
+            RegenBoard(Text.CenterX(Locale.ready) - 2, Cursor.CenterY() - 4, Cursor.CenterX() + Locale.ready.Length / 2 + 1, Cursor.CenterY());
             switch (key.Key) // pierwszy ruch
             {
                 case ConsoleKey.UpArrow:
@@ -240,7 +238,7 @@ namespace Sharpie
                     while (pause) ;
                     Console.SetCursorPosition(0, 0);
                     Console.ResetColor();
-					RegenBoard(0, 0, max_x - 1, 0);
+                    RegenBoard(0, 0, max_x - 1, 0);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
                 }
@@ -284,9 +282,12 @@ namespace Sharpie
                 {
                     board[Console.CursorLeft, Console.CursorTop] = " ";
                     dl_snake++;
-                    speed--;
+
+                    if (difficulty == 2) speed -= 1;
+                    else speed -= 2;
+                    
                     scorepoint = scorepoint + 10;
-                    Interface.Score(scorepoint);;
+                    Interface.Score(scorepoint); ;
                     GenerateMunch();
                     Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
                 }
@@ -356,19 +357,19 @@ namespace Sharpie
             Console.ResetColor();
         }
 
-		private void RegenBoard(int x1, int y1, int x2, int y2)
-		{
-			Console.SetCursorPosition(x1, y1);
-			Console.ResetColor();
-			for (int x = x1; x <= x2; x++)
-			{
-				for (int y = y1; y <= y2; y++)
-				{
-					Console.SetCursorPosition(x, y);
-					if (board[x, y] == null) { Console.Write(" "); }
-					else { Console.Write(board[x, y]); }
-				}
-			}
-		}
+        private void RegenBoard(int x1, int y1, int x2, int y2)
+        {
+            Console.SetCursorPosition(x1, y1);
+            Console.ResetColor();
+            for (int x = x1; x <= x2; x++)
+            {
+                for (int y = y1; y <= y2; y++)
+                {
+                    Console.SetCursorPosition(x, y);
+                    if (board[x, y] == null) { Console.Write(" "); }
+                    else { Console.Write(board[x, y]); }
+                }
+            }
+        }
     }
 }

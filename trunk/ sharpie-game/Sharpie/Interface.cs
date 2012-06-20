@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using System.Reflection;
 
 namespace Sharpie
 {
@@ -124,13 +125,13 @@ namespace Sharpie
 				case -1:
 					return "";
 				case 0:
-					return "Default1";
+					return "1";
 				case 1:
-					return "Default2";
+					return "2";
 				case 2:
-					return "Default3";
+					return "3";
 				case 3:
-					return "Default4";
+					return "4";
 				case 5:
 					return LoadMap();
 			}
@@ -301,7 +302,7 @@ namespace Sharpie
 					for (int i = 0; i < score.GetCount(y); i++)
 					{
 						int pos = i + 1;
-						Text.WriteXY(Cursor.CenterX() - 13, Cursor.CenterY() - 3 + i, pos.ToString() + ". " + score.GetScore(y, i).nick + " ...");
+						Text.WriteXY(Cursor.CenterX() - 13, Cursor.CenterY() - 3 + i, pos.ToString() + ". " + score.GetScore(y, i).nick + " (" + score.GetScore(y, i).map + ")");
 						Text.WriteXY(Cursor.CenterX() + 13 - score.GetScore(y, i).score.ToString().Length - 4, Cursor.CenterY() - 3 + i, "... " + score.GetScore(y, i).score.ToString());
 					}
 				}

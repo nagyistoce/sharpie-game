@@ -17,10 +17,10 @@ namespace Sharpie
             if (File.Exists(path)) { LoadScores(); }
         }
 
-        public Score(int difficulty, int score, string nick)
+        public Score(int difficulty, int score, string nick, string map)
         {
             if (File.Exists(path)) { LoadScores(); }
-            wynik.AddLast(new Highscore { difficulty = difficulty, score = score, nick = nick });
+            wynik.AddLast(new Highscore { difficulty = difficulty, score = score, nick = nick, map = map });
             SaveScores();
         }
 
@@ -46,7 +46,7 @@ namespace Sharpie
                         try
                         {
                             string[] y = x.Split(new char[] { ':' });
-                            wynik.AddLast(new Highscore { difficulty = Convert.ToInt32(y[0]), score = Convert.ToInt32(y[1]), nick = y[2] });
+                            wynik.AddLast(new Highscore { difficulty = Convert.ToInt32(y[0]), score = Convert.ToInt32(y[1]), nick = y[2], map = y[3] });
                         }
                         catch (Exception)
                         {
@@ -84,7 +84,7 @@ namespace Sharpie
                 sw.WriteLine("");
                 foreach (Highscore score in wynik)
                 {
-                    sw.WriteLine(score.difficulty + ":" + score.score + ":" + score.nick);
+                    sw.WriteLine(score.difficulty + ":" + score.score + ":" + score.nick + ":" + score.map);
                 }
                 sw.Flush();
             }
@@ -101,6 +101,7 @@ namespace Sharpie
             public int difficulty { get; set; }
             public int score { get; set; }
             public string nick { get; set; }
+            public string map { get; set; }
         }
     }
 }

@@ -121,6 +121,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <EmbeddedResource Include="Maps\Default1.smf" />
+    <EmbeddedResource Include="Maps\Default2.smf" />
+    <EmbeddedResource Include="Maps\Default3.smf" />
+    <EmbeddedResource Include="Maps\Default4.smf" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

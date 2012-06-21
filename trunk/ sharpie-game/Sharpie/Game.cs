@@ -50,6 +50,7 @@ namespace Sharpie
         Point startpoint = new Point(Cursor.CenterX(), Cursor.CenterY());
         List<string> wall = new List<string> { "╔", "╗", "═", "║", "╚", "╝" };
         Thread readmove;
+        ManualResetEvent eventmove = new ManualResetEvent(true);
         int difficulty;
         string nick;
         bool pause = false;
@@ -228,6 +229,7 @@ namespace Sharpie
             {
                 if (pause)
                 {
+                    eventmove.Reset();
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.ForegroundColor = ConsoleColor.White;
                     for (int i = 0; i < max_x; i++)
@@ -235,7 +237,13 @@ namespace Sharpie
                         Text.WriteXY(i, 0, " ");
                     }
                     Text.WriteXY(Cursor.CenterX() - Locale.pause.Length / 2, 0, Locale.pause);
-                    while (pause) ;
+                    ConsoleKeyInfo spacekey;
+                    do 
+                    {
+                        spacekey = Console.ReadKey(true);
+                    } while (spacekey.Key != ConsoleKey.Spacebar);
+                    pause = false;
+                    eventmove.Set();
                     Console.SetCursorPosition(0, 0);
                     Console.ResetColor();
                     RegenBoard(0, 0, max_x - 1, 0);
@@ -315,6 +323,7 @@ namespace Sharpie
             ConsoleKeyInfo key;
             do
             {
+                eventmove.WaitOne();
                 key = Console.ReadKey(true);
                 poprzkierunek = kierunek;
                 switch (key.Key)
@@ -332,8 +341,7 @@ namespace Sharpie
                         if (poprzkierunek != 1) kierunek = 3;
                         break;
                     case ConsoleKey.Spacebar:
-                        if (!pause) { pause = true; }
-                        else { pause = false; }
+                        pause = true;
                         break;
 
                 }

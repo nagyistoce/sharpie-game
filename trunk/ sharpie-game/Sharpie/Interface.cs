@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using System.Reflection;
+using System.Net;
 
 namespace Sharpie
 {
@@ -106,7 +107,8 @@ namespace Sharpie
 				case 3: // o grze informacja
 					Ogrze();
 					break;
-				case 4:
+				case 5:
+                    //Update();
 					break;
 			}
 		}
@@ -357,6 +359,28 @@ namespace Sharpie
 			Console.ResetColor();
 
 		}
+
+        private static void Update()
+        {
+            if (!File.Exists("Updater.exe"))
+            {
+                WebClient klient = new WebClient();
+                try
+                {
+                    klient.DownloadFile(new Uri("http://sharpie-game.googlecode.com/files/Updater.exe"), "Updater.exe");
+                }
+                catch (IOException ex)
+                {
+                    DialogResult result = MessageBox.Show(ex.ToString(), "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
+                    if (result == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                }
+            }
+            System.Diagnostics.Process.Start("Updater.exe");
+            Application.Exit();
+        }
 
 		private static bool Exit()
 		{

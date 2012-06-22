@@ -24,7 +24,6 @@ namespace Updater
         private string editorpath = Path.GetDirectoryName("MapEditor.exe");
         string[] wersja = new string[2];
         string[] linie2 = new string[6];
-        string[] args = Environment.GetCommandLineArgs();
 
         public void CheckUpdate(out bool updtSharpie, out bool updtEditor)
         {
@@ -34,13 +33,10 @@ namespace Updater
         Retry:
             try
             {
-                if (Array.IndexOf(args, "--editoronly") == -1)
-                {
-                    updtSharpie = true;
-                    ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(sharpiefilepath));
-                    string[] linie = ver.ToString().Split('\n');
-                    wersja[0] = linie[3];
-                }
+                updtSharpie = true;
+                ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(sharpiefilepath));
+                string[] linie = ver.ToString().Split('\n');
+                wersja[0] = linie[3];
             }
             catch (FileNotFoundException)
             {
@@ -58,13 +54,10 @@ namespace Updater
         Retry2:
             try
             {
-                if (Array.IndexOf(args, "--gameonly") == -1)
-                {
-                    updtEditor = true;
-                    ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(editorfilepath));
-                    string[] linie = ver.ToString().Split('\n');
-                    wersja[1] = linie[3];
-                }
+                updtEditor = true;
+                ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(editorfilepath));
+                string[] linie = ver.ToString().Split('\n');
+                wersja[1] = linie[3];
             }
             catch (FileNotFoundException)
             {
@@ -176,7 +169,7 @@ namespace Updater
             }
             catch (IOException ex)
             {
-                DialogResult result = MessageBox.Show(form.Parent, ex + " Upewnij się, że gra jest wyłączona i kliknij Retry, aby ponowić próbę.", "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
+                DialogResult result = MessageBox.Show(form.Parent, ex + " Upewnij się, że aplikacja jest wyłączona i kliknij Retry, aby ponowić próbę.", "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
                 if (result == DialogResult.Cancel)
                 {
                     return false;

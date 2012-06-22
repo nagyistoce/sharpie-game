@@ -11,14 +11,18 @@ namespace Sharpie
         int menuYPos, menuXPos, y;
         ConsoleColor tekst, tlo;
         ConsoleKeyInfo key;
+        public int setPos;
 
-        public Menu(string[] pozycje, int x, int y, ConsoleColor tekst, ConsoleColor tlo)
+        public Menu(string[] pozycje, int x, int y, ConsoleColor tekst, ConsoleColor tlo):this(pozycje, x, y, tekst, tlo, 0) { }
+
+        public Menu(string[] pozycje, int x, int y, ConsoleColor tekst, ConsoleColor tlo, int setPos)
         {
             entry = new List<string>(pozycje);
             this.menuYPos = y;
             this.menuXPos = x;
             this.tekst = tekst;
             this.tlo = tlo;
+            this.setPos = setPos;
         }
 
         public int ShowHorizontal(bool CanEscape, bool CanFocus)
@@ -32,7 +36,7 @@ namespace Sharpie
             {
                 DrawEntryH(y, tekst, tlo);
             }
-            y = 0;
+            y = setPos*2;
             do
             {
                 DrawEntryH(y, tlo, tekst);
@@ -72,6 +76,7 @@ namespace Sharpie
                     switch (key.Key)
                     {
                         case ConsoleKey.Escape:
+                            setPos = y / 2;
                             return -1;
                     }
                 }
@@ -80,6 +85,7 @@ namespace Sharpie
                     switch (key.Key)
                     {
                         case ConsoleKey.Tab:
+                            setPos = y / 2;
                             return -2;
                     }
                 }
@@ -167,7 +173,10 @@ namespace Sharpie
         {
             Console.ForegroundColor = textcolor;
             Console.BackgroundColor = backcolor;
-            if (entry[whichentry] != "") { Text.WriteXY(menuXPos, menuYPos + whichentry, " " + entry[whichentry] + " "); }
+            if (entry[whichentry] != "")
+            {
+                Text.WriteXY(menuXPos, menuYPos + whichentry, " " + entry[whichentry] + " ");
+            }
         }
 
         private void DrawEntryV(int whichentry, int separatepx, ConsoleColor textcolor, ConsoleColor backcolor)

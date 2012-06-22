@@ -7,12 +7,14 @@ using System.IO;
 using System.Threading;
 using System.Reflection;
 using System.Net;
+using System.Diagnostics;
 
 namespace Sharpie
 {
 	class Interface
 	{
 		static string filename;
+        static int menupos = 0;
 
 		public static void Draw()
 		{
@@ -35,7 +37,7 @@ namespace Sharpie
 		{
 			Console.BackgroundColor = ConsoleColor.Gray;
 			Console.ForegroundColor = ConsoleColor.Black;
-			WritePanelLeft("Wynik: " + score);
+			WritePanelLeft("Wynik: " + score + "           ");
 			Console.ResetColor();
 		}
 
@@ -76,17 +78,16 @@ namespace Sharpie
 			Console.ResetColor();
 			Logo();
 			Text.WriteXY(Text.CenterX(Locale.desc), 9, Locale.desc);
-			Console.BackgroundColor = ConsoleColor.Gray;
-			Console.ForegroundColor = ConsoleColor.Black;
 			Console.ResetColor();
 			Dialog menudialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkBlue);
-			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "O grze", "", "Aktualizuj" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
-			menudialog.Show(27, 13, 43, 27, "Menu", "ESC - wyjście");
+			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "Instrukcja", "O grze" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue, menupos);
+			menudialog.Show(27, 13, 43, 25, "Menu", "ESC - wyjście");
 
 			int value = menu.ShowHorizontal(true, false);
 			switch (value)
 			{
 				case -1: // wyjście z gry
+                    menupos = menu.setPos;
 					bool exit = Exit();
 					if (exit == true)
 					{
@@ -94,21 +95,26 @@ namespace Sharpie
 					}
 					break;
 				case 0: // nowa gra
+                    menupos = value;
 					string map = SelectMap();
 					if (map == "") { break; }
 					NewGame(map);
 					break;
-				case 1: // ustawienia ( nie mam na nie pomysłu na razie)
+				case 1: // ustawienia
+                    menupos = value;
 					Ustawienia();
 					break;
-				case 2: // wyniki (zrobi się)
+				case 2: // wyniki
+                    menupos = value;
 					Wyniki();
 					break;
-				case 3: // o grze informacja
+                case 3:
+                    menupos = value;
+                    Instrukcja();
+                    break;
+				case 4: // o grze informacja
+                    menupos = value;
 					Ogrze();
-					break;
-				case 5:
-                    //Update();
 					break;
 			}
 		}
@@ -341,6 +347,18 @@ namespace Sharpie
 			} while (!exit);
 		}
 
+        public static void Instrukcja()
+        {
+            Dialog inst = new Dialog(1, ConsoleColor.Black, ConsoleColor.Gray);
+            Menu menu = new Menu(new string[] { "OK" }, Cursor.CenterX() - 2, Cursor.CenterY() + 8, ConsoleColor.Black, ConsoleColor.Gray);
+            inst.Show(Cursor.CenterX() - 19, Cursor.CenterY() - 8, Cursor.CenterX() + 19, Cursor.CenterY() + 10, "Instrukcja", "Enter - wybór");
+            inst.WriteOn("Sterowanie:", Cursor.CenterY() - 6);
+            inst.WriteOn("Kl. kierunkowe - kierunek węża", Cursor.CenterY() - 4);
+            inst.WriteOn("ESC - menu pauzy", Cursor.CenterY() - 3);
+            inst.WriteOn("Twoim zadaniem jest jeść jedzenie, aby rosnąć i zbierać punkty uważając przy tym, żeby nie zderzyć się ze ścianą lub samym sobą.", Cursor.CenterY());
+            menu.ShowVertical(0, true, false);
+        }
+
 		private static void Ogrze()
 		{
 			Dialog ogrze = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkCyan);
@@ -359,28 +377,6 @@ namespace Sharpie
 			Console.ResetColor();
 
 		}
-
-        private static void Update()
-        {
-            if (!File.Exists("Updater.exe"))
-            {
-                WebClient klient = new WebClient();
-                try
-                {
-                    klient.DownloadFile(new Uri("http://sharpie-game.googlecode.com/files/Updater.exe"), "Updater.exe");
-                }
-                catch (IOException ex)
-                {
-                    DialogResult result = MessageBox.Show(ex.ToString(), "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
-                    if (result == DialogResult.Cancel)
-                    {
-                        return;
-                    }
-                }
-            }
-            System.Diagnostics.Process.Start("Updater.exe");
-            Application.Exit();
-        }
 
 		private static bool Exit()
 		{

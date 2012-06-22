@@ -424,6 +424,11 @@ namespace Sharpie
 
                 }
                 Thread.Sleep(speed);
+                while (Console.KeyAvailable) // czyszczenie bufora klawiszy
+                {
+                    Console.ReadKey(true);
+                }
+
             } while (true);
         }
 

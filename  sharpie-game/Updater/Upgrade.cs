@@ -82,13 +82,13 @@ namespace Updater
 
             try
             {
-                WebRequest rq = WebRequest.Create("http://sharpie-game.googlecode.com/files/upversion.txt");
+                WebRequest rq = WebRequest.Create("http://sharpie.cba.pl/files/Updater/upversion.txt");
                 rq.Credentials = CredentialCache.DefaultCredentials;
                 HttpWebResponse rp = (HttpWebResponse)rq.GetResponse();
                 Stream st = rp.GetResponseStream();
                 StreamReader sr = new StreamReader(st);
                 odpowiedz = sr.ReadToEnd();
-                linie2 = odpowiedz.Split('\r');
+                linie2 = odpowiedz.Split('\n');
             }
             catch (ArgumentException ex)
             {
@@ -100,7 +100,7 @@ namespace Updater
             {
                 updtSharpie = false;
             }
-            if (updtEditor && wersja[1] != linie2[4])
+            if (updtEditor && wersja[1] != linie2[3])
             {
                 updtEditor = false;
             }
@@ -159,12 +159,12 @@ namespace Updater
                 if (UpdateSharpie)
                 {
                     File.Delete(sharpiefilepath);
-                    klient.DownloadFile(new Uri("http://sharpie-game.googlecode.com/files/Sharpie.exe"), sharpiefilepath);
+                    klient.DownloadFile(new Uri("http://sharpie.cba.pl/files/Sharpie/Sharpie.exe"), sharpiefilepath);
                 }
                 if (UpdateEditor)
                 {
                     File.Delete(editorfilepath);
-                    klient.DownloadFile(new Uri("http://sharpie-game.googlecode.com/files/MapEditor.exe"), editorfilepath);
+                    klient.DownloadFile(new Uri("http://sharpie.cba.pl/files/MapEditor/MapEditor.exe"), editorfilepath);
                 }
             }
             catch (IOException ex)

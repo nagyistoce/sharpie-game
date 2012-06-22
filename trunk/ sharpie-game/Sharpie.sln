@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Versiontxtcreator", "Versio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapEditor", "MapEditor\MapEditor.csproj", "{7FBE9904-4742-44DB-8938-8A02A10DC6EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Downloader", "Downloader\Downloader.csproj", "{989CE3D7-115E-4C43-8B8A-BB7404492F5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -31,6 +33,10 @@ Global
 		{7FBE9904-4742-44DB-8938-8A02A10DC6EB}.Debug|x86.Build.0 = Debug|x86
 		{7FBE9904-4742-44DB-8938-8A02A10DC6EB}.Release|x86.ActiveCfg = Release|x86
 		{7FBE9904-4742-44DB-8938-8A02A10DC6EB}.Release|x86.Build.0 = Release|x86
+		{989CE3D7-115E-4C43-8B8A-BB7404492F5B}.Debug|x86.ActiveCfg = Debug|x86
+		{989CE3D7-115E-4C43-8B8A-BB7404492F5B}.Debug|x86.Build.0 = Debug|x86
+		{989CE3D7-115E-4C43-8B8A-BB7404492F5B}.Release|x86.ActiveCfg = Release|x86
+		{989CE3D7-115E-4C43-8B8A-BB7404492F5B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

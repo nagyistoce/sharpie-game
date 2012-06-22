@@ -55,6 +55,7 @@ namespace Sharpie
         string nick;
         bool pause = false;
         string mapName;
+        bool exit = false;
 
         public Game(int difficulty, string nick, string mapname) // konstruktor
         {
@@ -78,21 +79,25 @@ namespace Sharpie
             Interface.Score(scorepoint);
             LoadMap(mapname);
             Start();
-            GameOver();
-            Console.ReadKey(true);
-            if (mapname == "1" || mapname == "2" || mapname == "3" || mapname == "4")
+            if (!exit)
             {
-                mapname = "Mapa " + mapname;
+                GameOver();
+                Console.ReadKey(true);
+                if (mapname == "1" || mapname == "2" || mapname == "3" || mapname == "4")
+                {
+                    mapname = "Mapa " + mapname;
+                }
+                else
+                {
+                    mapname = Path.GetFileNameWithoutExtension(mapname);
+                }
+                Score scr = new Score(difficulty, scorepoint, nick, mapname);
             }
-            else
-            {
-                mapname = Path.GetFileNameWithoutExtension(mapname);
-            }
-            Score scr = new Score(difficulty, scorepoint, nick, mapname);
+
         }
 
 
-        private void LoadMap(string map)
+        private void LoadMap(string map) // laduje mapę
         {
             StreamReader sr;
             if (map == "1" || map == "2" || map == "3" || map == "4")
@@ -203,7 +208,7 @@ namespace Sharpie
             Text.WriteXY(Text.CenterX(Locale.ready), Cursor.CenterY() - 2, Locale.ready);
             Console.ResetColor();
             ConsoleKeyInfo key = Console.ReadKey(true);
-            RegenBoard(Text.CenterX(Locale.ready) - 2, Cursor.CenterY() - 4, Cursor.CenterX() + Locale.ready.Length / 2 + 1, Cursor.CenterY());
+            Regen(Text.CenterX(Locale.ready) - 2, Cursor.CenterY() - 4, Cursor.CenterX() + Locale.ready.Length / 2 + 1, Cursor.CenterY());
             switch (key.Key) // pierwszy ruch
             {
                 case ConsoleKey.UpArrow:
@@ -230,25 +235,19 @@ namespace Sharpie
                 if (pause)
                 {
                     eventmove.Reset();
-                    Console.BackgroundColor = ConsoleColor.Red;
-                    Console.ForegroundColor = ConsoleColor.White;
-                    for (int i = 0; i < max_x; i++)
+                    exit = PauseMenu();
+                    if (exit)
                     {
-                        Text.WriteXY(i, 0, " ");
+                        Interface.WritePanelLeft("Czekaj chwilkę ...");
+                        readmove.Abort();
+                        break;
                     }
-                    Text.WriteXY(Cursor.CenterX() - Locale.pause.Length / 2, 0, Locale.pause);
-                    ConsoleKeyInfo spacekey;
-                    do 
+                    else
                     {
-                        spacekey = Console.ReadKey(true);
-                    } while (spacekey.Key != ConsoleKey.Spacebar);
-                    pause = false;
-                    eventmove.Set();
-                    Console.SetCursorPosition(0, 0);
-                    Console.ResetColor();
-                    RegenBoard(0, 0, max_x - 1, 0);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
+                        pause = false;
+                        Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
+                        eventmove.Set();
+                    }
                 }
                 Cursor.Move(kierunek); //rusza kursorem w wybranym kierunku
 
@@ -266,7 +265,23 @@ namespace Sharpie
                     break; // wychodzi z pętli
                 }
 
+                if (board[Console.CursorLeft, Console.CursorTop] == "#")    //event do jedzenia
+                {
+                    board[Console.CursorLeft, Console.CursorTop] = " ";
+                    Point curpos = new Point(Console.CursorLeft, Console.CursorTop);
+                    dl_snake++;
+
+                    if (difficulty == 2) speed -= 1;
+                    else speed -= 2;
+
+                    scorepoint = scorepoint + 10;
+                    Interface.Score(scorepoint);
+                    GenerateMunch();
+                    Console.SetCursorPosition(curpos.x, curpos.y);
+                }
+
                 snake.AddFirst(new Point(Console.CursorLeft, Console.CursorTop));    // dodawanie czlonu do listy
+                board[snake.First.Value.x, snake.First.Value.y] = "H";
                 if (snake.Count > 1)
                 {
                     board[snake.First.Next.Value.x, snake.First.Next.Value.y] = body; // głowa nie liczy się do planszy
@@ -285,25 +300,88 @@ namespace Sharpie
                 }
 
                 Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
-
-                if (board[Console.CursorLeft, Console.CursorTop] == "#")    //event do jedzenia
-                {
-                    board[Console.CursorLeft, Console.CursorTop] = " ";
-                    dl_snake++;
-
-                    if (difficulty == 2) speed -= 1;
-                    else speed -= 2;
-                    
-                    scorepoint = scorepoint + 10;
-                    Interface.Score(scorepoint); ;
-                    GenerateMunch();
-                    Console.SetCursorPosition(snake.First.Value.x, snake.First.Value.y);
-                }
-
                 Thread.Sleep(speed); // prędkość węża ;>
 
 
             } while (true);
+        }
+
+
+        private void Regen(int x1, int y1, int x2, int y2)
+        {
+            Console.SetCursorPosition(x1, y1);
+            Console.ResetColor();
+            for (int x = x1; x <= x2; x++)
+            {
+                for (int y = y1; y <= y2; y++)
+                {
+                    if (board[x, y] == "#")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Text.WriteXY(x, y, board[x, y]);
+                    }
+                    else if (board[x, y] == body | board[x, y] == "H")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Text.WriteXY(x, y, body);
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Text.WriteXY(x, y, board[x, y]);
+                    }
+                }
+            }
+        }
+
+        private bool PauseMenu()
+        {
+            Console.CursorVisible = false;
+            Point curpos = new Point(Console.CursorLeft, Console.CursorTop);
+            Dialog pause = new Dialog(0, ConsoleColor.White, ConsoleColor.DarkMagenta);
+            bool exit = false;
+            int pos = 0;
+            do
+            {
+                Menu menu = new Menu(new string[] { "O mapie", "Instrukcja", "", "Powrót do menu" }, Console.WindowWidth - 19, Console.WindowHeight - 10, ConsoleColor.White, ConsoleColor.DarkMagenta, pos);
+                pause.Show(Console.WindowWidth - 21, Console.WindowHeight - 12, Console.WindowWidth - 2, Console.WindowHeight - 3, "Menu (alpha)", "ESC - powrót do gry    ");
+                int value = menu.ShowHorizontal(true, false);
+                switch (value)
+                {
+                    case -1:
+                        exit = true;
+                        break;
+                    case 0:
+                        break;
+                    case 1:
+                        pos = value;
+                        Interface.Instrukcja();
+                        Regen(Cursor.CenterX() - 19, Cursor.CenterY() - 8, Cursor.CenterX() + 19, Cursor.CenterY() + 10);
+                        break;
+                    case 3:
+                        pos = value;
+                        Menu exitmenu = new Menu(new string[] { "Tak", "Nie" }, Cursor.CenterX() - 6, Cursor.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);
+                        Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
+                        dialog.Show(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4, "Wyjście", "ESC - powrót         ");
+                        dialog.WriteOn("Wyjść z gry?", Cursor.CenterY());
+                        int v = exitmenu.ShowVertical(2, true, false);
+                        Console.ResetColor();
+                        Regen(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4);
+                        switch (v)
+                        {
+                            case 0:
+                                exit = true;
+                                return true;
+                            case 2:
+                                break;
+                        }
+                        break;
+                }
+            } while (!exit);
+            Regen(Console.WindowWidth - 21, Console.WindowHeight - 12, Console.WindowWidth - 2, Console.WindowHeight - 3);
+            Interface.Score(scorepoint);
+            Console.SetCursorPosition(curpos.x, curpos.y);
+            return false;
         }
 
         private void GameOver() // ekran końca gry
@@ -340,11 +418,12 @@ namespace Sharpie
                     case ConsoleKey.LeftArrow:
                         if (poprzkierunek != 1) kierunek = 3;
                         break;
-                    case ConsoleKey.Spacebar:
+                    case ConsoleKey.Escape:
                         pause = true;
                         break;
 
                 }
+                Thread.Sleep(speed);
             } while (true);
         }
 
@@ -363,21 +442,6 @@ namespace Sharpie
             Text.WriteXY(meatX, meatY, "#");
             Console.SetCursorPosition(x, y);
             Console.ResetColor();
-        }
-
-        private void RegenBoard(int x1, int y1, int x2, int y2)
-        {
-            Console.SetCursorPosition(x1, y1);
-            Console.ResetColor();
-            for (int x = x1; x <= x2; x++)
-            {
-                for (int y = y1; y <= y2; y++)
-                {
-                    Console.SetCursorPosition(x, y);
-                    if (board[x, y] == null) { Console.Write(" "); }
-                    else { Console.Write(board[x, y]); }
-                }
-            }
         }
     }
 }

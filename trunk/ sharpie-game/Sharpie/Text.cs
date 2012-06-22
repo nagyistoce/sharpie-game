@@ -30,11 +30,8 @@ namespace Sharpie
 
         public static void WriteXY(int x, int y, string text)
         {
-            //int left = Console.CursorLeft;
-            //int top = Console.CursorTop;
             Console.SetCursorPosition(x, y);
             Console.Write(text);
-            //Console.SetCursorPosition(left, top);
         }
 	}
 }

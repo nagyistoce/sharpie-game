@@ -18,17 +18,13 @@ namespace Updater
         public const string updateCheckVersionFile = "Nie można pobrać wersji gry z pliku! ";
         private FileVersionInfo ver;
         private string odpowiedz;
-        private string sharpiefilepath = Path.GetFullPath("Sharpie.exe");
+        public string sharpiefilepath = Path.GetFullPath("Sharpie.exe");
         private string sharpiepath = Path.GetDirectoryName("Sharpie.exe");
         private string editorfilepath = Path.GetFullPath("MapEditor.exe");
         private string editorpath = Path.GetDirectoryName("MapEditor.exe");
         string[] wersja = new string[2];
         string[] linie2 = new string[6];
-
-        public string[] ReturnVer()
-        {
-            return wersja;
-        }
+        string[] args = Environment.GetCommandLineArgs();
 
         public void CheckUpdate(out bool updtSharpie, out bool updtEditor)
         {
@@ -38,10 +34,13 @@ namespace Updater
         Retry:
             try
             {
-                updtSharpie = true;
-                ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(sharpiefilepath));
-                string[] linie = ver.ToString().Split('\n');
-                wersja[0] = linie[3];
+                if (Array.IndexOf(args, "--editoronly") == -1)
+                {
+                    updtSharpie = true;
+                    ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(sharpiefilepath));
+                    string[] linie = ver.ToString().Split('\n');
+                    wersja[0] = linie[3];
+                }
             }
             catch (FileNotFoundException)
             {
@@ -59,10 +58,13 @@ namespace Updater
         Retry2:
             try
             {
-                updtEditor = true;
-                ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(editorfilepath));
-                string[] linie = ver.ToString().Split('\n');
-                wersja[1] = linie[3];
+                if (Array.IndexOf(args, "--gameonly") == -1)
+                {
+                    updtEditor = true;
+                    ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(editorfilepath));
+                    string[] linie = ver.ToString().Split('\n');
+                    wersja[1] = linie[3];
+                }
             }
             catch (FileNotFoundException)
             {
@@ -79,7 +81,7 @@ namespace Updater
                 }
             }
 
-            if (!updtEditor && !updtSharpie)
+            if (!updtEditor & !updtSharpie)
             {
                 MessageBox.Show(form.Parent, "Nie ma czego zaktualizować, aktualizator zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Application.Exit();

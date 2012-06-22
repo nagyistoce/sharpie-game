@@ -133,5 +133,15 @@ namespace Updater
 				FormSizeIn();
 			}
 		}
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            string[] args = Environment.GetCommandLineArgs();
+            if (Array.IndexOf(args, "--startgame") != -1)
+            {
+                Upgrade upgr = new Upgrade();
+                Process.Start(upgr.sharpiefilepath);
+            }
+        }
 	}
 }

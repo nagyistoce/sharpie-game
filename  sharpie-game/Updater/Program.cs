@@ -8,7 +8,7 @@ namespace Updater
 	static class Program
 	{
 		/// <summary>
-		/// The main entry point for the application.
+		/// Command line arguments: --gameonly (aktualizuje tylko grę), --editoronly (aktualizuje tylko edytor), --startgame (uruchamia grę po aktualizacji).
 		/// </summary>
 		[STAThread]
 		static void Main()

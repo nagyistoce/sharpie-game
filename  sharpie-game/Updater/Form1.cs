@@ -30,30 +30,31 @@ namespace Updater
 			pictureBox1.Image = img;
 		}
         bool sharpieup, editorup;
+        Upgrade updte = new Upgrade();
 		private void UpdateProcess()
 		{
-			Upgrade updte = new Upgrade();
             updte.CheckUpdate(out sharpieup, out editorup);
             if (editorup && sharpieup)
             {
-                label1.Text = "Dostępna jest nowa wersja gry oraz\nedytora map";
+                label1.Text = "Dostępna jest nowa wersja gry oraz edytora map";
                 progressBar1.Value = 100;
                 pictureBox1.Image = Properties.Resources.Warning;
-                FormSizeOut();
+                FormSizeDown();
+                FormSizeRight();
             }
 			else if (sharpieup)
 			{
 				label1.Text = "Dostępna jest nowa wersja gry";
 				progressBar1.Value = 100;
 				pictureBox1.Image = Properties.Resources.Warning;
-				FormSizeOut();
+				FormSizeDown();
 			}
             else if (editorup)
             {
                 label1.Text = "Dostępna jest nowa wersja edytora map";
                 progressBar1.Value = 100;
                 pictureBox1.Image = Properties.Resources.Warning;
-                FormSizeOut();
+                FormSizeDown();
             }
             else
             {
@@ -68,7 +69,7 @@ namespace Updater
 			UpdateProcess();
 		}
 
-		private void FormSizeOut()
+		private void FormSizeDown()
 		{
 			int speed = 30;
 			this.button1.Visible = true;
@@ -89,7 +90,7 @@ namespace Updater
 			}
 		}
 
-		private void FormSizeIn()
+		private void FormSizeUp()
 		{
 			int speed = 30;
 			this.button1.Visible = false;
@@ -110,28 +111,69 @@ namespace Updater
 			}
 		}
 
+        private void FormSizeRight()
+        {
+            int speed = 25;
+            for (int i = 380; i <= 430; i++)
+            {
+                if (i <= 385)
+                {
+                    speed = speed - 4;
+                }
+                else if (i >= 425)
+                {
+                    speed = speed + 3;
+                }
+
+                this.Width = i;
+                Thread.Sleep(speed);
+                this.Update();
+            }
+        }
+
+        private void FormSizeLeft()
+        {
+            int speed = 20;
+            for (int i = 430; i >= 380; i--)
+            {
+                if (i <= 385)
+                {
+                    speed = speed + 4;
+                }
+                else if (i >= 425)
+                {
+                    speed = speed - 3;
+                }
+
+                this.Width = i;
+                Thread.Sleep(speed);
+                this.Update();
+            }
+        }
+
 		private void button1_Click(object sender, EventArgs e)
 		{
 			button1.Enabled = false;
 			progressBar1.Style = ProgressBarStyle.Marquee;
 			pictureBox1.Image = Properties.Resources.Download;
-			Upgrade updte = new Upgrade();
 			if (updte.DoUpgrade(sharpieup, editorup) == true)
 			{
 				label1.Text = "Zaktualizowano!";
-				progressBar1.Style = ProgressBarStyle.Continuous;
-				progressBar1.Value = 100;
 				pictureBox1.Image = Properties.Resources.OK;
-				FormSizeIn();
 			}
 			else
 			{
 				label1.Text = "Aktualizacja nie powiodła się!";
-				progressBar1.Style = ProgressBarStyle.Continuous;
-				progressBar1.Value = 100;
 				pictureBox1.Image = Properties.Resources.Error;
-				FormSizeIn();
 			}
+
+            progressBar1.Style = ProgressBarStyle.Continuous;
+            progressBar1.Value = 100;
+            FormSizeUp();
+            if (this.Width == 430)
+            {
+                FormSizeLeft();
+            }
 		}
 	}
 }

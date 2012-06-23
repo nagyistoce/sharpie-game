@@ -54,7 +54,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <ApplicationIcon>Resources\Network-Globe-Connected.ico</ApplicationIcon>
+    <ApplicationIcon>Network-Globe-Connected-icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -133,10 +133,8 @@
     <None Include="Resources\Alarm-Error-icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Network-Globe-Connected.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Resources\Alarm-Synchonize-icon.png" />
+    <Content Include="Network-Globe-Connected-icon.ico" />
     <None Include="Resources\Alarm-Warning-icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

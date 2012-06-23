@@ -24,50 +24,49 @@ namespace Versiontxtcreator
             OpenFileDialog dialogshr = new OpenFileDialog();
             dialogshr.Title = "Znajdź Sharpie.exe";
             dialogshr.Multiselect = false;
+            dialogshr.InitialDirectory = @"C:\Users\Adam\Documents\Visual Studio 2010\Projects\Sharpie\Sharpie\bin\Debug";
             dialogshr.Filter = "Plik Sharpie.exe|Sharpie.exe";
             DialogResult result = dialogshr.ShowDialog();
             if (result == DialogResult.Cancel)
             {
                 MessageBox.Show(Application.ProductName + " zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Application.Exit();
+                Environment.Exit(0);
             }
             OpenFileDialog dialogEdit = new OpenFileDialog();
             dialogEdit.Title = "Znajdź MapEditor.exe";
             dialogEdit.Multiselect = false;
+            dialogEdit.InitialDirectory = @"C:\Users\Adam\Documents\Visual Studio 2010\Projects\Sharpie\MapEditor\bin\Debug";
             dialogEdit.Filter = "Plik MapEditor.exe|MapEditor.exe";
             result = dialogEdit.ShowDialog();
             if (result == DialogResult.Cancel)
             {
                 MessageBox.Show(Application.ProductName + " zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Application.Exit();
+                Environment.Exit(0);
             }
 
-            FileVersionInfo vershar = FileVersionInfo.GetVersionInfo(dialogshr.FileName);
-            FileVersionInfo veredit = FileVersionInfo.GetVersionInfo(dialogEdit.FileName);
-            string[] linie = vershar.ToString().Split('\n');
-            string liniashar = linie[3];
-            linie = veredit.ToString().Split('\n');
-            string liniaedit = linie[3];
+            string vershar = FileVersionInfo.GetVersionInfo(dialogshr.FileName).FileVersion.ToString();
+            string veredit = FileVersionInfo.GetVersionInfo(dialogEdit.FileName).FileVersion.ToString();
             SaveFileDialog savedialog = new SaveFileDialog();
             savedialog.Title = "Podaj miejsce zapisu pliku version.txt";
             savedialog.Filter = "Plik tekstowy (.txt)|*.txt";
-            savedialog.FileName = "version.txt";
+            savedialog.FileName = "upversion.txt";
+            savedialog.InitialDirectory = @"C:\Users\Adam\Desktop";
             DialogResult saveresult = savedialog.ShowDialog();
             if (saveresult == DialogResult.OK)
             {
                 StreamWriter sw = new StreamWriter(savedialog.FileName, false, Encoding.UTF8);
                 sw.WriteLine("# Sharpie Version");
-                sw.WriteLine(liniashar);
+                sw.WriteLine(vershar);
                 sw.WriteLine("# SME Version");
-                sw.Write(liniaedit);
+                sw.Write(veredit);
                 sw.Flush();
                 sw.Close();
-                MessageBox.Show("Plik version.txt został pomyślnie utworzony w " + Path.GetDirectoryName(savedialog.FileName), "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Plik upversion.txt został pomyślnie utworzony w " + Path.GetDirectoryName(savedialog.FileName), "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
                 MessageBox.Show(Application.ProductName + " zostanie zamknięty!", "Ostrzeżenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Application.Exit();
+                Environment.Exit(0);
             }
         }
     }

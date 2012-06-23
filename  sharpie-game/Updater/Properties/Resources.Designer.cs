@@ -81,13 +81,6 @@ namespace Updater.Properties {
             }
         }
         
-        internal static System.Drawing.Icon Network_Globe_Connected {
-            get {
-                object obj = ResourceManager.GetObject("Network_Globe_Connected", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap OK {
             get {
                 object obj = ResourceManager.GetObject("OK", resourceCulture);

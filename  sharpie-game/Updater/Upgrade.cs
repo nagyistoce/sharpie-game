@@ -16,13 +16,10 @@ namespace Updater
         public const string updateCurrent = "Masz najnowszą wersję gry!";
         public const string updateInfoError = "Błąd w uzyskiwaniu informacji o aktualizacji!";
         public const string updateCheckVersionFile = "Nie można pobrać wersji gry z pliku! ";
-        private FileVersionInfo ver;
+        string editorver, gamever;
         private string odpowiedz;
         public string sharpiefilepath = Path.GetFullPath("Sharpie.exe");
-        private string sharpiepath = Path.GetDirectoryName("Sharpie.exe");
         private string editorfilepath = Path.GetFullPath("MapEditor.exe");
-        private string editorpath = Path.GetDirectoryName("MapEditor.exe");
-        string[] wersja = new string[2];
         string[] linie2 = new string[6];
 
         public void CheckUpdate(out bool updtSharpie, out bool updtEditor)
@@ -34,9 +31,7 @@ namespace Updater
             try
             {
                 updtSharpie = true;
-                ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(sharpiefilepath));
-                string[] linie = ver.ToString().Split('\n');
-                wersja[0] = linie[3];
+                gamever = FileVersionInfo.GetVersionInfo(sharpiefilepath).FileVersion.ToString();
             }
             catch (FileNotFoundException)
             {
@@ -55,9 +50,7 @@ namespace Updater
             try
             {
                 updtEditor = true;
-                ver = FileVersionInfo.GetVersionInfo(Path.GetFullPath(editorfilepath));
-                string[] linie = ver.ToString().Split('\n');
-                wersja[1] = linie[3];
+                editorver = FileVersionInfo.GetVersionInfo(editorfilepath).FileVersion.ToString();
             }
             catch (FileNotFoundException)
             {
@@ -65,7 +58,6 @@ namespace Updater
                 if (result == DialogResult.OK)
                 {
                     FindSME();
-                    updtEditor = true;
                     goto Retry2;
                 }
                 else
@@ -96,11 +88,20 @@ namespace Updater
                 Application.Exit();
             }
 
-            if (updtSharpie && wersja[0] != linie2[1])
+            if (updtSharpie && gamever != linie2[1])
+            {
+                updtSharpie = true;
+            }
+            else
             {
                 updtSharpie = false;
             }
-            if (updtEditor && wersja[1] != linie2[3])
+
+            if (updtEditor && editorver != linie2[3])
+            {
+                updtEditor = true;
+            }
+            else
             {
                 updtEditor = false;
             }
@@ -119,8 +120,6 @@ namespace Updater
             if (result == DialogResult.OK)
             {
                 sharpiefilepath = dialog.FileName;
-                sharpiepath = Path.GetDirectoryName(sharpiefilepath);
-                ver = FileVersionInfo.GetVersionInfo(sharpiefilepath);
             }
             else
             {
@@ -140,8 +139,6 @@ namespace Updater
             if (result == DialogResult.OK)
             {
                 editorfilepath = dialog.FileName;
-                editorpath = Path.GetDirectoryName(editorfilepath);
-                ver = FileVersionInfo.GetVersionInfo(editorfilepath);
             }
             else
             {

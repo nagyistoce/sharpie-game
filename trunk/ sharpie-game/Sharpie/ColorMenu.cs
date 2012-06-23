@@ -5,21 +5,23 @@ using System.Text;
 
 namespace Sharpie
 {
-    public class Menu
+    class ColorMenu
     {
-        public List<string> entry;
+        List<string> entry;
         int menuYPos, menuXPos, y;
-        ConsoleColor tekst, tlo;
+        ConsoleColor select, tlo;
         ConsoleKeyInfo key;
+        List<ConsoleColor> koloryp;
         public int prevPos;
 
-        public Menu(string[] pozycje, int x, int y, ConsoleColor tekst, ConsoleColor tlo)
+        public ColorMenu(string[] pozycje, ConsoleColor[] koloryp, int x, int y, ConsoleColor select, ConsoleColor tlo)
         {
             entry = new List<string>(pozycje);
             this.menuYPos = y;
             this.menuXPos = x;
-            this.tekst = tekst;
+            this.select = select;
             this.tlo = tlo;
+            this.koloryp = koloryp.ToList();
         }
 
         public int ShowHorizontal(bool CanEscape, bool CanFocus, int setPos)
@@ -29,26 +31,37 @@ namespace Sharpie
                 for (int i = 1; i < entry.Count; i += 2)
                 {
                     entry.Insert(i, "");
+                    koloryp.Insert(i, select);
                 }
             }
 
+
             for (y = 0; y < entry.Count; y++)
             {
-                DrawEntryH(y, tekst, tlo);
+                DrawEntryH(y, koloryp[y], tlo);
             }
-            y = setPos*2;
+
+            y = setPos * 2;
+
             do
             {
-                DrawEntryH(y, tlo, tekst);
+                DrawEntryH(y, koloryp[y], select);
                 key = Console.ReadKey(true);
-                DrawEntryH(y, tekst, tlo);
+                DrawEntryH(y, koloryp[y], tlo);
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
                         y--;
                         if (y < 0)
                         {
-                            y = entry.Count - 1;
+                            if (CanFocus)
+                            {
+                                y = 0;
+                            }
+                            else
+                            {
+                                y = entry.Count - 1;
+                            }
                         }
                         while (entry[y] == "")
                         {
@@ -59,11 +72,7 @@ namespace Sharpie
                         y++;
                         if (y >= entry.Count)
                         {
-                            if (CanFocus)
-                            {
-                                prevPos = y / 2;
-                                return -2;
-                            }
+                            if (CanFocus) { return -2; }
                             else { y = 0; }
                         }
                         while (entry[y] == "")
@@ -93,6 +102,7 @@ namespace Sharpie
                             return -2;
                     }
                 }
+                prevPos = y / 2;
             } while (true);
 
         }
@@ -100,12 +110,12 @@ namespace Sharpie
         public int ShowVertical(int separatepx, bool CanEscape, bool CanFocus, int setPos)
         {
             PrintMenuV(separatepx);
-            y = setPos;
+            y = 0;
             do
             {
-                DrawEntryV(y, separatepx, tlo, tekst);
+                DrawEntryV(y, separatepx, koloryp[y], select);
                 key = Console.ReadKey(true);
-                DrawEntryV(y, separatepx, tekst, tlo);
+                DrawEntryV(y, separatepx, koloryp[y], tlo);
                 switch (key.Key)
                 {
                     case ConsoleKey.LeftArrow:
@@ -139,7 +149,7 @@ namespace Sharpie
                     switch (key.Key)
                     {
                         case ConsoleKey.Escape:
-                            prevPos = y;
+                            prevPos = y / 2;
                             return -1;
                     }
                 }
@@ -148,10 +158,10 @@ namespace Sharpie
                     switch (key.Key)
                     {
                         case ConsoleKey.Tab:
-                            prevPos = y;
+                            prevPos = y / 2;
                             return -2;
                         case ConsoleKey.UpArrow:
-                            prevPos = y;
+                            prevPos = y / 2;
                             return -2;
                     }
                 }
@@ -164,7 +174,7 @@ namespace Sharpie
         {
             for (y = 0; y < entry.Count; y++)
             {
-                DrawEntryV(y, odstep, tekst, tlo);
+                DrawEntryV(y, odstep, koloryp[y], tlo);
             }
         }
 
@@ -172,7 +182,7 @@ namespace Sharpie
         {
             for (y = 0; y < entry.Count; y++)
             {
-                DrawEntryH(y, tekst, tlo);
+                DrawEntryH(y, koloryp[y], tlo);
             }
         }
 

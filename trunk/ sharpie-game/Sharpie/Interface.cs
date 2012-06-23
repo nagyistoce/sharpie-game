@@ -8,6 +8,7 @@ using System.Threading;
 using System.Reflection;
 using System.Net;
 using System.Diagnostics;
+using Sharpie.Properties;
 
 namespace Sharpie
 {
@@ -73,21 +74,22 @@ namespace Sharpie
 			Text.WriteXY(Cursor.CenterX() - e.Length / 2, 7, e);
 		}
 
+        static Dialog menudialog;
 		public static void Glowny() //ekran główny
 		{
 			Console.ResetColor();
 			Logo();
 			Text.WriteXY(Text.CenterX(Locale.desc), 9, Locale.desc);
 			Console.ResetColor();
-			Dialog menudialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkBlue);
-			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "Instrukcja", "O grze" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue, menupos);
+			menudialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkBlue);
+			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "Instrukcja", "O grze" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
 			menudialog.Show(27, 13, 43, 25, "Menu", "ESC - wyjście");
 
-			int value = menu.ShowHorizontal(true, false);
+			int value = menu.ShowHorizontal(true, false, menupos);
 			switch (value)
 			{
 				case -1: // wyjście z gry
-                    menupos = menu.setPos;
+                    menupos = menu.prevPos;
 					bool exit = Exit();
 					if (exit == true)
 					{
@@ -127,7 +129,7 @@ namespace Sharpie
 			Console.BackgroundColor = ConsoleColor.DarkCyan;
 			Console.ForegroundColor = ConsoleColor.White;
 			mapdial.WriteOn("Wybierz mapę:", 13);
-			int value = map.ShowHorizontal(true, false);
+			int value = map.ShowHorizontal(true, false, 0);
 			switch (value)
 			{
 				case -1:
@@ -190,7 +192,7 @@ namespace Sharpie
 			Console.BackgroundColor = ConsoleColor.DarkCyan;
 			Console.ForegroundColor = ConsoleColor.White;
 			ngdial.WriteOn("Wybierz poziom trudności:", 17);
-			int value = newgame.ShowHorizontal(true, false);
+			int value = newgame.ShowHorizontal(true, false, 1);
 			switch (value)
 			{
 				case -1:
@@ -213,28 +215,38 @@ namespace Sharpie
 			string nickname = Properties.Settings.Default.Nick;
 			Dialog settings = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkYellow);
 			Menu menuv = new Menu(new string[] { "OK", "Anuluj", "Zastosuj" }, 22, 22, ConsoleColor.White, ConsoleColor.DarkYellow);
-			string[] poz = { "Nick (" + nickname + ")" };
-			Menu menuh = new Menu(poz, Cursor.CenterX() - 1 - poz[0].Length / 2, 17, ConsoleColor.White, ConsoleColor.DarkYellow);
+			string[] poz = { "Nick (" + nickname + ")", "Kolor węża" };
+			Menu menuh = new Menu(poz, Cursor.CenterX() - 1 - poz[1].Length / 2, 16, ConsoleColor.White, ConsoleColor.DarkYellow);
 			settings.Show(19, 14, 51, 24, "Ustawienia", "Enter - zatwierdź  Tab - zmień menu                    ");
 			bool exit = false;
 			bool exit2 = false;
+            int menuposh = 0;
+            int menuposv = 0;
 			do
 			{
 				menuv.PrintMenuV(3);
 				do
 				{
-					int v = menuh.ShowHorizontal(true, true);
+					int v = menuh.ShowHorizontal(true, true, menuposh);
 					switch (v)
 					{
 						case 0:
+                            menuposh = v;
 							string nickname2 = Nick();
 							if (nickname2 != "") { nickname = nickname2; }
 							settings.Redraw();
-							poz[0] = "Nick (" + nickname + ")";
-							menuh = new Menu(poz, Cursor.CenterX() - 1 - poz[0].Length / 2, 17, ConsoleColor.White, ConsoleColor.DarkYellow);
+							menuh.entry[0] = "Nick (" + nickname + ")";
 							menuv.PrintMenuV(3);
-							break;
+							continue;
+                        case 1:
+                            menuposh = v;
+                            SnakeColor();
+                            menudialog.Redraw();
+                            settings.Redraw();
+                            menuv.PrintMenuV(3);
+                            continue;
 						case -2:
+                            menuposh = menuh.prevPos;
 							exit = true;
 							break;
 						case -1:
@@ -249,7 +261,7 @@ namespace Sharpie
 				menuh.PrintMenuH();
 				do
 				{
-					int value = menuv.ShowVertical(3, true, true);
+					int value = menuv.ShowVertical(3, true, true, menuposv);
 					switch (value)
 					{
 						case 0:
@@ -263,14 +275,17 @@ namespace Sharpie
 							exit2 = true;
 							continue;
 						case 2:
+                            menuposv = value;
+                            exit = true;
 							Properties.Settings.Default.Nick = nickname;
 							Properties.Settings.Default.Save();
-							continue;
+                            break;
 						case -1:
 							exit = true;
 							exit2 = true;
 							break;
 						case -2:
+                            menuposv = menuv.prevPos;
 							exit = true;
 							break;
 					}
@@ -287,6 +302,33 @@ namespace Sharpie
 			nickname = nicktb.Show();
 			return nickname;
 		}
+
+        private static void SnakeColor()
+        {
+            Dialog snake = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkGray);
+            string[] poz = new string[8];
+            for (int i = 0; i < 8; i++)
+            {
+                poz[i] = "OOOOOO";
+            }
+            ConsoleColor[] kolory = new ConsoleColor[] { ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Gray, ConsoleColor.Green, ConsoleColor.Magenta, ConsoleColor.Red, ConsoleColor.White, ConsoleColor.Yellow };
+            ColorMenu menu = new ColorMenu(poz, kolory, Cursor.CenterX() - poz[0].Length / 2, 14, ConsoleColor.Black, ConsoleColor.DarkGray);
+            snake.Show(Cursor.CenterX() - 13, 12, Cursor.CenterX() + 13, 30, "Kolor węża", "Enter - wybór  ESC - anuluj           ");
+            int colormenupos = 0;
+            for (int i = 0; i < kolory.Length; i++)
+            {
+                if (kolory[i] == Settings.Default.SnakeColor)
+                {
+                    colormenupos = i;
+                }
+            }
+            int value = menu.ShowHorizontal(true, false, colormenupos);
+            if (value != -1)
+            {
+                Settings.Default.SnakeColor = kolory[value];
+            }
+            snake.Clear();
+        }
 
 		private static void Wyniki()
 		{
@@ -356,7 +398,7 @@ namespace Sharpie
             inst.WriteOn("Kl. kierunkowe - kierunek węża", Cursor.CenterY() - 4);
             inst.WriteOn("ESC - menu pauzy", Cursor.CenterY() - 3);
             inst.WriteOn("Twoim zadaniem jest jeść jedzenie, aby rosnąć i zbierać punkty uważając przy tym, żeby nie zderzyć się ze ścianą lub samym sobą.", Cursor.CenterY());
-            menu.ShowVertical(0, true, false);
+            menu.ShowVertical(0, true, false, 0);
         }
 
 		private static void Ogrze()
@@ -373,7 +415,7 @@ namespace Sharpie
 			ogrze.WriteOn("O autorze:", 24);
 			ogrze.WriteOn("Wszelkie propozycje, prośby, zapytania proszę przesyłać na adres: adirucio96@gmail.com. Błędy zgłaszać na stronie projektu.", 25);
 			ogrze.WriteOn("Dla A. :* (niech się moja dziewczyna cieszy :D)", 30);
-			menu.ShowVertical(0, false, false);
+			menu.ShowVertical(0, false, false, 0);
 			Console.ResetColor();
 
 		}
@@ -383,7 +425,7 @@ namespace Sharpie
 			Menu exitmenu = new Menu(new string[] { "Tak, mama mnie wzywa", "Coś ty, żartowałem/am" }, Text.CenterX(Locale.exitquestion), Cursor.CenterY(), ConsoleColor.White, ConsoleColor.Red);
 			Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
 			dialog.Show(Text.CenterX(Locale.exitquestion) - 2, Cursor.CenterY() - 2, Cursor.CenterX() + Locale.exitquestion.Length / 2 + 3, Cursor.CenterY() + 4, "Wyjść z gry?", "ESC - powrót ");
-			int value = exitmenu.ShowHorizontal(true, false);
+			int value = exitmenu.ShowHorizontal(true, false, 0);
 			dialog.Clear();
 			if (value == 0) { return true; }
 			else { return false; }

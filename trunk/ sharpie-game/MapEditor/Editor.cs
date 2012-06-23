@@ -206,7 +206,7 @@ namespace MapEditor
             {
                 Menu menu = new Menu(new string[] { "Zapisz mapę", "Instrukcja", "", "Powrót do menu" }, Console.WindowWidth - 19, Console.WindowHeight - 10, ConsoleColor.White, ConsoleColor.DarkMagenta);
                 pause.Show(Console.WindowWidth - 21, Console.WindowHeight - 12, Console.WindowWidth - 2, Console.WindowHeight - 3, "Menu", "ESC - powrót    ");
-                int value = menu.ShowHorizontal(true, false);
+                int value = menu.ShowHorizontal(true, false, 0);
                 switch (value)
                 {
                     case -1:
@@ -225,7 +225,7 @@ namespace MapEditor
                         Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
                         dialog.Show(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4, "Wyjście", "ESC - powrót     ");
                         dialog.WriteOn("Wyjść do menu?", Cursor.CenterY());
-                        int v = exitmenu.ShowVertical(2, true, false);
+                        int v = exitmenu.ShowVertical(2, true, false, 0);
                         Console.ResetColor();
                         RegenBoard(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4);
                         switch (v)

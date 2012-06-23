@@ -14,6 +14,7 @@ namespace Sharpie
 			Console.SetWindowSize(70, 41);
 			Console.Title = name;
 			Console.CursorVisible = false;
+            
 			do
 			{
 				Interface.Draw();

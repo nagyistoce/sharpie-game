@@ -34,5 +34,17 @@ namespace Sharpie.Properties {
                 this["Nick"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
+        public global::System.ConsoleColor SnakeColor {
+            get {
+                return ((global::System.ConsoleColor)(this["SnakeColor"]));
+            }
+            set {
+                this["SnakeColor"] = value;
+            }
+        }
     }
 }

@@ -90,6 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorMenu.cs" />
     <Compile Include="Cursor.cs" />
     <Compile Include="Dialog.cs" />
     <Compile Include="Game.cs" />

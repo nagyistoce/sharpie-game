@@ -69,7 +69,7 @@ namespace MapEditor
 			Menu menu = new Menu(new string[] { "Nowa mapa", "Ładuj mapę", "Instrukcja", "O programie", "", "Aktualizuj" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
 			menudialog.Show(27, 13, 43, 27, "Menu", "ESC - wyjście");
 			Editor edit;
-			int value = menu.ShowHorizontal(true, false);
+			int value = menu.ShowHorizontal(true, false, menu.prevPos);
 			switch (value)
 			{
 				case -1: // wyjście z programu
@@ -110,7 +110,7 @@ namespace MapEditor
             inst.WriteOn("CapsLock - blokuje element", Cursor.CenterY() - 1);
 			inst.WriteOn("ESC - menu", Cursor.CenterY());
 			inst.WriteOn("W próżni nie jest generowane jedzenie, najlepiej ją stawiać w polach otoczonych ścianą. Na nowej mapie wszędzie jest powietrze.", Cursor.CenterY() + 2);
-			menu.ShowVertical(0, true, false);
+			menu.ShowVertical(0, true, false, 0);
 		}
 
 		private void Oprogramie()
@@ -127,7 +127,7 @@ namespace MapEditor
 			oprog.WriteOn("O autorze:", 24);
 			oprog.WriteOn("Wszelkie propozycje, prośby, zapytania proszę przesyłać na adres: adirucio96@gmail.com. Błędy zgłaszać na stronie projektu.", 25);
 			oprog.WriteOn("Dla A. :* (niech się moja dziewczyna cieszy :D)", 30);
-			menu.ShowVertical(0, true, false);
+			menu.ShowVertical(0, true, false, 0);
 			Console.ResetColor();
 
 		}
@@ -138,7 +138,7 @@ namespace MapEditor
 			Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
 			dialog.Show(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4, "Wyjście", "ESC - powrót ");
 			dialog.WriteOn("Wyjść z programu?", Cursor.CenterY());
-			int value = exitmenu.ShowVertical(2, true, false);
+			int value = exitmenu.ShowVertical(2, true, false, 0);
 			dialog.Clear();
 			if (value == 0) { return true; }
 			else { return false; }

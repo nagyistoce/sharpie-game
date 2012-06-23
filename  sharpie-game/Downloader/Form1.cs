@@ -66,6 +66,8 @@ namespace Downloader
             {
                 WebClient klient;
                 bool retry;
+                
+
 
                 if (drzewo.Nodes[0].Checked)
                 {
@@ -215,6 +217,11 @@ namespace Downloader
         private void foldertb_Enter(object sender, EventArgs e)
         {
             previousFolder = foldertb.Text;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            
         }
 
     }

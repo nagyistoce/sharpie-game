@@ -50,6 +50,7 @@ namespace Sharpie
             {
                 for (int y = y1; y <= y2; y++)
                 {
+                    Console.ResetColor();
                     Console.SetCursorPosition(x, y);
                     Console.Write(" ");
                 }

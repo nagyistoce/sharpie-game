@@ -5,5 +5,8 @@
     <Setting Name="Nick" Type="System.String" Scope="User">
       <Value Profile="(Default)">Gracz</Value>
     </Setting>
+    <Setting Name="SnakeColor" Type="System.ConsoleColor" Scope="User">
+      <Value Profile="(Default)">Green</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

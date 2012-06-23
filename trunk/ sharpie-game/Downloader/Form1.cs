@@ -89,7 +89,10 @@ namespace Downloader
                             klient.DownloadFileCompleted += new AsyncCompletedEventHandler(klient_DownloadFileCompleted);
                             this.UseWaitCursor = true;
                             klient.DownloadFileAsync(new Uri("http://sharpie.cba.pl/files/Sharpie/Sharpie.exe"), path);
-                            while (klient.IsBusy) ;
+                            while (klient.IsBusy)
+                            {
+                                this.Update();
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -125,6 +128,10 @@ namespace Downloader
                             klient.DownloadFileCompleted += new AsyncCompletedEventHandler(klient_DownloadFileCompleted);
                             this.UseWaitCursor = true;
                             klient.DownloadFileAsync(new Uri("http://sharpie.cba.pl/files/Updater/Updater.exe"), path);
+                            while (klient.IsBusy)
+                            {
+                                this.Update();
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -160,6 +167,10 @@ namespace Downloader
                             klient.DownloadFileCompleted += new AsyncCompletedEventHandler(klient_DownloadFileCompleted);
                             this.UseWaitCursor = true;
                             klient.DownloadFileAsync(new Uri("http://sharpie.cba.pl/files/MapEditor/MapEditor.exe"), path);
+                            while (klient.IsBusy)
+                            {
+                                this.Update();
+                            }
                         }
                         catch (Exception ex)
                         {

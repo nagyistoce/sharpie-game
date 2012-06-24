@@ -33,26 +33,28 @@ namespace Downloader
             }
         }
 
+        int pobranych;
+        int zaznaczonych;
         private void pobierzbt_Click(object sender, EventArgs e)
         {
+            pobranych = 0;
+            zaznaczonych = 0;
             pobierzbt.Enabled = false;
             drzewo.Enabled = false;
             foldertb.Enabled = false;
             folderbt.Enabled = false;
             progressBar1.Enabled = true;
 
-            bool existchecked = false;
             bool pathentered = false;
             foreach (TreeNode node in drzewo.Nodes)
             {
                 if (node.Checked)
                 {
-                    existchecked = true;
-                    break;
+                    zaznaczonych++;
                 }
             }
 
-            if (!existchecked)
+            if (zaznaczonych == 0)
             {
                 MessageBox.Show("Nie zaznaczyłeś żadnej rzeczy do pobrania!", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
@@ -62,12 +64,10 @@ namespace Downloader
                 pathentered = true;
             }
 
-            if (existchecked & pathentered)
+            if (zaznaczonych > 0 & pathentered)
             {
                 WebClient klient;
                 bool retry;
-                
-
 
                 if (drzewo.Nodes[0].Checked)
                 {
@@ -91,10 +91,6 @@ namespace Downloader
                             klient.DownloadFileCompleted += new AsyncCompletedEventHandler(klient_DownloadFileCompleted);
                             this.UseWaitCursor = true;
                             klient.DownloadFileAsync(new Uri("http://sharpie.cba.pl/files/Sharpie/Sharpie.exe"), path);
-                            while (klient.IsBusy)
-                            {
-                                this.Update();
-                            }
                         }
                         catch (Exception ex)
                         {
@@ -130,10 +126,6 @@ namespace Downloader
                             klient.DownloadFileCompleted += new AsyncCompletedEventHandler(klient_DownloadFileCompleted);
                             this.UseWaitCursor = true;
                             klient.DownloadFileAsync(new Uri("http://sharpie.cba.pl/files/Updater/Updater.exe"), path);
-                            while (klient.IsBusy)
-                            {
-                                this.Update();
-                            }
                         }
                         catch (Exception ex)
                         {
@@ -169,10 +161,6 @@ namespace Downloader
                             klient.DownloadFileCompleted += new AsyncCompletedEventHandler(klient_DownloadFileCompleted);
                             this.UseWaitCursor = true;
                             klient.DownloadFileAsync(new Uri("http://sharpie.cba.pl/files/MapEditor/MapEditor.exe"), path);
-                            while (klient.IsBusy)
-                            {
-                                this.Update();
-                            }
                         }
                         catch (Exception ex)
                         {
@@ -183,27 +171,32 @@ namespace Downloader
                             }
                         }
                     } while (retry);
-
                 }
-
-                MessageBox.Show("Wszystkie pliki zostały pobrane!", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            pobierzbt.Enabled = true;
-            drzewo.Enabled = true;
-            foldertb.Enabled = true;
-            folderbt.Enabled = true;
         }
 
         void klient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             this.UseWaitCursor = false;
+            pobranych++;
+
+            pobierzbt.Text = "100 % " + pobranych + "/" + zaznaczonych;
+            if (pobranych == zaznaczonych)
+            {
+                MessageBox.Show("Wszystkie pliki zostały pobrane!", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                pobierzbt.Enabled = true;
+                pobierzbt.Text = "Pobierz!";
+                drzewo.Enabled = true;
+                foldertb.Enabled = true;
+                folderbt.Enabled = true;
+            }
         }
 
         void klient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             progressBar1.Value = e.ProgressPercentage;
+            pobierzbt.Text = e.ProgressPercentage + "% " + pobranych + "/" + zaznaczonych;
         }
-
 
         private void foldertb_Leave(object sender, EventArgs e)
         {
@@ -221,7 +214,7 @@ namespace Downloader
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
         }
 
     }

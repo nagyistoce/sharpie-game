@@ -1,21 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
+using System.Text;
+using System.Diagnostics;
+using System.IO;
 
-namespace Updater
+namespace installupdate
 {
-	static class Program
-	{
-		/// <summary>
-		/// Command line arguments: /gameonly (aktualizuje tylko grę), /editoronly (aktualizuje tylko edytor), /startgame (uruchamia grę po aktualizacji).
-		/// </summary>
-		[STAThread]
-		static void Main()
-		{
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Form1());
-		}
-	}
+    class Program
+    {
+        private static Process GetaProcess(string processname)
+        {
+            Process[] aProc = Process.GetProcessesByName(processname);
+
+            if (aProc.Length > 0)
+                return aProc[0];
+
+            else return null;
+        }
+
+        static void Main(string[] args)
+        {
+            string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.updt");
+            foreach (string s in files)
+            {
+                Process proc = GetaProcess(Path.GetFileName(s));
+                proc.CloseMainWindow();
+                proc.WaitForExit();
+                proc.Close();
+                File.Move(s, Path.GetFileNameWithoutExtension(s));
+                proc.Start();
+            }
+        }
+    }
 }

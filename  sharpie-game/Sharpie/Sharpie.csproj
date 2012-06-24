@@ -88,12 +88,16 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Update">
+      <HintPath>..\Update\bin\Debug\Update.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorMenu.cs" />
     <Compile Include="Cursor.cs" />
     <Compile Include="Dialog.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameUpdt.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Program.cs" />

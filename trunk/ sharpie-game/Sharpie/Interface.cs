@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using System.Reflection;
 using System.Net;
 using System.Diagnostics;
 using Sharpie.Properties;
+using Utils;
+using Menus;
 
 namespace Sharpie
 {
@@ -17,45 +18,11 @@ namespace Sharpie
 		static string filename;
         static int menupos = 0;
 
-		public static void Draw()
-		{
-			Console.ResetColor();
-			Console.Clear();
-			Console.SetBufferSize(Console.WindowWidth + 1, Console.WindowHeight + 1);
-			Console.BackgroundColor = ConsoleColor.Gray;
-			Console.ForegroundColor = ConsoleColor.Black;
-			Console.SetCursorPosition(0, Console.WindowHeight - 1);
-			for (int i = 1; i <= Console.WindowWidth; i++)
-			{
-				Console.Write(" ");
-			}
-			Console.SetCursorPosition(0, 0);
-			WritePanelRight("v" + Program.version);    //Wersja programu
-			Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
-		}
-
 		public static void Score(int score)
 		{
 			Console.BackgroundColor = ConsoleColor.Gray;
 			Console.ForegroundColor = ConsoleColor.Black;
-			WritePanelLeft("Wynik: " + score + "           ");
-			Console.ResetColor();
-		}
-
-		public static void WritePanelLeft(string text)
-		{
-			Console.BackgroundColor = ConsoleColor.Gray;
-			Console.ForegroundColor = ConsoleColor.Black;
-			Console.SetCursorPosition(1, Console.WindowHeight - 1);
-			Console.Write(text);
-			Console.ResetColor();
-		}
-
-		public static void WritePanelRight(string text)
-		{
-			Console.BackgroundColor = ConsoleColor.Gray;
-			Console.ForegroundColor = ConsoleColor.Black;
-			Text.WriteXY(Console.WindowWidth - 1 - text.Length, Console.WindowHeight - 1, text);
+			Utils.Panel.WritePanelLeft("Wynik: " + score + "           ");
 			Console.ResetColor();
 		}
 
@@ -67,11 +34,11 @@ namespace Sharpie
 			string d = "    █  █   █  █████  █   █  █      █  █    ";
 			string e = "█████  █   █  █   █  █   █  █      █  █████";
 
-			Text.WriteXY(Cursor.CenterX() - a.Length / 2, 3, a);
-			Text.WriteXY(Cursor.CenterX() - b.Length / 2, 4, b);
-			Text.WriteXY(Cursor.CenterX() - c.Length / 2, 5, c);
-			Text.WriteXY(Cursor.CenterX() - d.Length / 2, 6, d);
-			Text.WriteXY(Cursor.CenterX() - e.Length / 2, 7, e);
+			Text.WriteXY(Crs.CenterX() - a.Length / 2, 3, a);
+			Text.WriteXY(Crs.CenterX() - b.Length / 2, 4, b);
+			Text.WriteXY(Crs.CenterX() - c.Length / 2, 5, c);
+			Text.WriteXY(Crs.CenterX() - d.Length / 2, 6, d);
+			Text.WriteXY(Crs.CenterX() - e.Length / 2, 7, e);
 		}
 
         static Dialog menudialog;
@@ -86,10 +53,10 @@ namespace Sharpie
             {
                 if (GameUpdt.IsInternet())
                 {
-                    string dialogtext = "Szukam dostępnych aktualizacji ...";
+                    string dialogtext = "Szukam aktualizacji ...";
                     Dialog szukamupdt = new Dialog(0, ConsoleColor.White, ConsoleColor.Red);
-                    szukamupdt.Show(Cursor.CenterX() - dialogtext.Length / 2 - 2, Cursor.CenterY() - 2, Cursor.CenterX() + dialogtext.Length / 2 + 2, Cursor.CenterY() + 2);
-                    szukamupdt.WriteOn(dialogtext, Cursor.CenterY());
+                    szukamupdt.Show(Crs.CenterX() - dialogtext.Length / 2 - 2, Crs.CenterY() - 2, Crs.CenterX() + dialogtext.Length / 2 + 2, Crs.CenterY() + 2);
+                    szukamupdt.WriteOn(dialogtext, Crs.CenterY());
                     GameUpdt.UpdateProcedure();
                     szukamupdt.Clear();
                 }
@@ -180,15 +147,15 @@ namespace Sharpie
 		private static void OpenMapDialog()
 		{
 			string path = @"Maps\";
-			OpenFileDialog open = new OpenFileDialog();
+			System.Windows.Forms.OpenFileDialog open = new System.Windows.Forms.OpenFileDialog();
 			open.Title = "Otwórz mapę ...";
 			open.Filter = "Sharpie Map Format (*.smf)|*.smf";
 			open.DefaultExt = "smf";
 			open.AutoUpgradeEnabled = true;
 			open.AddExtension = true;
 			open.InitialDirectory = Path.GetFullPath(path);
-			DialogResult result = open.ShowDialog();
-			if (result == DialogResult.Cancel)
+			System.Windows.Forms.DialogResult result = open.ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.Cancel)
 			{
 				filename = "";
 			}
@@ -230,7 +197,7 @@ namespace Sharpie
 			Dialog settings = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkYellow);
 			Menu menuv = new Menu(new string[] { "OK", "Anuluj", "Zastosuj" }, 22, 22, ConsoleColor.White, ConsoleColor.DarkYellow);
 			string[] poz = { "Nick (" + nickname + ")", "Kolor węża" };
-			Menu menuh = new Menu(poz, Cursor.CenterX() - 1 - poz[1].Length / 2, 16, ConsoleColor.White, ConsoleColor.DarkYellow);
+			Menu menuh = new Menu(poz, Crs.CenterX() - 1 - poz[1].Length / 2, 16, ConsoleColor.White, ConsoleColor.DarkYellow);
 			settings.Show(19, 14, 51, 24, "Ustawienia", "Enter - zatwierdź  Tab - zmień menu                    ");
 			bool exit = false;
 			bool exit2 = false;
@@ -310,8 +277,8 @@ namespace Sharpie
 		private static string Nick()
 		{
 			Dialog nick = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkGreen);
-			Textbox nicktb = new Textbox(Cursor.CenterX() - 7, Cursor.CenterY() - 1, 14);
-			nick.Show(Cursor.CenterX() - 11, Cursor.CenterY() - 4, Cursor.CenterX() + 11, Cursor.CenterY() + 2, "Nick", "Enter - zatwierdź  Puste pole anuluje zmiany");
+			Textbox nicktb = new Textbox(Crs.CenterX() - 7, Crs.CenterY() - 1, 14);
+			nick.Show(Crs.CenterX() - 11, Crs.CenterY() - 4, Crs.CenterX() + 11, Crs.CenterY() + 2, "Nick", "Enter - zatwierdź  Puste pole anuluje zmiany");
 			string nickname;
 			nickname = nicktb.Show();
 			return nickname;
@@ -326,8 +293,8 @@ namespace Sharpie
                 poz[i] = "OOOOOO";
             }
             ConsoleColor[] kolory = new ConsoleColor[] { ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Gray, ConsoleColor.Green, ConsoleColor.Magenta, ConsoleColor.Red, ConsoleColor.White, ConsoleColor.Yellow };
-            ColorMenu menu = new ColorMenu(poz, kolory, Cursor.CenterX() - poz[0].Length / 2, 14, ConsoleColor.Black, ConsoleColor.DarkGray);
-            snake.Show(Cursor.CenterX() - 13, 12, Cursor.CenterX() + 13, 30, "Kolor węża", "Enter - wybór  ESC - anuluj           ");
+            ColorMenu menu = new ColorMenu(poz, kolory, Crs.CenterX() - poz[0].Length / 2, 14, ConsoleColor.Black, ConsoleColor.DarkGray);
+            snake.Show(Crs.CenterX() - 13, 12, Crs.CenterX() + 13, 30, "Kolor węża", "Enter - wybór  ESC - anuluj           ");
             int colormenupos = 0;
             for (int i = 0; i < kolory.Length; i++)
             {
@@ -347,7 +314,7 @@ namespace Sharpie
 		private static void Wyniki()
 		{
 			Dialog listawynikow = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkGray);
-			listawynikow.Show(Cursor.CenterX() - 15, Cursor.CenterY() - 7, Cursor.CenterX() + 14, Cursor.CenterY() + 7, "Wyniki", "ESC - powrót  Lewo, prawo - zmiana listy");
+			listawynikow.Show(Crs.CenterX() - 15, Crs.CenterY() - 7, Crs.CenterX() + 14, Crs.CenterY() + 7, "Wyniki", "ESC - powrót  Lewo, prawo - zmiana listy");
 			string[] poziomy = { "Bułka z masłem ►", "◄ Średni ►", "◄ Hardcore" };
 			int y;
 			Score score = new Score();
@@ -358,7 +325,7 @@ namespace Sharpie
 			{
 				Console.BackgroundColor = ConsoleColor.DarkGray;
 				Console.ForegroundColor = ConsoleColor.Gray;
-				Text.WriteXY(Cursor.CenterX() - poziomy[y].Length / 2 - 3, Cursor.CenterY() - 5, "   " + poziomy[y] + "   ");
+				Text.WriteXY(Crs.CenterX() - poziomy[y].Length / 2 - 3, Crs.CenterY() - 5, "   " + poziomy[y] + "   ");
 				Console.ForegroundColor = ConsoleColor.White;
 				if (score.GetCount(y) > 0)
 				{
@@ -366,8 +333,8 @@ namespace Sharpie
 					for (int i = 0; i < score.GetCount(y); i++)
 					{
 						int pos = i + 1;
-						Text.WriteXY(Cursor.CenterX() - 13, Cursor.CenterY() - 3 + i, pos.ToString() + ". " + score.GetScore(y, i).nick + " (" + score.GetScore(y, i).map + ")");
-						Text.WriteXY(Cursor.CenterX() + 13 - score.GetScore(y, i).score.ToString().Length - 4, Cursor.CenterY() - 3 + i, "... " + score.GetScore(y, i).score.ToString());
+						Text.WriteXY(Crs.CenterX() - 13, Crs.CenterY() - 3 + i, pos.ToString() + ". " + score.GetScore(y, i).nick + " (" + score.GetScore(y, i).map + ")");
+						Text.WriteXY(Crs.CenterX() + 13 - score.GetScore(y, i).score.ToString().Length - 4, Crs.CenterY() - 3 + i, "... " + score.GetScore(y, i).score.ToString());
 					}
 				}
 				else
@@ -375,8 +342,8 @@ namespace Sharpie
 					string info = "Nie masz żadnych wyników";
 					string info2 = "na tym poziomie trudności!";
 					Console.ForegroundColor = ConsoleColor.Red;
-					Text.WriteXY(Cursor.CenterX() - info.Length / 2, Cursor.CenterY() - 1, info);
-					Text.WriteXY(Cursor.CenterX() - info2.Length / 2, Cursor.CenterY(), info2);
+					Text.WriteXY(Crs.CenterX() - info.Length / 2, Crs.CenterY() - 1, info);
+					Text.WriteXY(Crs.CenterX() - info2.Length / 2, Crs.CenterY(), info2);
 					Console.ForegroundColor = ConsoleColor.White;
 				}
 				key = Console.ReadKey(true);
@@ -406,19 +373,19 @@ namespace Sharpie
         public static void Instrukcja()
         {
             Dialog inst = new Dialog(1, ConsoleColor.Black, ConsoleColor.Gray);
-            Menu menu = new Menu(new string[] { "OK" }, Cursor.CenterX() - 2, Cursor.CenterY() + 8, ConsoleColor.Black, ConsoleColor.Gray);
-            inst.Show(Cursor.CenterX() - 19, Cursor.CenterY() - 8, Cursor.CenterX() + 19, Cursor.CenterY() + 10, "Instrukcja", "Enter - wybór");
-            inst.WriteOn("Sterowanie:", Cursor.CenterY() - 6);
-            inst.WriteOn("Kl. kierunkowe - kierunek węża", Cursor.CenterY() - 4);
-            inst.WriteOn("ESC - menu pauzy", Cursor.CenterY() - 3);
-            inst.WriteOn("Twoim zadaniem jest jeść jedzenie, aby rosnąć i zbierać punkty uważając przy tym, żeby nie zderzyć się ze ścianą lub samym sobą.", Cursor.CenterY());
+            Menu menu = new Menu(new string[] { "OK" }, Crs.CenterX() - 2, Crs.CenterY() + 8, ConsoleColor.Black, ConsoleColor.Gray);
+            inst.Show(Crs.CenterX() - 19, Crs.CenterY() - 8, Crs.CenterX() + 19, Crs.CenterY() + 10, "Instrukcja", "Enter - wybór");
+            inst.WriteOn("Sterowanie:", Crs.CenterY() - 6);
+            inst.WriteOn("Kl. kierunkowe - kierunek węża", Crs.CenterY() - 4);
+            inst.WriteOn("ESC - menu pauzy", Crs.CenterY() - 3);
+            inst.WriteOn("Twoim zadaniem jest jeść jedzenie, aby rosnąć i zbierać punkty uważając przy tym, żeby nie zderzyć się ze ścianą lub samym sobą.", Crs.CenterY());
             menu.ShowVertical(0, true, false, 0);
         }
 
 		private static void Ogrze()
 		{
 			Dialog ogrze = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkCyan);
-			Menu menu = new Menu(new string[] { "OK" }, Cursor.CenterX() - 2, 33, ConsoleColor.White, ConsoleColor.DarkCyan);
+			Menu menu = new Menu(new string[] { "OK" }, Crs.CenterX() - 2, 33, ConsoleColor.White, ConsoleColor.DarkCyan);
 			ogrze.Show(14, 11, 56, 35, "O grze", "Enter - wybierz ");
 			Console.ForegroundColor = ConsoleColor.White;
 			Console.BackgroundColor = ConsoleColor.DarkCyan;
@@ -436,9 +403,9 @@ namespace Sharpie
 
 		private static bool Exit()
 		{
-			Menu exitmenu = new Menu(new string[] { "Tak, mama mnie wzywa", "Coś ty, żartowałem/am" }, Text.CenterX(Locale.exitquestion), Cursor.CenterY(), ConsoleColor.White, ConsoleColor.Red);
+			Menu exitmenu = new Menu(new string[] { "Tak, mama mnie wzywa", "Coś ty, żartowałem/am" }, Text.CenterX(Locale.exitquestion), Crs.CenterY(), ConsoleColor.White, ConsoleColor.Red);
 			Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
-			dialog.Show(Text.CenterX(Locale.exitquestion) - 2, Cursor.CenterY() - 2, Cursor.CenterX() + Locale.exitquestion.Length / 2 + 3, Cursor.CenterY() + 4, "Wyjść z gry?", "ESC - powrót ");
+			dialog.Show(Text.CenterX(Locale.exitquestion) - 2, Crs.CenterY() - 2, Crs.CenterX() + Locale.exitquestion.Length / 2 + 3, Crs.CenterY() + 4, "Wyjść z gry?", "ESC - powrót ");
 			int value = exitmenu.ShowHorizontal(true, false, 0);
 			dialog.Clear();
 			if (value == 0) { return true; }

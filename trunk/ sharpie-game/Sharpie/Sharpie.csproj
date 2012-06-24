@@ -49,10 +49,11 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Sharpie.Program</StartupObject>
@@ -79,6 +80,9 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
+    <Reference Include="Menus">
+      <HintPath>..\Menus\bin\Debug\Menus.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -88,18 +92,14 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Update">
-      <HintPath>..\Update\bin\Debug\Update.dll</HintPath>
+    <Reference Include="Utils">
+      <HintPath>..\Utils\bin\Debug\Utils.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColorMenu.cs" />
-    <Compile Include="Cursor.cs" />
-    <Compile Include="Dialog.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameUpdt.cs" />
     <Compile Include="Interface.cs" />
-    <Compile Include="Menu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Locale.cs" />
@@ -110,8 +110,6 @@
     </Compile>
     <Compile Include="Score.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Text.cs" />
-    <Compile Include="Textbox.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

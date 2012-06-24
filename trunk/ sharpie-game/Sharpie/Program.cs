@@ -4,10 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
-using System.IO;
-using System.Reflection;
-using System.Threading;
-using Update;
+using Utils;
 using System.Net;
 
 namespace Sharpie
@@ -24,7 +21,7 @@ namespace Sharpie
 			Console.CursorVisible = false;
 			do
 			{
-				Interface.Draw();
+				Utils.Panel.Draw(version);
 				Interface.Glowny();
 			} while (true);
 		}

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading;
+using Utils;
 
 namespace Sharpie
 {
@@ -52,8 +53,8 @@ namespace Sharpie
                         {
                             Dialog error = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
                             string wiad = "Niepoprawny wynik w 'scores.dat'. Zostanie on usunięty.";
-                            error.Show(Cursor.CenterX() - wiad.Length / 2 - 2, Cursor.CenterY() - 2, Cursor.CenterX() + wiad.Length / 2 + 2, Cursor.CenterY() + 2, "Błąd", "ENTER - zatwierdź                                    ");
-                            error.WriteOn(wiad, Cursor.CenterY());
+                            error.Show(Crs.CenterX() - wiad.Length / 2 - 2, Crs.CenterY() - 2, Crs.CenterX() + wiad.Length / 2 + 2, Crs.CenterY() + 2, "Błąd", "ENTER - zatwierdź                                    ");
+                            error.WriteOn(wiad, Crs.CenterY());
                             ConsoleKeyInfo key;
                             do
                             {

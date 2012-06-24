@@ -13,14 +13,14 @@ namespace Sharpie
         public static bool WasUpdateChecked = false;
         public static void UpdateProcedure()
         {
-            Update updt = new Update(0, System.Windows.Forms.Application.ExecutablePath);
-            bool IsUpdate = updt.CheckUpdate();
+            Update updt = new Update(0, System.IO.Path.GetFileName(System.Windows.Forms.Application.ExecutablePath));
+            bool IsUpdate = updt.CheckUpdate(Program.version);
             if (IsUpdate)
             {
                 string dialogtext = "Dostępna jest nowa wersja gry. Zaktualizować?";
                 Dialog updtdialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkGreen);
                 Menu updtmenu = new Menu(new string[] { "Tak", "Nie" }, Crs.CenterX() - 6, Crs.CenterY() + 2, ConsoleColor.White, ConsoleColor.DarkGreen);
-                updtdialog.Show(Crs.CenterX() - 17, Crs.CenterY() - 3, Crs.CenterX() + 17, Crs.CenterY() + 4, "Aktualizacja", "Enter - wybierz        ");
+                updtdialog.Show(Crs.CenterX() - 17, Crs.CenterY() - 3, Crs.CenterX() + 17, Crs.CenterY() + 4, "Aktualizacja", "Enter - wybierz");
                 updtdialog.WriteOn(dialogtext, Crs.CenterY() - 1);
                 int value = updtmenu.ShowVertical(4, true, false, 0);
                 switch (value)

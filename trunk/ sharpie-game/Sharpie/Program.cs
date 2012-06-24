@@ -19,6 +19,10 @@ namespace Sharpie
 			Console.SetWindowSize(70, 41);
 			Console.Title = name;
 			Console.CursorVisible = false;
+            while (System.IO.File.Exists("installupdate.exe"))
+            {
+                System.IO.File.Delete("installupdate.exe");
+            }
 			do
 			{
 				Utils.Panel.Draw(version);

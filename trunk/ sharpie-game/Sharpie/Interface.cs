@@ -65,7 +65,7 @@ namespace Sharpie
 			menudialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkBlue);
 			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "Instrukcja", "O grze" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
 
-			menudialog.Show(27, 13, 43, 25, "Menu", "ESC - wyjście");
+			menudialog.Show(27, 13, 43, 25, "Menu", "ESC - wyjście   ");
 			int value = menu.ShowHorizontal(true, false, menupos);
 			switch (value)
 			{

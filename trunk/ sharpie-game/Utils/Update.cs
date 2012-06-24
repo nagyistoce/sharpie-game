@@ -5,57 +5,88 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 using System.Net;
+using System.Collections;
 
 namespace Utils
 {
     public class Update
     {
-        string localver;
-        public string filepath, dirpath;
-        string[] versionfile = new string[4];
+        public string filepath, dirpath, appname;
+        string odpowiedz;
+        string appver;
         int mode;  // 0 - aktualizuje grę, reszta - edytor.
-        string ver;
-        string[] depend;
+        List<CompVer> lista = new List<CompVer>();
 
-        public Update(int mode, string apppath)
+        public Update(int mode, string appname)
         {
+            this.appname = appname;
+            this.filepath = Path.GetFullPath(appname);
+            this.dirpath = Path.GetDirectoryName(filepath);
             this.mode = mode;
-            this.filepath = apppath;
-            this.dirpath = Path.GetDirectoryName(apppath);
         }
 
-        public bool CheckUpdate()
+        struct CompVer
         {
-            localver = FileVersionInfo.GetVersionInfo(filepath).FileVersion.ToString();
+            public string component;
+            public string localver;
+            public string newver;
+
+            public CompVer(string component, string localver) : this(component, localver, "") { }
+
+            public CompVer(string component, string localver, string newver)
+            {
+                this.component = component;
+                this.localver = localver;
+                this.newver = newver;
+            }
+        }
+
+        public bool CheckUpdate(string localver)
+        {
             try
             {
-                WebRequest rq = WebRequest.Create("http://sharpie.cba.pl/files/update.txt");
+                WebRequest rq = WebRequest.Create("http://sharpie.cba.pl/files/" + Path.GetFileNameWithoutExtension(appname) + "/ver.txt");
                 rq.Credentials = CredentialCache.DefaultCredentials;
                 HttpWebResponse rp = (HttpWebResponse)rq.GetResponse();
                 Stream st = rp.GetResponseStream();
                 StreamReader sr = new StreamReader(st);
-                string odpowiedz = sr.ReadToEnd();
-                versionfile = odpowiedz.Split('\n');
+                odpowiedz = sr.ReadToEnd();
             }
             catch (Exception)
             {
                 return false;
             }
 
-            string[] temp;
-            if (mode == 0)
+            string[] temp = odpowiedz.Split(':');
+
+            appver = temp[0];
+            if (temp[1].Length > 0)
             {
-                temp = versionfile[1].Split(':');
-            }
-            else
-            {
-                temp = versionfile[3].Split(':');
+                foreach (string s in temp[1].Split(','))
+                {
+                    if (File.Exists(s))
+                    {
+                        lista.Add(new CompVer(s, FileVersionInfo.GetVersionInfo(s).FileVersion.ToString()));
+                    }
+                    else
+                    {
+                        lista.Add(new CompVer(s, ""));
+                    }
+                }
+
+                for (int i = 0; i < lista.Count; i++)
+                {
+
+                    WebRequest rq = WebRequest.Create("http://sharpie.cba.pl/files/DLLs/" + Path.GetFileNameWithoutExtension(lista[i].component) + "/ver.txt");
+                    rq.Credentials = CredentialCache.DefaultCredentials;
+                    HttpWebResponse rp = (HttpWebResponse)rq.GetResponse();
+                    Stream st = rp.GetResponseStream();
+                    StreamReader sr = new StreamReader(st);
+                    lista[i] = new CompVer(lista[i].component, lista[i].localver, sr.ReadToEnd());
+                }
             }
 
-            ver = temp[0];
-            depend = temp[1].Split(',');
-
-            if (localver != ver)
+            if (localver != appver)
             {
                 return true;
             }
@@ -79,19 +110,24 @@ namespace Utils
                     klient.DownloadFile(new Uri("http://sharpie.cba.pl/files/MapEditor/MapEditor.exe"), filepath + ".updt");
                 }
 
-                foreach (string s in depend) // pobranie wszystkich bibliotek
+                foreach (CompVer cv in lista) // pobranie wszystkich bibliotek
                 {
-                    klient.DownloadFile(new Uri("http://sharpie.cba.pl/files/Sharpie/" + s), dirpath + s + ".updt");
+                    if (cv.localver != cv.newver)
+                    {
+                        klient.DownloadFile(new Uri("http://sharpie.cba.pl/files/DLLs/" + Path.GetFileNameWithoutExtension(cv.component) + "/" + cv.component), Path.Combine(dirpath, cv.component + ".updt"));
+                    }
                 }
 
-                klient.DownloadFile(new Uri("http://sharpie.cba.pl/files/Updater/installupdate.exe"), Path.GetDirectoryName(filepath));
+                klient.DownloadFile(new Uri("http://sharpie.cba.pl/files/Updater/installupdate.exe"), Path.Combine(dirpath, "installupdate.exe"));
             }
             catch (System.Exception ex)
             {
-                if (File.Exists(filepath + ".updt"))  // przy błędzie usuwa pliki .updt.
+                string[] filenames = Directory.GetFiles(dirpath, "*.updt");
+                foreach (string file in filenames)
                 {
-                    File.Delete(filepath + ".updt");
+                    File.Delete(file);
                 }
+
                 error = ex.Message;
                 return false;
             }
@@ -101,7 +137,7 @@ namespace Utils
 
         public void Install()
         {
-            Process.Start("installupdate.exe", Process.GetCurrentProcess().ProcessName);
+            Process.Start("installupdate.exe", "\"" + Process.GetCurrentProcess().ProcessName + "\"");
         }
     }
 }

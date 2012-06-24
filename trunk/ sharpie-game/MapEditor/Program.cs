@@ -18,6 +18,11 @@ namespace MapEditor
             Console.Title = name;
             Console.CursorSize = 100;
             Console.CursorVisible = false;
+            if (System.IO.File.Exists("installupdate.exe"))
+            {
+                System.IO.File.Delete("installupdate.exe");
+            }
+
             do
             {
                 Panel.Draw(version);

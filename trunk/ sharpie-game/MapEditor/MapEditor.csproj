@@ -52,9 +52,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Update">
-      <HintPath>..\Update\bin\Debug\Update.dll</HintPath>
-    </Reference>
     <Reference Include="Utils">
       <HintPath>..\Utils\bin\Debug\Utils.dll</HintPath>
     </Reference>
@@ -66,12 +63,6 @@
     <Compile Include="Map.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Sharpie\Sharpie.csproj">
-      <Project>{0054AF06-A817-437F-82CE-5A7A1DCA3AA9}</Project>
-      <Name>Sharpie</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="map.ico" />

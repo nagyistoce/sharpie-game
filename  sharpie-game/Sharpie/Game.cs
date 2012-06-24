@@ -7,6 +7,8 @@ using System.IO;
 using System.Reflection;
 using Sharpie.Properties;
 using System.Diagnostics;
+using Utils;
+using Menus;
 
 
 /*
@@ -49,7 +51,7 @@ namespace Sharpie
         private Point bonus = new Point(0, 0); // byle jaki punkt
         LinkedList<Point> snake = new LinkedList<Point>();
         string body = "O";
-        private Point startpoint = new Point(Cursor.CenterX(), Cursor.CenterY());
+        private Point startpoint = new Point(Crs.CenterX(), Crs.CenterY());
         List<string> wall = new List<string> { "╔", "╗", "═", "║", "╚", "╝" };
         Thread readmove, odliczajbonus;
         ManualResetEvent threadpauser = new ManualResetEvent(true);
@@ -81,7 +83,7 @@ namespace Sharpie
             this.difficulty = difficulty;
             this.nick = nick;
 
-            Interface.Draw();
+            Panel.Draw(Program.version);
             Interface.Score(scorepoint);
             LoadMap(mapname);
             Start();
@@ -169,11 +171,11 @@ namespace Sharpie
                 {
                     if (j == 0 | j == Console.WindowWidth - 1)
                     {
-                        if ((j == 0) && (i == Cursor.CenterY() - 2)) { board[j, i] = "╝"; }
-                        else if ((j == 0) && (i == Cursor.CenterY() + 2)) { board[j, i] = "╗"; }
-                        else if ((j == Console.WindowWidth - 1) && (i == Cursor.CenterY() + 2)) { board[j, i] = "╔"; }
-                        else if ((j == Console.WindowWidth - 1) && (i == Cursor.CenterY() - 2)) { board[j, i] = "╚"; }
-                        else if ((i == Cursor.CenterY() - 1) || (i == Cursor.CenterY()) || (i == Cursor.CenterY() + 1)) { board[j, i] = " "; }
+                        if ((j == 0) && (i == Crs.CenterY() - 2)) { board[j, i] = "╝"; }
+                        else if ((j == 0) && (i == Crs.CenterY() + 2)) { board[j, i] = "╗"; }
+                        else if ((j == Console.WindowWidth - 1) && (i == Crs.CenterY() + 2)) { board[j, i] = "╔"; }
+                        else if ((j == Console.WindowWidth - 1) && (i == Crs.CenterY() - 2)) { board[j, i] = "╚"; }
+                        else if ((i == Crs.CenterY() - 1) || (i == Crs.CenterY()) || (i == Crs.CenterY() + 1)) { board[j, i] = " "; }
                         else if (board[j, i] == null) { board[j, i] = "║"; }
                         else { board[j, i] = " "; }
                     }
@@ -208,13 +210,13 @@ namespace Sharpie
         {
             Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkMagenta);
             Dialog pauza = new Dialog(0, ConsoleColor.White, ConsoleColor.Red);
-            dialog.Show(Text.CenterX(Locale.ready) - 2, Cursor.CenterY() - 4, Cursor.CenterX() + Locale.ready.Length / 2 + 1, Cursor.CenterY());
+            dialog.Show(Text.CenterX(Locale.ready) - 2, Crs.CenterY() - 4, Crs.CenterX() + Locale.ready.Length / 2 + 1, Crs.CenterY());
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
             Console.ForegroundColor = ConsoleColor.White;
-            Text.WriteXY(Text.CenterX(Locale.ready), Cursor.CenterY() - 2, Locale.ready);
+            Text.WriteXY(Text.CenterX(Locale.ready), Crs.CenterY() - 2, Locale.ready);
             Console.ResetColor();
             ConsoleKeyInfo key = Console.ReadKey(true);
-            Regen(Text.CenterX(Locale.ready) - 2, Cursor.CenterY() - 4, Cursor.CenterX() + Locale.ready.Length / 2 + 1, Cursor.CenterY());
+            Regen(Text.CenterX(Locale.ready) - 2, Crs.CenterY() - 4, Crs.CenterX() + Locale.ready.Length / 2 + 1, Crs.CenterY());
             switch (key.Key) // pierwszy ruch
             {
                 case ConsoleKey.UpArrow:
@@ -247,7 +249,7 @@ namespace Sharpie
                     exit = PauseMenu();
                     if (exit)
                     {
-                        Interface.WritePanelLeft("Czekaj chwilkę ...");
+                        Panel.WritePanelLeft("Czekaj chwilkę ...");
                         readmove.Abort();
                         break;
                     }
@@ -259,7 +261,7 @@ namespace Sharpie
                         bonustime.Start();
                     }
                 }
-                Cursor.Move(kierunek); //rusza kursorem w wybranym kierunku
+                Crs.Move(kierunek); //rusza kursorem w wybranym kierunku
                 if ((wall.Contains(board[Console.CursorLeft, Console.CursorTop])) || (board[Console.CursorLeft, Console.CursorTop] == body)) //zderzenie
                 {
                     bonustime.Stop();
@@ -431,17 +433,17 @@ namespace Sharpie
                     case 1:
                         pos = value;
                         Interface.Instrukcja();
-                        Regen(Cursor.CenterX() - 19, Cursor.CenterY() - 8, Cursor.CenterX() + 19, Cursor.CenterY() + 10);
+                        Regen(Crs.CenterX() - 19, Crs.CenterY() - 8, Crs.CenterX() + 19, Crs.CenterY() + 10);
                         break;
                     case 3:
                         pos = value;
-                        Menu exitmenu = new Menu(new string[] { "Tak", "Nie" }, Cursor.CenterX() - 6, Cursor.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);
+                        Menu exitmenu = new Menu(new string[] { "Tak", "Nie" }, Crs.CenterX() - 6, Crs.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);
                         Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
-                        dialog.Show(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4, "Wyjście", "ESC - powrót         ");
-                        dialog.WriteOn("Wyjść z gry?", Cursor.CenterY());
+                        dialog.Show(Crs.CenterX() - 11, Crs.CenterY() - 2, Crs.CenterX() + 11, Crs.CenterY() + 4, "Wyjście", "ESC - powrót         ");
+                        dialog.WriteOn("Wyjść z gry?", Crs.CenterY());
                         int v = exitmenu.ShowVertical(2, true, false, 0);
                         Console.ResetColor();
-                        Regen(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4);
+                        Regen(Crs.CenterX() - 11, Crs.CenterY() - 2, Crs.CenterX() + 11, Crs.CenterY() + 4);
                         switch (v)
                         {
                             case 0:
@@ -464,12 +466,12 @@ namespace Sharpie
         {
             Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkYellow);
             string wynik = Locale.score + scorepoint.ToString();
-            dialog.Show(Text.CenterX(wynik) - 5, Cursor.CenterY() - 4, Cursor.CenterX() + wynik.Length / 2 + 5, Cursor.CenterY() + 2);
-            Text.WriteXY(Text.CenterX(Locale.over), Cursor.CenterY() - 2, Locale.over);
-            Text.WriteXY(Text.CenterX(wynik), Cursor.CenterY(), wynik);
-            Interface.WritePanelLeft("Czekaj chwilkę ...");
+            dialog.Show(Text.CenterX(wynik) - 5, Crs.CenterY() - 4, Crs.CenterX() + wynik.Length / 2 + 5, Crs.CenterY() + 2);
+            Text.WriteXY(Text.CenterX(Locale.over), Crs.CenterY() - 2, Locale.over);
+            Text.WriteXY(Text.CenterX(wynik), Crs.CenterY(), wynik);
+            Panel.WritePanelLeft("Czekaj chwilkę ...");
             readmove.Abort();
-            Interface.WritePanelLeft("Naciśnij dowolny klawisz, aby wrócić do menu ...");
+            Panel.WritePanelLeft("Naciśnij dowolny klawisz, aby wrócić do menu ...");
         }
 
         private void ReadMove() // czyta ruchy klawiszy w osobnym wątku

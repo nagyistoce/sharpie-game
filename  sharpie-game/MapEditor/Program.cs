@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Utils;
 
 namespace MapEditor
 {
     class Program
     {
 		public static string name = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-		public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Remove(5);
+        public static string version = System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Windows.Forms.Application.ExecutablePath).FileVersion;
 
 		[STAThread]
         static void Main(string[] args)
@@ -17,11 +18,10 @@ namespace MapEditor
             Console.Title = name;
             Console.CursorSize = 100;
             Console.CursorVisible = false;
-            Interface window = new Interface();
             do
             {
-                window.Draw();
-                window.Glowny();
+                Panel.Draw(version);
+                Interface.Glowny();
             } while (true);
         }
     }

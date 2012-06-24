@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Sharpie;
+using Menus;
+using Utils;
 
 namespace MapEditor
 {
@@ -13,14 +15,13 @@ namespace MapEditor
         static int max_y = Console.WindowHeight - 1;
         string[,] board = new string[max_x, max_y];
         string[] lines = new string[max_y];
-        Point startpoint = new Point(Cursor.CenterX(), Cursor.CenterY());
+        Point startpoint = new Point(Crs.CenterX(), Crs.CenterY());
         List<string> wall = new List<string> { "║", "═", "╔", "╗", "╚", "╝" };
         ConsoleKeyInfo key, key2;
 
         public Editor(bool load)
         {
-            Interface editor = new Interface();
-            editor.Draw();
+            Panel.Draw(Program.version);
             if (load)
             {
                 Map map = new Map();
@@ -99,26 +100,26 @@ namespace MapEditor
         {
             Console.CursorVisible = true;
             SetStartPoint(startpoint);
-            Console.SetCursorPosition(Cursor.CenterX(), Cursor.CenterY());
+            Console.SetCursorPosition(Crs.CenterX(), Crs.CenterY());
             bool exit = false;
             
             do
             {
-                CursorCordPanel();
+                CrsCordPanel();
                 key = Console.ReadKey(true);
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        Cursor.Move(0);
+                        Crs.Move(0);
                         break;
                     case ConsoleKey.RightArrow:
-                        Cursor.Move(1);
+                        Crs.Move(1);
                         break;
                     case ConsoleKey.DownArrow:
-                        Cursor.Move(2);
+                        Crs.Move(2);
                         break;
                     case ConsoleKey.LeftArrow:
-                        Cursor.Move(3);
+                        Crs.Move(3);
                         break;
                     case ConsoleKey.Escape:
                         exit = PauseMenu();
@@ -218,16 +219,16 @@ namespace MapEditor
                         break;
                     case 1:
                         Interface.Instrukcja();
-                        RegenBoard(Cursor.CenterX() - 22, Cursor.CenterY() - 8, Cursor.CenterX() + 22, Cursor.CenterY() + 9);
+                        RegenBoard(Crs.CenterX() - 22, Crs.CenterY() - 8, Crs.CenterX() + 22, Crs.CenterY() + 9);
                         break;
                     case 3:
-                        Menu exitmenu = new Menu(new string[] { "Tak", "Nie" }, Cursor.CenterX() - 6, Cursor.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);
+                        Menu exitmenu = new Menu(new string[] { "Tak", "Nie" }, Crs.CenterX() - 6, Crs.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);
                         Dialog dialog = new Dialog(1, ConsoleColor.White, ConsoleColor.Red);
-                        dialog.Show(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4, "Wyjście", "ESC - powrót     ");
-                        dialog.WriteOn("Wyjść do menu?", Cursor.CenterY());
+                        dialog.Show(Crs.CenterX() - 11, Crs.CenterY() - 2, Crs.CenterX() + 11, Crs.CenterY() + 4, "Wyjście", "ESC - powrót     ");
+                        dialog.WriteOn("Wyjść do menu?", Crs.CenterY());
                         int v = exitmenu.ShowVertical(2, true, false, 0);
                         Console.ResetColor();
-                        RegenBoard(Cursor.CenterX() - 11, Cursor.CenterY() - 2, Cursor.CenterX() + 11, Cursor.CenterY() + 4);
+                        RegenBoard(Crs.CenterX() - 11, Crs.CenterY() - 2, Crs.CenterX() + 11, Crs.CenterY() + 4);
                         switch (v)
                         {
                             case 0:
@@ -246,10 +247,10 @@ namespace MapEditor
             return false;
         }
 
-        private void CursorCordPanel()
+        private void CrsCordPanel()
         {
             Point curpos = new Point(Console.CursorLeft, Console.CursorTop);
-            Interface.WritePanelRight("  X: " + Console.CursorLeft + " Y: " + Console.CursorTop);
+            Panel.WritePanelRight("  X: " + Console.CursorLeft + " Y: " + Console.CursorTop);
             Console.SetCursorPosition(curpos.x, curpos.y);
         }
     }

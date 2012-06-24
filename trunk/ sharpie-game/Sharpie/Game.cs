@@ -237,7 +237,6 @@ namespace Sharpie
             readmove.Start();
 
             GenerateMunch();
-            GenerateRandomBonus(); // debug purposes only!!!!!!!!
             Console.SetCursorPosition(startpoint.x, startpoint.y);
             do
             {

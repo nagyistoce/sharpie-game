@@ -35,15 +35,12 @@ namespace Downloader
 
         int pobranych;
         int zaznaczonych;
+        int dopobrania;
+        bool powodzenie = true;
         private void pobierzbt_Click(object sender, EventArgs e)
         {
             pobranych = 0;
             zaznaczonych = 0;
-            pobierzbt.Enabled = false;
-            drzewo.Enabled = false;
-            foldertb.Enabled = false;
-            folderbt.Enabled = false;
-            progressBar1.Enabled = true;
 
             bool pathentered = false;
             foreach (TreeNode node in drzewo.Nodes)
@@ -53,7 +50,7 @@ namespace Downloader
                     zaznaczonych++;
                 }
             }
-
+            dopobrania = zaznaczonych;
             if (zaznaczonych == 0)
             {
                 MessageBox.Show("Nie zaznaczyłeś żadnej rzeczy do pobrania!", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -69,133 +66,152 @@ namespace Downloader
                 WebClient klient;
                 bool retry;
 
-                if (drzewo.Nodes[0].Checked)
+                pobierzbt.Enabled = false;
+                drzewo.Enabled = false;
+                foldertb.Enabled = false;
+                folderbt.Enabled = false;
+                status.Visible = true;
+
+                for (int i = 0; i < zaznaczonych; i++)
                 {
-                    do
+                    if (drzewo.Nodes[i].Checked)
                     {
-                        string path = Path.Combine(foldertb.Text, "Sharpie.exe");
-                        if (File.Exists(path))
+                        string apppath = Path.Combine(foldertb.Text, drzewo.Nodes[i].Name);
+                        bool value = DownloadDependencies(i, Path.GetDirectoryName(apppath));
+                        if (!value)
                         {
-                            DialogResult result = MessageBox.Show("Plik '" + Path.GetFileName(path) + "' już istnieje. Czy chcesz go zastąpić?", "Ostrzeżenie", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                            if (result == DialogResult.No)
+                            powodzenie = false;
+                            break;
+                        }
+                        do
+                        {
+                            if (File.Exists(apppath))
                             {
-                                break;
+                                DialogResult result = MessageBox.Show("Plik '" + drzewo.Nodes[i].Name + "' już istnieje. Czy chcesz go zastąpić?", "Ostrzeżenie", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                if (result == DialogResult.No)
+                                {
+                                    break;
+                                }
                             }
-                        }
 
-                        retry = false;
-                        try
-                        {
-                            klient = new WebClient();
-                            klient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(klient_DownloadProgressChanged);
-                            klient.DownloadFileCompleted += new AsyncCompletedEventHandler(klient_DownloadFileCompleted);
-                            this.UseWaitCursor = true;
-                            klient.DownloadFileAsync(new Uri("http://sharpie.cba.pl/files/Sharpie/Sharpie.exe"), path);
-                        }
-                        catch (Exception ex)
-                        {
-                            DialogResult res = MessageBox.Show("Nie udało się pobrać '" + drzewo.Nodes[0].Text + "'.\n" + ex.Message, "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-                            if (res == DialogResult.Retry)
+                            retry = false;
+                            status.Text = "Pobieranie " + (pobranych + 1) + "/" + dopobrania + ": " + drzewo.Nodes[i].Name;
+                            try
                             {
-                                retry = true;
+                                klient = new WebClient();
+                                klient.DownloadFile(new Uri("http://sharpie.cba.pl/files/" + Path.GetFileNameWithoutExtension(drzewo.Nodes[i].Name) + "/" + drzewo.Nodes[i].Name), apppath);
+                                pobranych++;
                             }
-                        }
-                    } while (retry);
-
+                            catch (Exception ex)
+                            {
+                                DialogResult res = MessageBox.Show("Podczas pobierania " + drzewo.Nodes[i].Text + " wystąpił błąd i pobieranie zostało przerwane.\n" + ex.Message, "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                                if (res == DialogResult.Retry)
+                                {
+                                    retry = true;
+                                }
+                                else
+                                {
+                                    powodzenie = false;
+                                    if (File.Exists(apppath))
+                                    {
+                                        File.Delete(apppath);
+                                    }
+                                }
+                            }
+                            progressBar1.Value = (pobranych / dopobrania) * 100;
+                            progressBar1.Update();
+                            this.Update();
+                        } while (retry);
+                    }
                 }
-
-                if (drzewo.Nodes[1].Checked)
-                {
-                    do
-                    {
-                        string path = Path.Combine(foldertb.Text, "Updater.exe");
-                        if (File.Exists(path))
-                        {
-                            DialogResult result = MessageBox.Show("Plik '" + Path.GetFileName(path) + "' już istnieje. Czy chcesz go zastąpić?", "Ostrzeżenie", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                            if (result == DialogResult.No)
-                            {
-                                break;
-                            }
-                        }
-
-                        retry = false;
-                        try
-                        {
-                            klient = new WebClient();
-                            klient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(klient_DownloadProgressChanged);
-                            klient.DownloadFileCompleted += new AsyncCompletedEventHandler(klient_DownloadFileCompleted);
-                            this.UseWaitCursor = true;
-                            klient.DownloadFileAsync(new Uri("http://sharpie.cba.pl/files/Updater/Updater.exe"), path);
-                        }
-                        catch (Exception ex)
-                        {
-                            DialogResult res = MessageBox.Show("Nie udało się pobrać '" + drzewo.Nodes[0].Text + "'.\n" + ex.Message, "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-                            if (res == DialogResult.Retry)
-                            {
-                                retry = true;
-                            }
-                        }
-                    } while (retry);
-
-                }
-
-                if (drzewo.Nodes[2].Checked)
-                {
-                    do
-                    {
-                        string path = Path.Combine(foldertb.Text, "MapEditor.exe");
-                        if (File.Exists(path))
-                        {
-                            DialogResult result = MessageBox.Show("Plik '" + Path.GetFileName(path) + "' już istnieje. Czy chcesz go zastąpić?", "Ostrzeżenie", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                            if (result == DialogResult.No)
-                            {
-                                break;
-                            }
-                        }
-
-                        retry = false;
-                        try
-                        {
-                            klient = new WebClient();
-                            klient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(klient_DownloadProgressChanged);
-                            klient.DownloadFileCompleted += new AsyncCompletedEventHandler(klient_DownloadFileCompleted);
-                            this.UseWaitCursor = true;
-                            klient.DownloadFileAsync(new Uri("http://sharpie.cba.pl/files/MapEditor/MapEditor.exe"), path);
-                        }
-                        catch (Exception ex)
-                        {
-                            DialogResult res = MessageBox.Show("Nie udało się pobrać '" + drzewo.Nodes[0].Text + "'.\n" + ex.Message, "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-                            if (res == DialogResult.Retry)
-                            {
-                                retry = true;
-                            }
-                        }
-                    } while (retry);
-                }
-            }
-        }
-
-        void klient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            this.UseWaitCursor = false;
-            pobranych++;
-
-            pobierzbt.Text = "100 % " + pobranych + "/" + zaznaczonych;
-            if (pobranych == zaznaczonych)
-            {
-                MessageBox.Show("Wszystkie pliki zostały pobrane!", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 pobierzbt.Enabled = true;
-                pobierzbt.Text = "Pobierz!";
                 drzewo.Enabled = true;
                 foldertb.Enabled = true;
                 folderbt.Enabled = true;
+                if (powodzenie) { MessageBox.Show("Wybrane pliki zostały ściągnięte!", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+                else { MessageBox.Show("Wybrane pliki nie zostały ściągnięte!", "Niepowodzenie", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); }
+                status.Visible = false;
             }
         }
 
-        void klient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        string odpowiedz;
+        List<string> downloadedlist = new List<string>();
+        bool DownloadDependencies(int whichnode, string pathtosave)
         {
-            progressBar1.Value = e.ProgressPercentage;
-            pobierzbt.Text = e.ProgressPercentage + "% " + pobranych + "/" + zaznaczonych;
+            bool retry;
+            List<string> depends = new List<string>();
+
+            do
+            {
+                retry = false;
+                try
+                {
+                    WebRequest rq = WebRequest.Create("http://sharpie.cba.pl/files/" + Path.GetFileNameWithoutExtension(drzewo.Nodes[whichnode].Name) + "/ver.txt");
+                    rq.Credentials = CredentialCache.DefaultCredentials;
+                    HttpWebResponse rp = (HttpWebResponse)rq.GetResponse();
+                    Stream st = rp.GetResponseStream();
+                    StreamReader sr = new StreamReader(st);
+                    odpowiedz = sr.ReadToEnd();
+                }
+                catch (Exception ex)
+                {
+                    DialogResult res = MessageBox.Show("Podczas pobierania listy wymaganych komponentów dla " + drzewo.Nodes[whichnode].Text + " wystąpił błąd.\n" + ex.Message, "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                    if (res == DialogResult.Retry)
+                    {
+                        retry = true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            } while (retry);
+
+            string[] temp = odpowiedz.Split(':');
+            if (temp[1].Length > 0)
+            {
+                dopobrania += temp[1].Split(',').Length;
+                bool again = false;
+                WebClient klient = new WebClient();
+                foreach (string s in temp[1].Split(','))
+                {
+                    if (!downloadedlist.Exists(x => x == s))
+                    {
+                        do
+                        {
+                            again = false;
+                            status.Text = "Pobieranie " + (pobranych + 1) + "/" + dopobrania + ": " + s;
+                            try
+                            {
+                                klient.DownloadFile(new Uri("http://sharpie.cba.pl/files/DLLs/" + Path.GetFileNameWithoutExtension(s) + "/" + s), Path.Combine(pathtosave, s));
+                                pobranych++;
+                            }
+                            catch (System.Exception ex)
+                            {
+                                DialogResult res = MessageBox.Show("Podczas pobierania komponentu " + s + " wymaganego dla " + drzewo.Nodes[whichnode].Text + " wystąpił błąd.\n" + ex.Message, "Błąd", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                                if (res == DialogResult.Retry)
+                                {
+                                    again = true;
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                            }
+                            downloadedlist.Add(s);
+                            progressBar1.Value = (pobranych / dopobrania) * 100;
+                            progressBar1.Update();
+                            this.Update();
+                        } while (again);
+                    }
+                    else
+                    {
+                        dopobrania--;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private void foldertb_Leave(object sender, EventArgs e)
@@ -211,11 +227,5 @@ namespace Downloader
         {
             previousFolder = foldertb.Text;
         }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
     }
 }

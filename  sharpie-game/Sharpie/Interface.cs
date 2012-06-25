@@ -9,8 +9,6 @@ using System.Net;
 using System.Diagnostics;
 using Sharpie.Properties;
 using Utils;
-using Menus;
-
 namespace Sharpie
 {
 	class Interface
@@ -49,18 +47,19 @@ namespace Sharpie
 			Text.WriteXY(Text.CenterX(Locale.desc), 9, Locale.desc);
 			Console.ResetColor();
 
-            if (!GameUpdt.WasUpdateChecked)
+            if (!Update.WasUpdateChecked)
             {
-                if (GameUpdt.IsInternet())
+                if (Update.IsInternet())
                 {
                     string dialogtext = "Szukam aktualizacji ...";
                     Dialog szukamupdt = new Dialog(0, ConsoleColor.White, ConsoleColor.Red);
                     szukamupdt.Show(Crs.CenterX() - dialogtext.Length / 2 - 2, Crs.CenterY() - 2, Crs.CenterX() + dialogtext.Length / 2 + 2, Crs.CenterY() + 2);
                     szukamupdt.WriteOn(dialogtext, Crs.CenterY());
-                    GameUpdt.UpdateProcedure();
+                    Update updt = new Update(0, System.Windows.Forms.Application.ExecutablePath, Program.version);
+                    updt.UpdateProcedure();
                     szukamupdt.Clear();
                 }
-                GameUpdt.WasUpdateChecked = true;
+                Update.WasUpdateChecked = true;
             }
 			menudialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkBlue);
 			Menu menu = new Menu(new string[] { "Nowa gra", "Ustawienia", "Wyniki", "Instrukcja", "O grze" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue);

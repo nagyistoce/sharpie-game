@@ -80,9 +80,6 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="Menus">
-      <HintPath>..\Menus\bin\Debug\Menus.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -98,7 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
-    <Compile Include="GameUpdt.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

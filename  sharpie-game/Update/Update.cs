@@ -159,6 +159,10 @@ namespace Update
 
         public void UpdateProcedure()
         {
+            string searchdialogtext = "Szukam aktualizacji ...";
+            Dialog szukamupdt = new Dialog(0, ConsoleColor.White, ConsoleColor.Red);
+            szukamupdt.Show(Crs.CenterX() - searchdialogtext.Length / 2 - 2, Crs.CenterY() - 2, Crs.CenterX() + searchdialogtext.Length / 2 + 2, Crs.CenterY() + 2);
+            szukamupdt.WriteOn(searchdialogtext, Crs.CenterY());
             bool IsUpdate = CheckUpdate();
             if (IsUpdate)
             {
@@ -197,17 +201,13 @@ namespace Update
                             downupdt.WriteOn(error, Crs.CenterY() - 2);
                             Menu errormenu = new Menu(new string[] { "OK" }, Crs.CenterX() - 2, Crs.CenterY() + 2, ConsoleColor.White, ConsoleColor.Red);
                             errormenu.ShowVertical(0, false, false, 0);
-                            downupdt.Clear();
                         }
-                        break;
-                    case 1:
-                        updtdialog.Clear();
-                        break;
-                    case -1:
-                        updtdialog.Clear();
+                        downupdt.Clear();
                         break;
                 }
+                updtdialog.Clear();
             }
+            szukamupdt.Clear();
         }
 
     }

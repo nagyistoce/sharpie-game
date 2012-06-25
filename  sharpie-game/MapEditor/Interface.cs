@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Utils;
+using Update;
 
 namespace MapEditor
 {
@@ -28,9 +29,23 @@ namespace MapEditor
 			Console.ResetColor();
 			Logo();
 			Text.WriteXY(Text.CenterX(Locale.desc), 9, Locale.desc);
-			Console.BackgroundColor = ConsoleColor.Gray;
-			Console.ForegroundColor = ConsoleColor.Black;
 			Console.ResetColor();
+
+            if (!Update.Update.WasUpdateChecked)
+            {
+                if (Update.Update.IsInternet())
+                {
+                    string dialogtext = "Szukam aktualizacji ...";
+                    Dialog szukamupdt = new Dialog(0, ConsoleColor.White, ConsoleColor.Red);
+                    szukamupdt.Show(Crs.CenterX() - dialogtext.Length / 2 - 2, Crs.CenterY() - 2, Crs.CenterX() + dialogtext.Length / 2 + 2, Crs.CenterY() + 2);
+                    szukamupdt.WriteOn(dialogtext, Crs.CenterY());
+                    Update.Update updt = new Update.Update(1, System.Windows.Forms.Application.ExecutablePath, Program.version);
+                    updt.UpdateProcedure();
+                    szukamupdt.Clear();
+                }
+                Update.Update.WasUpdateChecked = true;
+            }
+
 			Dialog menudialog = new Dialog(1, ConsoleColor.White, ConsoleColor.DarkBlue);
 			Menu menu = new Menu(new string[] { "Nowa mapa", "Ładuj mapę", "Instrukcja", "O programie", "", "Aktualizuj" }, 29, 15, ConsoleColor.White, ConsoleColor.DarkBlue);
 			menudialog.Show(27, 13, 43, 27, "Menu", "ESC - wyjście");

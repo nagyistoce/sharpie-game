@@ -89,6 +89,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Update">
+      <HintPath>..\Update\bin\Debug\Update.dll</HintPath>
+    </Reference>
     <Reference Include="Utils">
       <HintPath>..\Utils\bin\Debug\Utils.dll</HintPath>
     </Reference>

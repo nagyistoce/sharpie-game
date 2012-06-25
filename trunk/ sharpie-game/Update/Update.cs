@@ -6,8 +6,9 @@ using System.IO;
 using System.Diagnostics;
 using System.Net;
 using System.Collections;
+using Utils;
 
-namespace Utils
+namespace Update
 {
     public class Update
     {
